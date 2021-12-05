@@ -1,17 +1,16 @@
 # zot [![build-test](https://github.com/project-zot/zot/actions/workflows/ci-cd.yml/badge.svg?branch=main)](https://github.com/project-zot/zot/actions/workflows/ci-cd.yml) [![codecov.io](http://codecov.io/github/project-zot/zot/coverage.svg?branch=main)](http://codecov.io/github/project-zot/zot?branch=main) [![Conformance Results](https://github.com/project-zot/zot/workflows/conformance/badge.svg)](https://github.com/project-zot/zot/actions?query=workflow%3Aconformance)
 
-**zot** is a vendor-neutral OCI image registry server purely based on 
+**[zot](https://zotregistry.io)** is a vendor-neutral OCI image registry server purely based on 
 [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec).
-
-https://zotregistry.io
 
 [```docker pull ghcr.io/project-zot/zot:latest```](https://github.com/project-zot/zot/pkgs/container/zot)
 
 [```docker run -p 5000:5000 ghcr.io/project-zot/zot:latest```](https://github.com/project-zot/zot/pkgs/container/zot)
 
-[**Why zot?**](COMPARISON.md)
+[**Why zot?**](https://github.com/project-zot/zot/blob/main/COMPARISON.md)
 
 # Features
+
 * Conforms to [OCI distribution spec](https://github.com/opencontainers/distribution-spec) APIs
 * Clear separation between core dist-spec and zot-specific extensions
   * ```make binary-minimal``` builds a dist-spec-only zot
@@ -20,7 +19,7 @@ https://zotregistry.io
   * Can serve any OCI image layout as a registry 
 * Supports container image signatures - [cosign](https://github.com/sigstore/cosign) and [notation](https://github.com/notaryproject/notation)
 * Supports [helm charts](https://helm.sh/docs/topics/registries/)
-* Behavior controlled via [configuration](./examples/README.md)
+* Behavior controlled via [configuration](https://github.com/project-zot/zot/blob/main/examples/README.md)
 * Supports image deletion by tag
 * Currently suitable for on-prem deployments (e.g. colocated with Kubernetes)
 * Compatible with ecosystem tools such as [skopeo](#skopeo) and [cri-o](#cri-o)
@@ -37,7 +36,7 @@ https://zotregistry.io
 * Storage optimizations:
   * Automatic garbage collection of orphaned blobs
   * Layer deduplication using hard links when content is identical
-* Serve [multiple storage paths (and backends)](./examples/config-multiple.json) using a single zot server
+* Serve [multiple storage paths (and backends)](https://github.com/project-zot/zot/blob/main//examples/config-multiple.json) using a single zot server
 * Pull and synchronize from other dist-spec conformant registries [sync](#sync)
 * Swagger based documentation
 * Single binary for _all_ the above features
@@ -84,7 +83,7 @@ Build artifacts are in bin/
 bin/zot serve _config-file_
 ```
 
-Examples of config files are available in [examples/](examples/) dir.
+Examples of config files are available in [examples/](https://github.com/project-zot/zot/blob/main/examples/) dir.
 
 # Container Image
 
@@ -233,7 +232,7 @@ c3/openjdk-dev                    commit-d5024ec-squashfs   cd45f8cf  321MB
 # Sync
 Periodically pull and synchronize images between zot registries.
 The synchronization is achieved by copying all the images found at source to destination.
-To use it see [sync-config](examples/config-sync.json)
+To use it see [sync-config](https://github.com/project-zot/zot/blob/main/examples/config-sync.json)
 Supports:
   - TLS verification
   - Prefix filtering (can contain multiple repos, eg repo1/repoX/repoZ)
@@ -283,7 +282,7 @@ bin/zot-exporter config _config-file_
 ```
 
 ## Enable Metrics
-In the zot with all extensions case see [configuration example](./examples/config-metrics.json) for enabling metrics
+In the zot with all extensions case see [configuration example](https://github.com/project-zot/zot/blob/main//examples/config-metrics.json) for enabling metrics
 
 # Caveats
 
