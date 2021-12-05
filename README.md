@@ -294,6 +294,6 @@ In the zot with all extensions case see [configuration example](./examples/confi
 
 We encourage and support an active, healthy community of contributors.
 
-* Details are in the [code of conduct](CODE_OF_CONDUCT.md)
+* Details are in the [code of conduct](https://github.com/project-zot/zot/blob/main/CODE_OF_CONDUCT.md)
 * Details to get started on code development are in
-[contributing](CONTRIBUTING.md) document.
+[contributing](https://github.com/project-zot/zot/blob/main/CONTRIBUTING.md) document.
