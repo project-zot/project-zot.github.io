@@ -3,6 +3,8 @@
 **[zot](https://zotregistry.io)** is a vendor-neutral OCI image registry server purely based on 
 [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec).
 
+[https://github.com/project-zot/zot](https://github.com/project-zot/zot)
+
 [```docker pull ghcr.io/project-zot/zot:latest```](https://github.com/project-zot/zot/pkgs/container/zot)
 
 [```docker run -p 5000:5000 ghcr.io/project-zot/zot:latest```](https://github.com/project-zot/zot/pkgs/container/zot)
