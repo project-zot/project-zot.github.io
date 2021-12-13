@@ -1,0 +1,14 @@
+<!DOCTYPE html>{% assign package_name = page.name | remove: ".md" %}
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <meta name="go-import" content="{{ site.domain }}/{{ package_name }} git https://github.com/{{ site.github_username }}/{{ page.repo }}">
+  <meta name="go-source" content="{{ site.domain }}/{{ package_name }} _ https://github.com/{{ site.github_username }}/{{ page.repo }}/tree/{{ page.branch }}{/dir} https://github.com/{{ site.github_username }}/{{ page.repo }}/blob/{{ page.branch }}{/dir}/{file}#L{line}">
+
+  <meta http-equiv="refresh" content="0; https://github.com/{{ site.github_username }}/{{ page.repo }}">
+</head>
+<body>
+    Redirecting you to <a href="https://github.com/{{ site.github_username }}/{{ page.repo }}">https://github.com/{{ site.github_username }}/{{ page.repo }}</a>
+</body>
+</html> 

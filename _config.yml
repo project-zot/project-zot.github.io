@@ -3,3 +3,12 @@ description: A vendor-neutral OCI image registry server purely based on OCI Dist
 github:
   repository_url: https://github.com/project-zot/zot
 theme: jekyll-theme-slate
+domain: zotregistry.io
+github_username: project-zot
+defaults:
+  - scope:
+      path: "go-imports"
+    values:
+      layout: go-imports
+      permalink: /:basename
+      branch: main
