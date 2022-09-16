@@ -1,0 +1,41 @@
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+
+name: release-build&push-mainRepo
+
+jobs:
+  build-and-push:
+    name: Release - Build and push site to Github Pages on remote repo
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          cache: 'npm'
+          node-version: 16
+
+      - name: Set up Next.js
+        run: |
+          npm install
+
+      - name: Build site
+        run: |
+          npm run build
+          npm run export
+          npm run build:images
+          touch out/.nojekyll
+    
+      - name: Push output to github-pages branch
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: git@github.com:project-zot/project-zot.github.io
+          BRANCH: main
+          FOLDER: out
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+          CLEAR_GLOBS_FILE: "preserve-docs.txt"
