@@ -1,0 +1,11 @@
+.btn {
+    border-radius: 1rem;
+
+    &-large {
+        border-radius: 2rem;
+    }
+
+    &-small {
+        border-radius: 1rem;
+    }
+}
