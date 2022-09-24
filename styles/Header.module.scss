@@ -31,7 +31,7 @@
         .stackitem {
             padding-bottom: 0.3rem;
             margin-bottom: 1rem;
-            border-bottom: 1px solid #333333;
+            border-bottom: 0.063rem solid #333333;
             --gapX: 0.5rem;
             --gapY: 0.5rem;
             @include flex-row;
@@ -94,7 +94,7 @@
         flex-direction: row;
         align-items: flex-start;
         justify-content: center;
-        font-size: 16px;
+        font-size: 1rem;
         width: 100%;
         min-height: 50%;
 
@@ -120,14 +120,14 @@
         align-items: center;
         color: $primary;
         background-color: $secondary;
-        border: 1px solid $primary;
-        border-radius: 66px;
+        border: 0.063rem solid $primary;
+        border-radius: 4.125rem;
         font-family: 'Roboto';
         font-style: normal;
         font-weight: 600;
-        font-size: 15px;
-        line-height: 26px;
-        letter-spacing: 0.46px;
+        font-size: 0.938rem;
+        line-height: 1.625rem;
+        letter-spacing: 0.029rem;
         text-transform: uppercase;
     }
 

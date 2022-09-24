@@ -1,17 +1,24 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import ExportedImage from "next-image-export-optimizer";
 import styles from "@/styles/ProductSection.module.scss";
 import { Button, Stack, Typography } from "@mui/material";
+import remToPx from "utils/imageSizeConverter";
 
 const ProductSection = () => {
+  const productZuiPreviewSize = useRef({w:504,h:385});
+
+  useEffect(() => {
+    productZuiPreviewSize.current = {w:remToPx(31.5), h:remToPx(24.063)}
+  },[]);
+
   return (
     <>
       <div style={{position:'relative'}}>
         <div className={styles.productImage}>
           <ExportedImage
             src={"images/Product-zui-preview.png"}
-            height={385}
-            width={504}
+            height={productZuiPreviewSize.current.h}
+            width={productZuiPreviewSize.current.w}
             alt="zui-explore"
           />
         </div>

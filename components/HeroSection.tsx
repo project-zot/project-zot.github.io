@@ -1,18 +1,26 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import ExportedImage from 'next-image-export-optimizer'
 import styles from '@/styles/HeroSection.module.scss'
 import { Button, Stack, Typography } from '@mui/material'
 import Header from './Header'
-import Link from 'next/link'
+import remToPx from 'utils/imageSizeConverter'
 
 
 const HeroSection = () => {
+    const zuiHomeSize = useRef({w:806,h:672});
+
+    useEffect(() => {
+        console.log('getting size');
+        zuiHomeSize.current = {w:remToPx(42),h:remToPx(50.375)};
+        console.log('size after calc', zuiHomeSize);
+    },[]);
+
     return (
         <>
             <Stack className={styles.heroWrapper} direction='column'>
                 <Header/>
                 <div className={styles.heroImage}>
-                    <ExportedImage src={'images/Hero-zui-preview.png'} height={672} width={806} alt="zui-home" />
+                    <ExportedImage src={'images/Hero-zui-preview.png'} height={zuiHomeSize.current.h} width={zuiHomeSize.current.w} alt="zui-home" />
                 </div>
 
                 <Stack className={styles.heroInteraction} direction='column'>

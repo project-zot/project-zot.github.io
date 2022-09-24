@@ -23,22 +23,22 @@
     color: black;
     position: absolute;
     width: auto;
-    padding: 16px;
-    margin-top: -22px;
+    padding: 1rem;
+    margin-top: -1.375rem;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 1.125rem;
     transition: 0.6s ease;
-    border-radius: 0 3px 3px 0;
+    border-radius: 0 0.188rem 0.188rem 0;
     user-select: none;
 }
 
 .next {
     right: 0;
-    border-radius: 3px 0 0 3px;
+    border-radius: 0.188rem 0 0 0.188rem;
 }
 .prev {
     left: 0;
-    border-radius: 3px 0 0 3px;
+    border-radius: 0.188rem 0 0 0.188rem;
 }
 .prev:hover, .next:hover {
     background-color: rgba(194, 194, 194, 0.8);
@@ -51,7 +51,7 @@
     width: 100%;
     width: 100%;
     text-align: center;
-    text-shadow: 0px 0px 10px rgba(116, 116, 116, 0.8);
+    text-shadow: 0  0.625rem rgba(116, 116, 116, 0.8);
     @include unselectable;
 }
 
@@ -94,7 +94,7 @@
 
 @media only screen and (max-width: 500px) {
     .dot {
-    height: 4px;
-    width: 4px;
+    height: 0.25rem;
+    width: 0.25rem;
     }
 }
