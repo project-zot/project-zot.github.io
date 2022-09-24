@@ -24,7 +24,7 @@
 .footer {
   width: 100%;
   min-height: 4.3rem;
-  border-top: 1px solid #eaeaea;
+  border-top: 0.063rem solid #eaeaea;
   background: $white;
   @include flex-column;
   @include xcross-centered;
@@ -42,7 +42,7 @@
   }
 
   ul li a {
-    margin: 5px 10px;
+    margin: 0.313rem 0.625rem;
     cursor: ponter;
   }
 
@@ -77,7 +77,7 @@
 
 .code {
   background: #fafafa;
-  border-radius: 5px;
+  border-radius: 0.313rem;
   padding: 0.75rem;
   font-size: 1.1rem;
   font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
