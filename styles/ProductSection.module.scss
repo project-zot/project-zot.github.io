@@ -6,11 +6,20 @@
 
 .productContainer {
   position:relative;
-  align-items:flex-start;
+  align-items:center;
+  justify-content: center;
   z-index: 1;
   display:flex;
-  margin: 10rem 22rem 10rem 53rem;
+  margin: 10rem 0rem;
   cursor: pointer;
+
+  .productImage {
+    position: relative;
+    
+    filter: drop-shadow(0rem 0.313rem 2.2rem rgba(54, 54, 54, 0.15));
+    border-radius: 1.5rem;
+    overflow: hidden;
+  }
 
   .productTitle {
     font-family: 'Roboto';
@@ -40,14 +49,12 @@
     align-items: center;
 
     .howItWorksButton {
-      padding: 1rem 2rem;
       background: $primary;
       border-radius: 2.5rem;
       border-width: 0.125rem;
       border-color: $primary;
       font-style: normal;
       font-weight: 600;
-      font-size: 1.5rem;
       line-height: 2.125rem;
       color: $white;
       text-transform: none;
@@ -59,15 +66,12 @@
       border-width: 0.125rem;
     }
     
-    
     .specsLink {
-      padding: 1rem 2rem;
       background: none;
       box-shadow: 0rem 1.563rem 2rem rgba(66, 66, 66, 0.15);
       font-family: 'Roboto';
       font-style: normal;
       font-weight: 600;
-      font-size: 1.5rem;
       text-align: center;
       line-height: 133.4%;
       border-color: $primary;
@@ -82,14 +86,31 @@
       border-color: $primary;
       border-width: 0.188rem;
     }
+
+    @media only screen and (min-width: 1200px) {
+      .howItWorksButton {
+        padding: 1rem 2rem;
+        font-size: 1.5rem;
+      }
+
+      .specsLink {
+        padding: 1rem 2rem;
+        font-size: 1.5rem;
+      }
+    }
+
+    @media only screen and (min-width: 992px) {
+      .howItWorksButton {
+        padding: 1rem 2rem;
+        font-size: 1.2rem;
+      }
+
+      .specsLink {
+        padding: 1rem 2rem;
+        font-size: 1.2rem;
+      }
+    }
   }
 }
 
-.productImage {
-  position: absolute;
-  top: 10.688rem;
-  left: 13.5rem;
-  filter: drop-shadow(0rem 0.313rem 2.2rem rgba(54, 54, 54, 0.15));
-  border-radius: 1.5rem;
-  overflow: hidden;
-}
+

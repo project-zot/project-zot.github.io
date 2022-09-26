@@ -19,19 +19,19 @@ const AboutSection = () => {
       <Stack direction='column' className={styles.aboutInner} spacing={'2.563rem'} >
         <Typography className={styles.aboutTitle}>Why choose zot Image Registry?</Typography>
         <Grid container>
-          <Grid item xs={4}>
+          <Grid item xs={4} md={4}>
             <Stack direction='column' spacing={'1.5rem'}>
               {checkText('Security hardening')}
               {checkText('Clear separation between core distribution spec and zot-specific extensions')}
             </Stack>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={4} md={4}>
             <Stack direction='column' spacing={'1.5rem'}>
               {checkText('Open Source')}
               {checkText('Suitable for deployments in cloud, bare-metal and embedded devices')}
             </Stack>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={4} md={4}>
             <Stack direction='column' spacing={'1.5rem'}>
               {checkText('Single binary with many features ')}
               {checkText('Software supply chain security-supports cosign and notation')}
