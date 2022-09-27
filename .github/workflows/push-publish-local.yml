@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 env:
-  PREFIX: 
+  PREFIX: ''
 
 jobs:
   build-and-push:
