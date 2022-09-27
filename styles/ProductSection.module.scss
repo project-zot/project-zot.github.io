@@ -48,6 +48,14 @@
     width: 47.25rem;
     align-items: center;
 
+    .buttonLink {
+      color:$white;
+    }
+
+    .buttonLinkPrimary {
+      color:$primary;
+    }
+
     .howItWorksButton {
       background: $primary;
       border-radius: 2.5rem;
