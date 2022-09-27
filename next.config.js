@@ -1,7 +1,12 @@
 const prefixEnvVar = process.env.NODE_ENV === 'production' && process.env.PREFIX? `/${process.env.PREFIX}`: null;
 
-const repoNameURIPrefix = 
-  process.env.NODE_ENV === 'production' ? prefixEnvVar??'/site-zot' : '';
+let repoNameURIPrefix = '';
+if (prefixEnvVar === null || prefixEnvVar === undefined) {
+    repoNameURIPrefix = 
+        process.env.NODE_ENV === 'production' ? '/site-zot' : '';
+} else {
+    repoNameURIPrefix = process.env.NODE_ENV === 'production' ? prefixEnvVar : '';
+}
 
 module.exports = {
     basePath: repoNameURIPrefix,
