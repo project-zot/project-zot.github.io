@@ -1,5 +1,6 @@
 import styles from '@/styles/Layout.module.scss'
 import { Button } from '@mui/material'
+import Link from 'next/link'
 
 const Legal = () => {
     return (
@@ -7,13 +8,12 @@ const Legal = () => {
             <ul>
                 <li>
                     <Button variant="text" disableRipple className={styles.legalButton}>
-                        <a className={styles.legalButton} href='https://github.com/project-zot/zot/blob/main/LICENSE'>
-                            License rights
-                        </a>
+                        <Link href='https://github.com/project-zot/zot/blob/main/LICENSE'>
+                            <a className={styles.legalButton} target="_blank" >
+                                License rights
+                            </a>
+                        </Link>
                     </Button>
-                </li>
-                <li>
-                    <Button  variant="text" disableRipple className={styles.legalButton}>Privacy Policy</Button>
                 </li>
                 <li>
                     <Button  variant="text" disableRipple className={styles.legalButton}>Copyright @2022 Cisco Systmes</Button>
