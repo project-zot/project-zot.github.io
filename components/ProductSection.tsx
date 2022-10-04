@@ -51,7 +51,7 @@ const ProductSection = () => {
         <Grid item xs={12} className={styles.buttonContainer}>
           <Stack direction="row" spacing={3} >
             <Button variant="contained" className={styles.howItWorksButton}>
-              <a className={styles.buttonLink} href="https://docs.zotregistry.io/zot-docs-1/1.0/admin-guide/admin-guide.html">
+              <a className={styles.buttonLink} href="https://docs.zotregistry.io/zot-docs-1/1.0/general/zot-concepts.html">
                 How it works
               </a>
             </Button>

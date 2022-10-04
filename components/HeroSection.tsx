@@ -77,7 +77,7 @@ const HeroSection = () => {
               >
                 <a
                   className={styles.buttonLink}
-                  href="http://zotregistry.io/docs-zot/zot-docs-1/1.0/general/zot-concepts.html"
+                  href="https://docs.zotregistry.io/zot-docs-1/1.0/admin-guide/admin-guide.html"
                 >
                   Learn more
                 </a>
