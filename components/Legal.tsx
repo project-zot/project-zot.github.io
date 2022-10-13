@@ -16,7 +16,7 @@ const Legal = () => {
                     </Button>
                 </li>
                 <li>
-                    <Button  variant="text" disableRipple className={styles.legalButton}>Copyright @2022 Cisco Systmes</Button>
+                    <Button  variant="text" disableRipple className={styles.legalButton}>Copyright @{new Date().getFullYear() || '2022'} Cisco Systems</Button>
                 </li>
             </ul>
         </div>
