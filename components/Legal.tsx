@@ -1,5 +1,5 @@
 import styles from '@/styles/Layout.module.scss'
-import { Button } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import Link from 'next/link'
 
 const Legal = () => {
@@ -16,7 +16,7 @@ const Legal = () => {
                     </Button>
                 </li>
                 <li>
-                    <Button  variant="text" disableRipple className={styles.legalButton}>Copyright @{new Date().getFullYear() || '2022'} Cisco Systems</Button>
+                    <Typography className={styles.legalButton}>Copyright @{new Date().getFullYear() || '2022'} Cisco Systems</Typography>
                 </li>
             </ul>
         </div>

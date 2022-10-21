@@ -13,12 +13,7 @@ const ProductSection = () => {
 
   return (
     <Grid container spacing={2} className={styles.productContainer}>
-      <Grid
-        item
-        xs={4}
-        md={4}
-        className={styles.productImage}
-      >
+      <Grid item xs={4} md={4} className={styles.productImage}>
         <ExportedImage
           src={"images/Product-zui-preview.png"}
           height={productZuiPreviewSize.current.h}
@@ -35,9 +30,9 @@ const ProductSection = () => {
             There are two broad trends occurring currently in how we build,
             distribute and consume software. The first one is the increasing
             adoption of container technologies. The second one is that we no
-            longer build everything from scratch but compose our software
-            solutions from various sources but, this also raises the important
-            question of software provenance and supply chain security.
+            longer build everything from scratch. Instead, we compose our
+            software solutions from various sources, but this also raises the
+            important question of software provenance and supply chain security.
           </Typography>
         </Grid>
         <Grid item xs={12}>
@@ -49,14 +44,20 @@ const ProductSection = () => {
           </Typography>
         </Grid>
         <Grid item xs={12} className={styles.buttonContainer}>
-          <Stack direction="row" spacing={3} >
+          <Stack direction="row" spacing={3}>
             <Button variant="contained" className={styles.howItWorksButton}>
-              <a className={styles.buttonLink} href="https://docs.zotregistry.io/zot-docs-1/1.0/general/zot-concepts.html">
+              <a
+                className={styles.buttonLink}
+                href="https://docs.zotregistry.io/zot-docs-1/1.0/general/zot-concepts.html"
+              >
                 How it works
               </a>
             </Button>
             <Button variant="outlined" className={styles.specsLink}>
-              <a className={styles.buttonLinkPrimary} href="https://docs.zotregistry.io">
+              <a
+                className={styles.buttonLinkPrimary}
+                href="https://docs.zotregistry.io"
+              >
                 More details
               </a>
             </Button>

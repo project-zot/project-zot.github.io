@@ -11,8 +11,6 @@
   z-index: 1;
   display:flex;
   margin: 10rem 0rem;
-  cursor: pointer;
-
   .productImage {
     position: relative;
     
@@ -40,7 +38,6 @@
     font-size: 1.2rem;
     line-height: 1.75rem;
     text-align: left;
-  
     color: $secondary-text-dark;
   }
   
