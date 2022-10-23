@@ -47,7 +47,7 @@ const Header = (props) => {
                     <Link href='https://twitter.com/zotproject'>
                         <a target="_blank"><ExportedImage src={'images/twitter_new.svg'} alt="Twitter Logo" width={twitterLogoSize.current.w} height={twitterLogoSize.current.h} /></a>
                     </Link>
-                    <Link href='https://slack.com/'>
+                    <Link href='https://cloud-native.slack.com/archives/C03EGRE4QGH'>
                         <a target="_blank"><ExportedImage src={'images/slack.svg'} alt="Slack Logo" width={slackLogoSize.current.w} height={slackLogoSize.current.h} /></a>
                     </Link>
                 </Stack>
