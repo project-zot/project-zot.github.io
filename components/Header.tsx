@@ -37,9 +37,9 @@ const Header = (props) => {
             </div>
             <div className={styles.inputcontainer}>
                 <Stack className={styles.linksbar} direction="row" spacing={2}>
-                    <Link href='/' ><a className={styles.textLink} target="_blank">zothub</a></Link>
+                    <Link href='https://zothub.io/' ><a className={styles.textLink} target="_blank">zothub</a></Link>
                     <Link href='http://zotregistry.io/docs-zot/zot-docs-1/1.0/toc/zot-toc.html' ><a className={styles.textLink}>docs</a></Link>
-                    <Link href='/' ><a className={styles.textLink}>blog</a></Link>
+                    <Link href='https://docs.zotregistry.io/zot-docs-1/1.0/toc/zot-toc.html#_articles' ><a className={styles.textLink}>blog</a></Link>
                     <Divider orientation="vertical" flexItem sx={{ borderRightWidth: 3, borderColor:'white' }} />
                     <Link href='https://github.com/project-zot/zot'>
                         <a target="_blank"><ExportedImage src={'images/github-white.svg'} alt="Github Logo" width={githubLogoSize.current.w} height={githubLogoSize.current.h} /></a>
