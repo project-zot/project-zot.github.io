@@ -14,9 +14,16 @@
   .productImage {
     position: relative;
     
-    filter: drop-shadow(0rem 0.313rem 2.2rem rgba(54, 54, 54, 0.15));
+    box-shadow: 0rem 0.313rem 2.2rem rgba(54, 54, 54, 0.15);
     border-radius: 1.5rem;
     overflow: hidden;
+
+    .sourceImage {
+      object-fit: fill;
+      border-radius: 1.5rem;
+      width: 100%;
+      height: 100%;
+    }
   }
 
   .productTitle {

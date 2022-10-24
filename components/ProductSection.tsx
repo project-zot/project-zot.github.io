@@ -2,24 +2,24 @@ import React, { useEffect, useRef } from "react";
 import ExportedImage from "next-image-export-optimizer";
 import styles from "@/styles/ProductSection.module.scss";
 import { Button, Grid, Stack, Typography } from "@mui/material";
-import remToPx from "utils/imageSizeConverter";
 
+import productImage from '../public/images/Product-zui-preview.png';
 const ProductSection = () => {
-  const productZuiPreviewSize = useRef({ w: 504, h: 385 });
-
-  useEffect(() => {
-    productZuiPreviewSize.current = { w: remToPx(31.5), h: remToPx(24.063) };
-  }, []);
 
   return (
     <Grid container spacing={2} className={styles.productContainer}>
-      <Grid item xs={4} md={4} className={styles.productImage}>
+      <Grid
+        item
+        xs={4}
+        md={4}
+      >
+        <div className={styles.productImage}>
         <ExportedImage
-          src={"images/Product-zui-preview.png"}
-          height={productZuiPreviewSize.current.h}
-          width={productZuiPreviewSize.current.w}
+          src={productImage}
+          layout='responsive'
           alt="zui-explore"
         />
+        </div>
       </Grid>
       <Grid container item xs={4} md={5} spacing={4}>
         <Grid item xs={12}>

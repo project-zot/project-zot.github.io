@@ -10,11 +10,10 @@ import {
   Stack,
 } from "@mui/material";
 import Header from "./Header";
-import remToPx from "utils/imageSizeConverter";
+
+import heroImage from '../public/images/Hero-zui-preview.png';
 
 const HeroSection = () => {
-  const zuiHomeSize = useRef({ w: 806, h: 672 });
-
   // for responsive font
   const theme = createTheme();
 
@@ -30,12 +29,6 @@ const HeroSection = () => {
       fontSize: "1.5rem",
     },
   };
-
-  useEffect(() => {
-    console.log("getting size");
-    zuiHomeSize.current = { w: remToPx(42), h: remToPx(50.375) };
-    console.log("size after calc", zuiHomeSize);
-  }, []);
 
   return (
     <Grid className={styles.heroWrapper}>
@@ -84,9 +77,8 @@ const HeroSection = () => {
 
         <Grid item xs={4} md={4} className={styles.heroImage}>
           <ExportedImage
-            src={"images/Hero-zui-preview.png"}
-            height={zuiHomeSize.current.h}
-            width={zuiHomeSize.current.w}
+            src={heroImage}
+            layout="responsive"
             alt="zui-home"
           />
         </Grid>
