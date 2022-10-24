@@ -38,8 +38,7 @@ const HeroSection = () => {
         <Grid container item xs={4} md={4} className={styles.heroInteraction}>
           <Grid item>
             <Typography className={styles.heroText}>
-              A production-ready vendor-neutral OCI image registry server purely
-              based on OCI standards.
+              OCI-native container image registry made easy!              
             </Typography>
           </Grid>
           <Grid item container className={styles.buttonContainer}>
