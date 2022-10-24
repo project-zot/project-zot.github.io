@@ -27,8 +27,8 @@ const HeroSection = () => {
       fontSize: "2.0rem",
     },
     [theme.breakpoints.up("sm")]: {
-        fontSize: "1.5rem",
-      },
+      fontSize: "1.5rem",
+    },
   };
 
   useEffect(() => {
@@ -49,39 +49,35 @@ const HeroSection = () => {
               based on OCI standards.
             </Typography>
           </Grid>
-          <Grid
-            item
-            container
-            className={styles.buttonContainer}
-          >
+          <Grid item container className={styles.buttonContainer}>
             <Stack direction="row" spacing={3}>
-              <Button
-                disableRipple
-                disableFocusRipple
-                size="large"
-                variant="contained"
-                className={styles.getStartedButton}
+              <a
+                className={styles.buttonLink}
+                href="http://zotregistry.io/docs-zot/zot-docs-1/1.0/install-guides/install-guide-linux.html"
               >
-                <a
-                  className={styles.buttonLink}
-                  href="http://zotregistry.io/docs-zot/zot-docs-1/1.0/install-guides/install-guide-linux.html"
+                <Button
+                  disableRipple
+                  disableFocusRipple
+                  size="large"
+                  variant="contained"
+                  className={styles.getStartedButton}
                 >
                   Get started
-                </a>
-              </Button>
-              <Button
-                disableRipple
-                disableFocusRipple
-                variant="outlined"
-                className={styles.learnMoreButton}
+                </Button>
+              </a>
+              <a
+                className={styles.buttonLink}
+                href="https://docs.zotregistry.io/zot-docs-1/1.0/admin-guide/admin-guide.html"
               >
-                <a
-                  className={styles.buttonLink}
-                  href="https://docs.zotregistry.io/zot-docs-1/1.0/admin-guide/admin-guide.html"
+                <Button
+                  disableRipple
+                  disableFocusRipple
+                  variant="outlined"
+                  className={styles.learnMoreButton}
                 >
                   Learn more
-                </a>
-              </Button>
+                </Button>
+              </a>
             </Stack>
           </Grid>
         </Grid>

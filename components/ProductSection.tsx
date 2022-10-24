@@ -45,22 +45,22 @@ const ProductSection = () => {
         </Grid>
         <Grid item xs={12} className={styles.buttonContainer}>
           <Stack direction="row" spacing={3}>
-            <Button variant="contained" className={styles.howItWorksButton}>
-              <a
-                className={styles.buttonLink}
-                href="https://docs.zotregistry.io/zot-docs-1/1.0/general/zot-concepts.html"
-              >
+            <a
+              className={styles.buttonLink}
+              href="https://docs.zotregistry.io/zot-docs-1/1.0/general/zot-concepts.html"
+            >
+              <Button variant="contained" className={styles.howItWorksButton}>
                 How it works
-              </a>
-            </Button>
-            <Button variant="outlined" className={styles.specsLink}>
-              <a
-                className={styles.buttonLinkPrimary}
-                href="https://docs.zotregistry.io"
-              >
+              </Button>
+            </a>
+            <a
+              className={styles.buttonLinkPrimary}
+              href="https://docs.zotregistry.io"
+            >
+              <Button variant="outlined" className={styles.specsLink}>
                 More details
-              </a>
-            </Button>
+              </Button>
+            </a>
           </Stack>
         </Grid>
       </Grid>

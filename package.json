@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build:images":"next-image-export-optimizer",
+    "build:images": "next-image-export-optimizer",
     "export": "next build && next export && next-image-export-optimizer && touch out/.nojekyll",
     "deploy": "next build && next export && next-image-export-optimizer && touch out/.nojekyll && git add out/ && git commit -m \"Deploy gh-pages\" && git subtree push --prefix out origin gh-pages"
   },
@@ -20,7 +20,7 @@
     "@mui/material": "^5.9.2",
     "image-trace-loader": "^1.0.2",
     "imagemin-svgo": "^9.0.0",
-    "next": "^12.1.6",
+    "next": "^12.3.1",
     "next-image-export-optimizer": "^0.10.1",
     "prop-types": "^15.8.1",
     "react": "17.0.2",
