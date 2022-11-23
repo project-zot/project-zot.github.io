@@ -1,0 +1,107 @@
+site_name: zotregistry.io
+site_url: https://zotregistry.io
+site_description: Zot Registry
+repo_url: https://github.com/project-zot/zot
+repo_name: project-zot/zot
+edit_uri: ""
+copyright: Copyright &copy; 2017 - 2022 Cisco Systems Inc., All Rights Reserved.
+theme:
+  name: material
+  custom_dir: material
+  palette:
+    scheme: slate
+    primary: black
+    accent: teal
+  favicon: assets/images/favicon.png
+  logo: assets/images/logo.png
+  features:
+    - content.code.annotate
+    - content.tooltips
+    - navigation.instant
+    - navigation.tracking
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - search.share
+    - toc.follow
+    - announce.dismiss
+  icon:
+    repo: fontawesome/brands/github
+  font:
+    text: Roboto
+    code: Roboto Mono
+extra:
+  homepage: https://zotregistry.io
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/project-zot/zot.git
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/zothub
+    - icon: fontawesome/brands/slack
+      link: https://cloud-native.slack.com/archives/C03EGRE4QGH
+  generator: false
+  version:
+    provider: mike
+    default: latest
+plugins:
+  - search
+  - minify:
+      minify_html: true
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: squidfunk
+      repo: mkdocs-material
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+nav:
+  - Home: index.md
+  - General: 
+    - Concepts: general/zot-concepts.md
+    - Architecture: general/architecture.md
+    - Artifacts: general/artifacts.md
+  - User Guides:
+    - Push and Pull Image Content': user-guides/user-guide-datapath.md
+  - Installation Guides:
+    - Installing zot on Bare Metal Linux: install-guides/install-guide-linux.md
+    - Installing zot with Kubernetes and Helm: install-guides/install-guide-k8s.md
+  - Administrator Guide: 
+    - zot Administrator Guide: admin-guide/admin-guide.md
+  - Developer Guide: 
+    - zot Developer Guide: developer-guide/developer-guide.md
+  - Articles:
+    - CI/CD Pipeline: articles/building-ci-cd-pipeline.md
+    - Authentication and Authorization: articles/authn-authz.md
+    - Security Posture: articles/security-posture.md
+    - Storage Planning: articles/storage.md
+    - Clustering: articles/clustering.md
+    - Benchmarking with zb: articles/benchmarking-with-zb.md
+extra_css:
+  - stylesheets/custom.css

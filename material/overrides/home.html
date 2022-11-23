@@ -1,0 +1,117 @@
+{% extends "overrides/main.html" %}
+{% block tabs %}
+  {{ super() }}
+  <style>.md-header{position:initial}.md-main__inner{margin:0}.md-content{display:none}@media screen and (min-width:60em){.md-sidebar--secondary{display:none}}@media screen and (min-width:76.25em){.md-sidebar--primary{display:none}}</style>
+  <section class="tx-container">
+    <div class="md-grid md-typeset">
+      <div class="tx-hero">
+        <div class="tx-hero__image">
+          <img src="assets/images/illustrations/home.png" alt="" width="1659" height="1200" draggable="false">
+        </div>
+        <div class="tx-hero__content">
+          <h1>Zot Registry</h1>
+          <p><strong>OCI-native</strong> container image registry, simplified </p>
+          <a href="https://twitter.com/zothub">
+            <span class="twemoji twitter">
+              {% include ".icons/fontawesome/brands/twitter.svg" %}
+            </span>
+            <strong>Twitter</strong>
+            <strong>@zothub</strong>
+          </a>
+          <a href="https://cloud-native.slack.com/archives/C03EGRE4QGH">
+            <span class="twemoji twitter">
+              {% include ".icons/fontawesome/brands/slack.svg" %}
+            </span>
+            <strong>Slack</strong>
+            <strong>#zot</strong>
+          </a>
+          <a href="{{ page.next_page.url | url }}" title="{{ page.next_page.title | e }}" class="md-button md-button--primary">
+            Get Started
+          </a>
+          <a href="{{ 'user-guides/user-guide-datapath' | url }}" title="User Guide" class="md-button">
+            User Guide
+          </a>
+          <h3>Try out our beta deployment at <a href="https://zothub.io">zothub.io</a></h3>
+        </div>
+      </div>
+    </div> 
+  </section>
+  <section class="tx-container default-bg">
+    <div class="md-grid md-typeset">
+      <div class="content-container-centered ">
+        <h1>OCI-native Image Registry</h1>
+        <div class="centered-content-grid">
+          <ul class="centered-content-grid__list">
+            <li class="centered-content-grid__item md-typeset">
+              <div class="content_icon">
+                {% include ".icons/fontawesome/solid/file-lines.svg" %} 
+             </div>
+              <div class="item_content">
+                <h2 class="card_title">OCI Standards</h2>
+                <p>Strongly conforms to OCI Standards (<a href="https://github.com/opencontainers/distribution-spec/blob/main/spec.md">Distribution</a> and <a href="https://github.com/opencontainers/image-spec/blob/main/spec.md">Image</a> Specifications)</p>
+              </div>
+            </li>
+            <li class="centered-content-grid__item md-typeset">
+              <div class="content_icon">
+                  {% include ".icons/fontawesome/solid/download.svg" %} 
+              </div>
+              <div class="item_content">
+                <h2 class="card_title">Single Binary</h2>
+                <p>One statically built binary for simplified download and install with no additional dependencies or services.</p>
+             </div>
+            </li>
+            <li class="centered-content-grid__item md-typeset">
+              <div class="content_icon">
+                {% include ".icons/fontawesome/solid/lock.svg" %} 
+             </div>
+              <div class="item_content">
+                <h2 class="card_title">Unprivileged</h2>
+                <p>Doesn't require elevated privileges on host.</p>
+              </div>
+            </li>
+            <li class="centered-content-grid__item md-typeset">
+              <div class="content_icon">
+                {% include ".icons/fontawesome/solid/shuffle.svg" %} 
+              </div>
+              <div class="item_content">
+                <h2 class="card_title">Features vs Security</h2>
+                <p>Separate <strong>Full</strong> (all features included) or <strong>Minimal</strong> (stripped for security) builds.</p>
+              </div>
+            </li>
+            <li class="centered-content-grid__item md-typeset">
+              <div class="content_icon">
+                {% include ".icons/fontawesome/solid/arrow-down-up-across-line.svg" %} 
+             </div>
+              <div class="item_content">
+                <h2 class="card_title">Support For Multiple Platforms</h2>
+                <p>Linux, MacOS, Intel, Arm, Raspberry PI, Cloud, Bare-metal ...</p>
+              </div>
+            </li>
+            <li class="centered-content-grid__item md-typeset">
+              <div class="content_icon">
+                {% include ".icons/fontawesome/solid/battery-half.svg" %} 
+              </div>
+              <div class="item_content">
+                <h2 class="card_title">Batteries Included</h2>
+                <p>All features such as authentication, authorization, garbage collection, deduplication and so on, included in the same binary.</p>
+              </div>
+            </li>
+            <li class="centered-content-grid__item md-typeset">
+              <div class="content_icon">
+                {% include ".icons/fontawesome/brands/github-alt.svg" %} 
+              </div>
+              <div class="item_content">
+                <h2 class="card_title">Open Source</h2>
+                <p>Released as an open source project under Apache2 License.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+{% block content %}{% endblock %}
+{% block footer %}
+  {{ super() }}
+{% endblock %}
