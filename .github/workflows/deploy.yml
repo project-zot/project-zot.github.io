@@ -46,5 +46,7 @@ jobs:
           mkdocs --version
           #mkdocs gh-deploy --force
           mike --version
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          git config --global user.name "${{ github.actor }}"
           mike deploy --push --update-aliases ${{ github.event.release.tag_name }} latest 
           mike set-default --push latest
