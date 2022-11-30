@@ -19,7 +19,7 @@ With the `zb` tool, you can benchmark a `zot` registry or any other container im
 
 ## How to get zb
 
-The `zb` project is hosted with `zot` on GitHub at [project-zot](https://github.com/project-zot/zot). From GitHub, you can download the `zb` binary or you can build `zb` from the source.
+The `zb` project is hosted with `zot` on GitHub at [project-zot](https://github.com/project-zot/zot). From GitHub, you can download the `zb` binary or you can build `zb` from the source. You can also directly run the released docker image.
 
 <a name="supported-platforms"></a>
 ## Supported platforms and architectures
@@ -78,22 +78,27 @@ Command output:
       zb <url> [flags]
 
     Flags:
-      -A, --auth-creds string      Use colon-separated BASIC auth creds
-      -c, --concurrency int        Number of multiple requests to make at a time (default 1)
-      -h, --help                   help for zb
-      -o, --output-format string   Output format of test results: stdout (default), json, ci-cd
-      -r, --repo string            Use specified repo on remote registry for test data
-      -n, --requests int           Number of requests to perform (default 1)
-      -v, --version                Show the version and exit
-      -d, --working-dir string     Use specified directory to store test data
-
+      -A, --auth-creds string      Use colon-separated BASIC auth creds
+      -c, --concurrency int        Number of multiple requests to make at a time (default 1)
+      -h, --help                   help for zb
+      -o, --output-format string   Output format of test results: stdout (default), json, ci-cd
+      -r, --repo string            Use specified repo on remote registry for test data
+      -n, --requests int           Number of requests to perform (default 1)
+      -s, --src-cidr string        Use specified cidr to obtain ips to make requests from, src-ips and src-cidr are mutually exclusive
+      -i, --src-ips string         Use colon-separated ips to make requests from, src-ips and src-cidr are mutually exclusive
+      -v, --version                Show the version and exit
+      -d, --working-dir string     Use specified directory to store test data
 ```
 
 ### Example
 
 The following example executes a benchmark operation using zb.
 
-`bin/zb http://localhost:8080 -c 10 -n 1000`
+`bin/zb -c 10 -s 127.0.10.0/24 -n 1000 http://localhost:8080`
+
+You can also run the released docker image.
+
+`docker run --net=host -it ghcr.io/project-zot/zb-linux-amd64:latest -c 10 -n 1000 -s 127.0.10.0/24 http://localhost:8080`
 
 Command output:
 
