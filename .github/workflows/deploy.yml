@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  release:
+    types:
+      - published
 
 env:
   PYTHON_VERSION: 3.x
@@ -37,7 +40,11 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Deploy site
+      - if: github.event_name == 'release' && github.event.action == 'published'
+        name: Deploy site
         run: |
           mkdocs --version
-          mkdocs gh-deploy --force
+          #mkdocs gh-deploy --force
+          mike --version
+          mike deploy --push --update-aliases ${{ github.event.release.tag_name }} latest 
+          mike set-default --push latest
