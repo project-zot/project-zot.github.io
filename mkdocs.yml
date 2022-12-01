@@ -86,7 +86,7 @@ nav:
   - General: 
     - Concepts: general/zot-concepts.md
     - Architecture: general/architecture.md
-    - Artifacts: general/artifacts.md
+    - Released Images: general/releases.md
   - User Guides:
     - Push and Pull Image Content': user-guides/user-guide-datapath.md
   - Installation Guides:

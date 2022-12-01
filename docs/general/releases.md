@@ -1,4 +1,4 @@
-# Released Artifacts for zot
+# Released Images for zot
 
 Revised: 2022-09-08
 
