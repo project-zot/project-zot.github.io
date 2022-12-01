@@ -35,7 +35,7 @@ For more information, see "Conditional Builds" in [zot Security Posture](kb:secu
 
 ## Overall Architecture
 
-![504567.jpg](../assets/images/504567.jpg)
+![504567.jpg](../assets/images/504567.jpg){width="300"}
 
 ### Interaction
 

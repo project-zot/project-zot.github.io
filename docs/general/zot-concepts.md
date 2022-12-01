@@ -42,7 +42,7 @@ developers, offering features such as minimal deployment using a single
 binary image, built-in authentication and authorization, and inline
 garbage collection and storage deduplication.
 
-![504566](../assets/images/504566.jpg)
+![504566](../assets/images/504566.jpg){width="300"}
 
 Some of the principal advantages of `zot` are:
 

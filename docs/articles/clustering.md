@@ -16,7 +16,7 @@ service to remain available even if a few replicas fail or become
 unavailable. Loadbalancing across many zot replicas can also increase
 aggregate network throughput.
 
-![504569](../assets/images/504569.jpg)
+![504569](../assets/images/504569.jpg){width="400"}
 
 Clustering is supported in both bare-metal and Kubernetes environments.
 > **Note:**
