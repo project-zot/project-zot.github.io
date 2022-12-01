@@ -24,7 +24,7 @@ The [Open Container Initiative (OCI)](https://opencontainers.org/) is an open go
 
 This document describes a step-by-step procedure towards achieving an OCI-native secure software supply chain using [`zot`](https://github.com/project-zot/zot) in collaboration with other opensource tools. The following diagram shows a portion of the CI/CD pipeline.
 
-![504568](../assets/images/504568.jpg)
+![504568](../assets/images/504568.jpg){width="400"}
 
 ## Build images
 
