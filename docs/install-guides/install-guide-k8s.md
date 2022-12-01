@@ -27,7 +27,7 @@ Supported platforms and architectures
 
 ### About binary images
 
-Refer to [*Released Artifacts for zot*](../general/artifacts.md) for
+Refer to [*Released Images for zot*](../general/releases.md) for
 information about available zot images along with information about
 image variations, image locations, and image naming formats.
 

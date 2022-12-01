@@ -9,7 +9,7 @@ Revised: 2022-08-09
 Executable binary zot images are available for multiple platforms and
 architectures and with full or minimal implementations.
 
-Refer to [*Released Artifacts for zot*](../general/artifacts.md) for
+Refer to [*Released Images for zot*](../general/releases.md) for
 information about available zot images along with information about
 image variations, image locations, and image naming formats.
 
