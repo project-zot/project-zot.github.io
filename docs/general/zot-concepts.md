@@ -68,15 +68,16 @@ Specification](https://github.com/opencontainers/distribution-spec).
 
 The following table lists additional advantages of `zot`:
 
-|                                   | `zot`              |
+|                                   |               |
 |-----------------------------------|--------------------|
-| **Last stable release**           | TBD                |
+| **Distribution Spec conformance** | yes                |
+| **CNCF project**                  | submitted                |
 | **License**                       | Apache 2.0         |
 | **On-premise deployment**         | yes                |
 | **OCI conformance**\*             | yes                |
 | **Single binary image**\*         | yes                |
 | **Minimal build**\*               | yes                |
-| **Storage Layout**                | ociv1 image layout |
+| **Storage Layout**                | OCIv1 Image Layout |
 | **Authentication**                | built-in           |
 | **Authorization**                 | built-in           |
 | **Garbage collection**            | inline             |
@@ -85,14 +86,12 @@ The following table lists additional advantages of `zot`:
 | **Delete by tag**                 | yes                |
 | **Vulnerability scanning**        | built-in           |
 | **Command line interface (cli)**  | yes                |
-| **ui**                            | yes                |
-| **External contributions**        | yes                |
-| **CNCF project**                  | TBD                |
-| **distribution-spec conformance** | yes                |
+| **UI**                            | yes                |
+| **External contributions**    | beta available     |
 | **Image signatures**              | built-in           |
 
 > **Note:**
 > \* The **minimal build** feature is the ability to build a minimal
-distribution-spec compliant registry in order to reduce library
+Distribution Spec compliant registry in order to reduce library
 dependencies and the possible attack surface.
 

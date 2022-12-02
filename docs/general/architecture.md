@@ -8,10 +8,10 @@ Revised: 2022-10-26
 
 ### OCI-first
 
--   Strictly conforms to the [OCI Distribution
+-   HTTP APIs strictly conforms to the [OCI Distribution
     Specification](https://github.com/opencontainers/distribution-spec)
 
-    `zot` intends to be **the primary** reference implementation for the
+    `zot` intends to be a **production** reference implementation for the
     OCI Distribution Specification. In fact, `zot` does not support any
     other vendor protocol or specification.
 
@@ -31,11 +31,11 @@ Revised: 2022-10-26
 
 A clear separation exists between (1) the core OCI-compliant HTTP APIs and storage functionality, and (2) other add-on features modeled as **extensions**. The extension features can be selectively enabled both at build-time and run-time.
 
-For more information, see "Conditional Builds" in [zot Security Posture](kb:security-posture.xml#_conditional_builds).
+For more information, see "Conditional Builds" in `zot`'s[Security Posture](kb:security-posture.xml#_conditional_builds) document.
 
 ## Overall Architecture
 
-![504567.jpg](../assets/images/504567.jpg){width="300"}
+![504567.jpg](../assets/images/504567.jpg){width="400"}
 
 ### Interaction
 
