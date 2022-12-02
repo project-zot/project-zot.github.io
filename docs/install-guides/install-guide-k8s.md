@@ -57,7 +57,7 @@ image variations, image locations, and image naming formats.
     `$ helm search repo project-zot`
 
         NAME             CHART VERSION  APP VERSION  DESCRIPTION
-        project-zot/zot  0.1.0          v1.4.1       A Helm chart for Kubernetes
+        project-zot/zot  0.1.0          v1.4.3       A Helm chart for Kubernetes
 
 
     > **Note:**
@@ -81,11 +81,11 @@ image variations, image locations, and image naming formats.
 
 ``` yaml
     apiVersion: v2
-    appVersion: v1.4.2-rc5
+    appVersion: v1.4.3
     description: A Helm chart for Kubernetes
     name: zot
     type: application
-    version: 0.1.4
+    version: 0.1.16
 
     # Default values for zot.
     # This is a YAML-formatted file.
@@ -94,7 +94,7 @@ image variations, image locations, and image naming formats.
     image:
       repository: ghcr.io/project-zot/zot-linux-amd64
       pullPolicy: IfNotPresent
-      tag: "v1.4.2-rc5"
+      tag: "v1.4.3"
     serviceAccount:
       create: true
       annotations: {}
@@ -123,7 +123,7 @@ using the command in the following example:
   image:
     repository: ghcr.io/project-zot/zot-linux-amd64
     pullPolicy: IfNotPresent
-    tag: "v1.4.2-rc5"
+    tag: "v1.4.3"
   serviceAccount:
     create: true
     annotations: {}
@@ -175,7 +175,7 @@ repository. If not specified, the policy depends on
 <td style="text-align: left;"><p>Identifies different versions the
 image. default is the chart <code>appVersion</code>.</p>
 <p>Examples: <code>:latest</code> (the default) or
-<code>:v1.4.2-rc5</code></p></td>
+<code>:v1.4.3</code></p></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><p>serviceAccount.create</p></td>
@@ -297,7 +297,7 @@ settings in the Helm chart:
     `$ helm list`
 
         NAME  NAMESPACE  REVISION  UPDATED    STATUS    CHART      APP VERSION
-        zot   default    1         <datetime> deployed  zot-0.1.0  v1.4.1
+        zot   default    1         <datetime> deployed  zot-0.1.0  v1.4.3
 
     This response indicates that zot is deployed.
 
