@@ -32,7 +32,7 @@ Create a zot configuration file as `/etc/zot/config.json`.
 See [Configuration file options](#config-file-options) for an example file with
 options and recommendations. You can find other configuration file
 [examples](https://github.com/project-zot/zot/tree/main/examples) in the
-zot GitHub project and in the [*Zot Administrator Guide*](../admin-guide/admin-guide.md).
+zot GitHub project and in [*Configuring zot*](../admin-guide/admin-configuration.md).
 
 ### Step 3: Configure a local authentication account
 
@@ -111,8 +111,7 @@ If your zot registry server is public facing, we recommend that you test
 your TLS configuration using a service such as the [Qualys SSL Server
 Test](https://www.ssllabs.com/ssltest/).
 
-Refer to the [*Zot Administrator Guide*](../admin-guide/admin-guide.md)
-for further information about maintaining your zot registry server.
+Refer to [*Configuring zot*](../admin-guide/admin-configuration.md) for further information about maintaining your zot registry server.
 
 <a name="config-file-options"></a>
 
@@ -189,8 +188,7 @@ your own environment.
 
 </details>
 
-Refer to the [*Zot Administrator Guide*](../admin-guide/admin-guide.md)
-for more details about configuration file options.
+Refer to [*Configuring zot*](../admin-guide/admin-configuration.md) for more details about configuration file options.
 
 ### TLS encryption
 

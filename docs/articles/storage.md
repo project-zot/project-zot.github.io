@@ -36,6 +36,92 @@ The following types of storage backends are supported.
 
 `zot` can also store data remotely in the cloud, using the storage APIs of the cloud service. Currently, `zot` supports only the AWS S3 storage service.
 
+#### Example: zot S3 configuration
+
+<details>
+  <summary markdown="span">Click here to view a sample zot configuration for S3.</summary>
+
+```json
+
+{
+    "distSpecVersion": "1.0.1-dev",
+    "storage": {
+        "rootDirectory": "/tmp/zot",
+        "dedupe": true,
+        "storageDriver": {
+            "name": "s3",
+            "rootdirectory": "/zot",
+            "region": "us-east-2",
+            "bucket": "zot-storage",
+            "secure": true,
+            "skipverify": false
+        },
+        "cacheDriver": {
+            "name": "dynamodb",
+            "endpoint": "http://localhost:4566",
+            "region": "us-east-2",
+            "tableName": "MainTable"
+        },
+        "subPaths": {
+            "/a": {
+                "rootDirectory": "/tmp/zot1",
+                "dedupe": false,
+                "storageDriver": {
+                    "name": "s3",
+                    "rootdirectory": "/zot-a",
+                    "region": "us-east-2",
+                    "bucket": "zot-storage",
+                    "secure": true,
+                    "skipverify": false
+                }
+            },
+            "/b": {
+                "rootDirectory": "/tmp/zot2",
+                "dedupe": true,
+                "remoteCache": false,
+                "storageDriver": {
+                    "name": "s3",
+                    "rootdirectory": "/zot-b",
+                    "region": "us-east-2",
+                    "bucket": "zot-storage",
+                    "secure": true,
+                    "skipverify": false
+                }
+            },
+            "/c": {
+                "rootDirectory": "/tmp/zot3",
+                "dedupe": true,
+                "remoteCache": true,
+                "storageDriver": {
+                    "name": "s3",
+                    "rootdirectory": "/zot-c",
+                    "region": "us-east-2",
+                    "bucket": "zot-storage",
+                    "secure": false,
+                    "skipverify": false
+                },
+                "cacheDriver": {
+                    "name": "dynamodb",
+                    "endpoint": "http://localhost:4566",
+                    "region": "us-east-2",
+                    "tableName": "cTable"
+                }
+            }
+        }
+    },
+    "http": {
+        "address": "127.0.0.1",
+        "port": "8080"
+    },
+    "log": {
+        "level": "debug"
+    }
+}
+
+```
+</details>
+
+
 ## Storage configuration
 
 Exposing flexibility in storage capabilities is a key tenet for catering to the requirements of varied environments ranging from cloud to on-premises to IoT.
