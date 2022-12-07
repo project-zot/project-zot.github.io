@@ -87,14 +87,19 @@ nav:
   - General: 
     - Concepts: general/zot-concepts.md
     - Architecture: general/architecture.md
+    - Extensions: general/extensions.md
     - Released Images: general/releases.md
+    - About: general/project.md
   - User Guides:
-    - Push and Pull Image Content': user-guides/user-guide-datapath.md
+    - Push and Pull Image Content: user-guides/user-guide-datapath.md
+    - Command Line (zli): user-guides/zli.md
   - Installation Guides:
     - Installing zot on Bare Metal Linux: install-guides/install-guide-linux.md
     - Installing zot with Kubernetes and Helm: install-guides/install-guide-k8s.md
-  - Administrator Guide: 
-    - zot Administrator Guide: admin-guide/admin-guide.md
+  - Administrator Guides: 
+    - Getting Started: admin-guide/admin-getting-started.md
+    - Configuring zot: admin-guide/admin-configuration.md
+    - Monitoring: admin-guide/admin-monitoring.md
   - Developer Guide: 
     - zot Developer Guide: developer-guide/developer-guide.md
   - Articles:

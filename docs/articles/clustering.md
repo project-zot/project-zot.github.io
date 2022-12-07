@@ -69,3 +69,105 @@ Specification](https://github.com/opencontainers/distribution-spec)
 imposes certain rules about the HTTP URI paths to which various
 ecosystem tools must conform. Consider these rules when setting the HTTP
 prefixes during loadbalancing and ingress gateway configuration.
+
+## Examples
+
+`zot` supports clustering by using multiple stateless `zot` replicas with shared S3 storage and an `HAProxy` (with sticky session) load-balancing traffic to the replicas.
+
+### YAML configuration
+
+<details>
+  <summary markdown="span">Click here to view a sample haproxy configuration.</summary>
+
+```yaml
+
+global
+        log /dev/log    local0
+        log /dev/log    local1 notice
+        chroot /var/lib/haproxy
+        maxconn 2000
+        stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
+        stats timeout 30s
+        user haproxy
+        group haproxy
+        daemon
+
+        # Default SSL material locations
+        ca-base /etc/ssl/certs
+        crt-base /etc/ssl/private
+
+        # See: https://ssl-config.mozilla.org/#server=haproxy&server-version=2.0.3&config=intermediate
+        ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+        ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
+        ssl-default-bind-options ssl-min-ver TLSv1.2 no-tls-tickets
+
+defaults
+        log     global
+        mode    http
+        option  httplog
+        option  dontlognull
+        timeout connect 5000
+        timeout client  50000
+        timeout server  50000
+        errorfile 400 /etc/haproxy/errors/400.http
+        errorfile 403 /etc/haproxy/errors/403.http
+        errorfile 408 /etc/haproxy/errors/408.http
+        errorfile 500 /etc/haproxy/errors/500.http
+        errorfile 502 /etc/haproxy/errors/502.http
+        errorfile 503 /etc/haproxy/errors/503.http
+        errorfile 504 /etc/haproxy/errors/504.http
+
+frontend zot
+    bind *:8080
+    mode http
+    default_backend zot-cluster
+
+backend zot-cluster
+    mode http
+    balance roundrobin
+    server zot1 127.0.0.1:8081 check
+    server zot2 127.0.0.1:8082 check
+    server zot3 127.0.0.1:8083 check
+
+```
+
+</details>
+
+### zot S3 configuration
+
+<details>
+  <summary markdown="span">Click here to view a sample zot configuration for S3.</summary>
+
+```json
+
+{
+    "distSpecVersion": "1.0.1-dev",
+    "storage": {
+        "rootDirectory": "/tmp/zot",
+        "dedupe": true,
+        "storageDriver": {
+            "name": "s3",
+            "rootdirectory": "/zot",
+            "region": "us-east-2",
+            "bucket": "zot-storage",
+            "secure": true,
+            "skipverify": false
+        },
+        "cacheDriver": {
+            "name": "dynamodb",
+            "endpoint": "http://localhost:4566",
+            "region": "us-east-2",
+            "tableName": "MainTable"
+        }
+    },
+    "http": {
+        "address": "127.0.0.1",
+        "port": "8080"
+    },
+    "log": {
+        "level": "debug"
+    }
+}
+
+```
+</details>

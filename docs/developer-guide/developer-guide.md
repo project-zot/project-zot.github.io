@@ -23,9 +23,9 @@ Supported platforms and architectures
 
 ### Prerequisites
 
-#### Install golang (1.17+)
+#### Install golang (1.19+)
 
-The zot project requires `golang 1.17` or newer. You can follow [these instructions](https://go.dev/learn/) to install the `golang` toolchain.
+The zot project requires `golang 1.19` or newer. You can follow [these instructions](https://go.dev/learn/) to install the `golang` toolchain.
 After installation, make sure that the `path` environment variable or
 your IDE can find the toolchain.
 
@@ -181,5 +181,5 @@ Conduct](https://github.com/cncf/foundation/blob/main/code-of-conduct.md).
 ### Reporting
 
 For incidents occurring on the zot project, contact the zot project
-conduct committee at `conduct@zotproject.io.` You can expect a response
+conduct committee by sending an email to `conduct@zotregistry.io.` You can expect a response
 within three business days.

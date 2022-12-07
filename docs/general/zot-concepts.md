@@ -35,6 +35,8 @@ software supply chain for container images.
 
 ## Why `zot`?
 
+> zot = OCI Distribution Specification + OCI Image Format
+
 At its heart, zot is a production-ready, vendor-neutral OCI image
 registry with images stored in the OCI image format and with the OCI
 distribution specification on-the-wire. `zot` is built for developers by
