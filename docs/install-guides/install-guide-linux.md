@@ -1,7 +1,5 @@
 # Installing zot on Bare Metal Linux
 
-Revised: 2022-08-09
-
 ## Before you begin
 
 ### About binary images

@@ -1,8 +1,5 @@
 # User Authentication and Authorization with zot
 
-Revised: 2022-10-3
-
-
 > A robust set of authentication/authorization options are supported:
 >
 > -   Authentication

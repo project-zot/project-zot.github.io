@@ -1,7 +1,5 @@
 # Configuring `zot`
 
-Revised: 2022-12-02
-
 > The registry administrator configures `zot` primarily through settings in the configuration file. 
 > 
 > Using the information in this guide, you can compose a configuration file with the settings and features you require for your `zot` registry server.

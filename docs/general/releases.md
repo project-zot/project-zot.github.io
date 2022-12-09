@@ -1,7 +1,5 @@
 # Released Images for zot
 
-Revised: 2022-09-08
-
 > This document describes the available zot images for the various supported hardware and software platforms, along with information about image variations, image locations, and image naming formats.
 
 <a name='supported-platforms-zot'></a>
@@ -37,7 +35,7 @@ An executable binary image for `zot` is named using the target platform and arch
 
 `zot-<os>-<architecture>-minimal`
 
--   A minimal distribution-spec conformant zot binary image has a filename of the form `zot-os-architecture-minimal`. For example, the minimal binary image for an Intel-based linux server is `zot-linux-amd64-minimal`.
+-   A minimal distribution-spec conformant zot binary image has a filename of the form `zot-<os>-<architecture>-minimal`. For example, the minimal binary image for an Intel-based linux server is `zot-linux-amd64-minimal`.
 
 > **Tip:**
 > For convenience, you can rename the binary image file to simply `zot` after downloading.

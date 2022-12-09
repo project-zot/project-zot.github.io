@@ -1,7 +1,5 @@
 # Push and Pull Image Content
 
-Revised: 2022-09-29
-
 A zot registry can store and serve a variety of content, but the type of
 content may dictate your choice of a client tool.
 

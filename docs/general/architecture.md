@@ -1,7 +1,5 @@
 # Architecture
 
-Revised: 2022-10-26
-
 > `zot` is an OCI-native container image registry. This document discusses the design goals, the overall architecture, and the design choices made in the implementation of the design goals.
 
 ## Design Goals

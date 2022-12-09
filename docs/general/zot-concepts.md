@@ -1,7 +1,5 @@
 # Concepts
 
-Revised: 2022-08-11
-
 ## What is `zot`?
 
 > Zot is a production-ready, open-source, vendor-neutral container image
