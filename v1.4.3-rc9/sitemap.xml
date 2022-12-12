@@ -6,6 +6,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://zotregistry.io/v1.4.3-rc9/zot/</loc>
+         <lastmod>2022-12-12</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/admin-guide/admin-configuration/</loc>
          <lastmod>2022-12-12</lastmod>
          <changefreq>daily</changefreq>
