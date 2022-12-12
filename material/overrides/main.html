@@ -1,4 +1,8 @@
 {% extends "base.html" %}
+{% block site_meta %}
+  {{ super() }}
+  <meta name="go-import" content="zotregistry.io/zot git https://github.com/project-zot/zot">
+{% endblock %}
 {% block extrahead %}
   {% set title = config.site_name %}
   {% if page and page.title and not page.is_homepage %}
