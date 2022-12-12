@@ -1,7 +1,5 @@
 # Extensions
 
-Revised: 2022-12-06
-
 > Extensions provide additional registry features that are not a part of the Distribution Specification.
 >
 >The following extensions are currently available with `zot`:

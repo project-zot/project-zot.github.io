@@ -1,8 +1,5 @@
 # Benchmarking zot with zb
 
-Revised: 2022-10-10
-
-
 > The `zb` tool is useful for benchmarking OCI registry workloads in scenarios such as the following:
 >
 > -   comparing configuration changes

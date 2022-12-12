@@ -1,7 +1,5 @@
 # Zot Developer Guide
 
-Revised: 2022-08-10
-
 ## Getting Started
 
 <a name='supported-platforms-zot'></a>

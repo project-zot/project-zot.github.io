@@ -1,7 +1,5 @@
 # Getting Started with zot Administration
 
-Revised: 2022-12-03
-
 > This document helps you to deploy an appropriate `zot` image or to build `zot` if desired.
 > 
 > After deploying `zot`, proceed to [Configuring `zot`](admin-configuration.md) to choose and configure the features you need.

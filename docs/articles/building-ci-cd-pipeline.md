@@ -1,8 +1,5 @@
 # Building an OCI-native Container Image CI/CD Pipeline
 
-Revised: 2022-09-30
-
-
 > An **OCI-native** secure container image build/delivery pipeline using the following tools:
 > 
 > -   [`stacker`](https://github.com/project-stacker/stacker) for building OCI images
@@ -63,6 +60,15 @@ Alternatively, you can use [`skopeo`](https://github.com/containers/skopeo), a c
     cosign generate-key-pair
 
     cosign sign --key cosign.key <zot-server>/image:tag
+
+<details>
+  <summary markdown="span">Click here to view an example.</summary>
+
+<p align="center">
+  <img width="600" src="https://raw.githubusercontent.com/project-zot/zot/8fb11180d473d7bb137b6d09d9ebf48065363e5f/demos/cosign.svg"></img>
+</p>
+
+</details>
 
 ## Deploying container images
 

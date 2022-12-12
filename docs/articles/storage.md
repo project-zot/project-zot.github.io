@@ -1,7 +1,5 @@
 # Storage Planning with zot
 
-Revised: 2022-09-16
-
 > `zot` supports the following features to provide OCI standards-based, vendor-agnostic image storage:
 >
 > -   Local and remote file storage

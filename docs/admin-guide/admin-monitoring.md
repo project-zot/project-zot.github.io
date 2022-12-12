@@ -1,7 +1,5 @@
 # Monitoring the registry
 
-Revised: 2022-12-02
-
 > `zot` supports a range of monitoring tools including logging, metrics, and benchmarking.
 
 ## Logging

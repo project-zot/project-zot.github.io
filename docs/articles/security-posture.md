@@ -1,7 +1,5 @@
 # zot Security Posture
 
-Revised: 2022-08-30
-
 > An overview of `zot` build-time and runtime security hardening features, including:
 >
 > -   Build-time hardening such as PIE-mode builds

@@ -1,8 +1,6 @@
 
 # zot Clustering
 
-Revised: 2022-10-17
-
 > High availability of the `zot` registry is supported by the following features:
 >
 > -   Stateless `zot` instances to simplify scale out
