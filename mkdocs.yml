@@ -48,6 +48,9 @@ plugins:
   - search
   - minify:
       minify_html: true
+  - redirects:
+      redirect_maps:
+        'zot.md': '/'
 markdown_extensions:
   - abbr
   - admonition
