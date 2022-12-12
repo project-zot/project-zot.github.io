@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block site_meta %}
+  {{ super() }}
+  <meta name="go-import" content="zotregistry.io/zot git https://github.com/project-zot/zot">
+  <meta name="go-source" content="zotregistry.io/zot _ https://github.com/project-zot/zot/tree/main{/dir} https://github.com/project-zot/zot/blob/main{/dir}/{file}#L{line}">
+{% endblock %}
