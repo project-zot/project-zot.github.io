@@ -48,6 +48,8 @@ plugins:
   - search
   - minify:
       minify_html: true
+  - git-revision-date-localized
+  - blog
 markdown_extensions:
   - abbr
   - admonition
@@ -85,7 +87,8 @@ nav:
   - Home: index.md
   - What's New: general/whats-new.md
   - General: 
-    - Concepts: general/zot-concepts.md
+    - Concepts: general/concepts.md
+    - Key Features: general/features.md
     - Architecture: general/architecture.md
     - Extensions: general/extensions.md
     - Released Images: general/releases.md
@@ -101,7 +104,8 @@ nav:
     - Configuring zot: admin-guide/admin-configuration.md
     - Monitoring: admin-guide/admin-monitoring.md
   - Developer Guide: 
-    - zot Developer Guide: developer-guide/developer-guide.md
+    - Onboarding: developer-guide/onboarding.md
+    - Extensions: developer-guide/extensions-dev.md
   - Articles:
     - CI/CD Pipeline: articles/building-ci-cd-pipeline.md
     - Authentication and Authorization: articles/authn-authz.md

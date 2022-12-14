@@ -1,4 +1,4 @@
-# Zot Developer Guide
+# Onboarding zot for Development
 
 ## Getting Started
 
