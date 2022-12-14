@@ -33,7 +33,7 @@ software supply chain for container images.
 
 ## Why `zot`?
 
-> zot = OCI Distribution Specification + OCI Image Format
+> :white_medium_square: zot = OCI Distribution Specification + OCI Image Format
 
 At its heart, zot is a production-ready, vendor-neutral OCI image
 registry with images stored in the OCI image format and with the OCI
@@ -94,4 +94,3 @@ The following table lists additional advantages of `zot`:
 > \* The **minimal build** feature is the ability to build a minimal
 Distribution Spec compliant registry in order to reduce library
 dependencies and the possible attack surface.
-

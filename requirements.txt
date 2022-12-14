@@ -3,3 +3,6 @@ mkdocs-material==8.5.8
 mkdocs-material-extensions==1.1
 mkdocs-minify-plugin==0.6.1
 mike==1.1.2
+markdown-include==0.7.0
+mkdocs-git-revision-date-localized-plugin==1.1.0
+mkdocs-blog-plugin==0.25

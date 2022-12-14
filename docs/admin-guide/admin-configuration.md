@@ -688,6 +688,33 @@ filtered by <a href="https://semver.org/">Semantic Versioning</a>
 </table>
 
 
+<a name="lint_config"></a>
+
+## Linting uploaded images
+
+The lint extension can check an uploaded image to enforce the presence of required annotations such as the author or the license.
+
+To configure linting, add the `lint` attribute under `extensions` in the configuration file, as shown in the following example:
+
+```json
+"extensions": {
+    "lint": {
+      "enable": true,
+      "mandatoryAnnotations": ["annot1", "annot2", "annot3"]
+      }
+  }
+```
+
+The following table lists the configurable attributes of the `lint` extension.
+
+| Attribute  |Description  |
+|------------|-------------|
+| `enable`               | If this attribute is missing, incoming image linting is disabled by default. Linting can be enabled by including this attribute and setting it to `true`. |
+| `mandatoryAnnotations` | A list of annotations that are required to be present in the image being pushed to the repository.  |
+
+If the mandatory annotations option is configured when you push an image, linter will verify that the mandatory annotations list present in the configuration is also found in the manifest's annotations list. If any annotations are missing, the push is denied.
+
+
 <a name="scrub_config"></a>
 
 ## Scrubbing the image registry

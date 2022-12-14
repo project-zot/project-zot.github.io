@@ -1,6 +1,6 @@
 # Architecture
 
-> `zot` is an OCI-native container image registry. This document discusses the design goals, the overall architecture, and the design choices made in the implementation of the design goals.
+> :white_medium_square: `zot` is an OCI-native container image registry. This document discusses the design goals, the overall architecture, and the design choices made in the implementation of the design goals.
 
 ## Design Goals
 
@@ -29,13 +29,13 @@
 
 A clear separation exists between (1) the core OCI-compliant HTTP APIs and storage functionality, and (2) other add-on features modeled as **extensions**. The extension features can be selectively enabled both at build-time and run-time.
 
-For more information, see "Conditional Builds" in `zot`'s[Security Posture](kb:security-posture.xml#_conditional_builds) document.
+For more information, see "Conditional Builds" in `zot`'s [security posture](kb:security-posture.xml#_conditional_builds) document.
 
 ## Overall Architecture
 
 As shown in the following figure, the architecture of zot is organized as: 
 
-    zot-full = zot-minimal + extensions
+> :white_medium_square: zot-full = zot-minimal + extensions
 
 ![504567.jpg](../assets/images/504567.jpg){width="400"}
 
@@ -43,7 +43,7 @@ The minimal build is the core OCI-compliant registry functionality as described 
 
 The full build adds features that are not a part of the Distribution Specification, but are allowed to be added as [Extensions](https://github.com/opencontainers/distribution-spec/tree/main/extensions). 
 
-### Interaction
+### External Interaction
 
 External interaction with `zot` consists of the following two types:
 
@@ -91,7 +91,7 @@ For more information, see [Storage Planning with zot](kb:storage.xml).
 
 Additional registry features that are not a part of the Distribution Specification are added as [Extensions](https://github.com/opencontainers/distribution-spec/tree/main/extensions).  
 
-> **Note:**
+> :bulb: **Note:**
 > Extension features of `zot` are available only with a full `zot` image. They are not supported in a minimal `zot` image.
 
 For more information about extensions, see [*Extensions*](extensions.md).
