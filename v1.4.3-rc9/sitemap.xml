@@ -2,107 +2,117 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/admin-guide/admin-configuration/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/admin-guide/admin-getting-started/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/admin-guide/admin-monitoring/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/articles/authn-authz/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/articles/benchmarking-with-zb/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/articles/building-ci-cd-pipeline/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/articles/clustering/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/articles/security-posture/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/articles/storage/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://zotregistry.io/v1.4.3-rc9/developer-guide/developer-guide/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <loc>https://zotregistry.io/v1.4.3-rc9/developer-guide/extensions-dev/</loc>
+         <lastmod>2022-12-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://zotregistry.io/v1.4.3-rc9/developer-guide/onboarding/</loc>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/general/architecture/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <lastmod>2022-12-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://zotregistry.io/v1.4.3-rc9/general/concepts/</loc>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/general/extensions/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <lastmod>2022-12-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://zotregistry.io/v1.4.3-rc9/general/features/</loc>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/general/project/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/general/releases/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/general/whats-new/</loc>
-         <lastmod>2022-12-13</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://zotregistry.io/v1.4.3-rc9/general/zot-concepts/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/install-guides/install-guide-k8s/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/install-guides/install-guide-linux/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/user-guides/user-guide-datapath/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zotregistry.io/v1.4.3-rc9/user-guides/zli/</loc>
-         <lastmod>2022-12-13</lastmod>
+         <lastmod>2022-12-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
