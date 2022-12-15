@@ -49,7 +49,6 @@ plugins:
   - minify:
       minify_html: true
   - git-revision-date-localized
-  - blog
 markdown_extensions:
   - abbr
   - admonition
