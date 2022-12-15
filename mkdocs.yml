@@ -13,7 +13,7 @@ theme:
     primary: black
     accent: teal
   favicon: assets/images/favicon.png
-  logo: assets/images/logo.png
+  logo: assets/images/logo.svg
   features:
     - content.code.annotate
     - content.tooltips
