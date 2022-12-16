@@ -87,7 +87,6 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - What's New: general/whats-new.md
   - General: 
     - Concepts: general/concepts.md
     - Key Features: general/features.md
@@ -95,6 +94,7 @@ nav:
     - Extensions: general/extensions.md
     - Released Images: general/releases.md
     - About: general/project.md
+  - What's New: general/whats-new.md
   - User Guides:
     - Push and Pull Image Content: user-guides/user-guide-datapath.md
     - Command Line (zli): user-guides/zli.md
