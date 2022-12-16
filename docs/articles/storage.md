@@ -60,52 +60,6 @@ The following types of storage backends are supported.
             "region": "us-east-2",
             "tableName": "MainTable"
         },
-        "subPaths": {
-            "/a": {
-                "rootDirectory": "/tmp/zot1",
-                "dedupe": false,
-                "storageDriver": {
-                    "name": "s3",
-                    "rootdirectory": "/zot-a",
-                    "region": "us-east-2",
-                    "bucket": "zot-storage",
-                    "secure": true,
-                    "skipverify": false
-                }
-            },
-            "/b": {
-                "rootDirectory": "/tmp/zot2",
-                "dedupe": true,
-                "remoteCache": false,
-                "storageDriver": {
-                    "name": "s3",
-                    "rootdirectory": "/zot-b",
-                    "region": "us-east-2",
-                    "bucket": "zot-storage",
-                    "secure": true,
-                    "skipverify": false
-                }
-            },
-            "/c": {
-                "rootDirectory": "/tmp/zot3",
-                "dedupe": true,
-                "remoteCache": true,
-                "storageDriver": {
-                    "name": "s3",
-                    "rootdirectory": "/zot-c",
-                    "region": "us-east-2",
-                    "bucket": "zot-storage",
-                    "secure": false,
-                    "skipverify": false
-                },
-                "cacheDriver": {
-                    "name": "dynamodb",
-                    "endpoint": "http://localhost:4566",
-                    "region": "us-east-2",
-                    "tableName": "cTable"
-                }
-            }
-        }
     },
     "http": {
         "address": "127.0.0.1",
