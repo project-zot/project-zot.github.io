@@ -1,6 +1,6 @@
 # Benchmarking zot with zb
 
-> The `zb` tool is useful for benchmarking OCI registry workloads in scenarios such as the following:
+> :point_right: The `zb` tool is useful for benchmarking OCI registry workloads in scenarios such as the following:
 >
 > -   comparing configuration changes
 > -   comparing software versions

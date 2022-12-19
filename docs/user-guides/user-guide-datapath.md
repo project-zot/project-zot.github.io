@@ -1,5 +1,7 @@
 # Push and Pull Image Content
 
+> :point_right: Zot is an OCI image registry that allows you to store, manage, and share container images.
+
 A zot registry can store and serve a variety of content, but the type of
 content may dictate your choice of a client tool.
 
@@ -56,6 +58,14 @@ application and stores the image to a local private docker registry.
     $ skopeo --insecure-policy copy --src-tls-verify=false --multi-arch=all \
        docker://localhost:5000/busybox:latest \
        docker://localhost:5000/busybox:latest
+
+<details>
+  <summary markdown="span">Click here to view an example of pushing and pulling an image using skopeo.</summary>
+
+<p align="center">
+  <img width="600" src="https://raw.githubusercontent.com/project-zot/zot/8fb11180d473d7bb137b6d09d9ebf48065363e5f/demos/skopeo-push-pull.svg"></img>
+</p>
+</details>
 
 ### Authentication
 
@@ -160,6 +170,13 @@ This example pulls version 2 of an artifact file named `hello-artifact`
 from a zot registry.
 
     $ oras pull --plain-http localhost:5000/hello-artifact:v2 -d -v
+
+<details>
+  <summary markdown="span">Click here to view an example of pushing and pulling an artifact using oras.</summary>
+<p align="center">
+  <img width="600" src="https://raw.githubusercontent.com/project-zot/zot/8fb11180d473d7bb137b6d09d9ebf48065363e5f/demos/oras-push-pull.svg"></img>
+</p>
+</details>
 
 ### Attach a reference
 

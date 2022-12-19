@@ -1,6 +1,6 @@
 # Building an OCI-native Container Image CI/CD Pipeline
 
-> An **OCI-native** secure container image build/delivery pipeline using the following tools:
+> :point_right: An **OCI-native** secure container image build/delivery pipeline using the following tools:
 > 
 > -   [`stacker`](https://github.com/project-stacker/stacker) for building OCI images
 > 
@@ -50,6 +50,13 @@ Alternatively, you can use [`skopeo`](https://github.com/containers/skopeo), a c
     skopeo copy --format=oci oci:<oci-dir>/image:tag \
       docker://<zot-server>/image:tag
 
+<details>
+  <summary markdown="span">Click here to view an example of pushing and pulling an image using skopeo.</summary>
+<p align="center">
+  <img width="600" src="https://raw.githubusercontent.com/project-zot/zot/8fb11180d473d7bb137b6d09d9ebf48065363e5f/demos/skopeo-push-pull.svg"></img>
+</p>
+</details>
+
 ## Signing images
 
 [`cosign`](https://github.com/sigstore/cosign) is a tool that performs container signing, verification, and storage in an OCI registry.
@@ -62,12 +69,10 @@ Alternatively, you can use [`skopeo`](https://github.com/containers/skopeo), a c
     cosign sign --key cosign.key <zot-server>/image:tag
 
 <details>
-  <summary markdown="span">Click here to view an example.</summary>
-
+  <summary markdown="span">Click here to view an example of cosign operations.</summary>
 <p align="center">
   <img width="600" src="https://raw.githubusercontent.com/project-zot/zot/8fb11180d473d7bb137b6d09d9ebf48065363e5f/demos/cosign.svg"></img>
 </p>
-
 </details>
 
 ## Deploying container images

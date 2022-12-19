@@ -1,6 +1,6 @@
 # Developing New Extensions
 
-> You can add new functionality to the `zot` registry by developing *extensions* for integration into `zot`.
+> :point_right: You can add new functionality to the `zot` registry by developing *extensions* for integration into `zot`.
 
 The OCI Distribution Specification supports extending the functionality of an OCI-compliant registry implementation by adding *extensions*. Extensions are new APIs developed outside of the core OCI specs. Developers may propose their extensions to the OCI for possible future addition to the Distribution Specification.
 

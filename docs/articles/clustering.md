@@ -1,7 +1,6 @@
-
 # zot Clustering
 
-> High availability of the `zot` registry is supported by the following features:
+> :point_right: High availability of the `zot` registry is supported by the following features:
 >
 > -   Stateless `zot` instances to simplify scale out
 > -   Bare-metal and Kubernetes deployments

@@ -1,6 +1,6 @@
 # Installing zot with Kubernetes and Helm
 
-> Using Kubernetes with Helm charts for zot, you can easily deploy zot as an application in a Kubernetes cluster.
+> :point_right: Using Kubernetes with Helm charts for zot, you can easily deploy zot as an application in a Kubernetes cluster.
 
 ## Before you begin
 

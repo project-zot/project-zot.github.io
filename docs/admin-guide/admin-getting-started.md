@@ -1,6 +1,6 @@
 # Getting Started with zot Administration
 
-> This document helps you to deploy an appropriate `zot` image or to build `zot` if desired.
+> :point_right: This document helps you to deploy an appropriate `zot` image or to build `zot` if desired.
 > 
 > After deploying `zot`, proceed to [Configuring `zot`](admin-configuration.md) to choose and configure the features you need.
 
@@ -70,19 +70,38 @@ your server.
 Using a container manager such as Podman, runc, Helm, or Docker, you can
 install a `zot` binary image, as in the following examples.
 
-**Using Podman**
+**Using podman**
 
     podman run -p 5000:5000 ghcr.io/project-zot/zot-linux-amd64:latest
 
     podman run -p 5000:5000 ghcr.io/project-zot/zot-linux-amd64-minimal:latest
 
-**Using Docker**
+<details>
+  <summary markdown="span">Click here to view an example of deploying using podman.</summary>
+
+<p align="center">
+  <img width="600" src="https://raw.githubusercontent.com/project-zot/zot/710395377747b93ac11b7d1304cb2ab1059d34f6/demos/podman-getting-started.svg"></img>
+</p>
+
+</details>
+
+**Using docker**
 
     docker run -p 5000:5000 ghcr.io/project-zot/zot-linux-amd64:latest
 
 Each of these example commands pulls a `zot` binary image from
 the GitHub Container Registry (ghcr.io) and launches a `zot`
 image registry at <http://localhost:5000>.
+
+<details>
+  <summary markdown="span">Click here to view an example of deploying using docker.</summary>
+
+<p align="center">
+  <img width="600" src="https://raw.githubusercontent.com/project-zot/zot/710395377747b93ac11b7d1304cb2ab1059d34f6/demos/docker-getting-started.svg"></img>
+</p>
+
+</details>
+
 
 ### Building `zot` from source
 

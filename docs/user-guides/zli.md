@@ -1,6 +1,6 @@
 # Using the command line interface (zli)
 
-> zli: The command line tool for zot servers
+> :point_right: zli: The command line tool for zot servers
 > 
 ## What is zli?
 

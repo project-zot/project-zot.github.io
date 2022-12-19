@@ -1,6 +1,6 @@
 # Architecture
 
-> :white_medium_square: `zot` is an OCI-native container image registry. This document discusses the design goals, the overall architecture, and the design choices made in the implementation of the design goals.
+> :point_right: `zot` is an OCI-native container image registry. This document discusses the design goals, the overall architecture, and the design choices made in the implementation of the design goals.
 
 ## Design Goals
 
@@ -35,7 +35,7 @@ For more information, see "Conditional Builds" in `zot`'s [security posture](kb:
 
 As shown in the following figure, the architecture of zot is organized as: 
 
-> :white_medium_square: zot-full = zot-minimal + extensions
+> :point_right: zot-full = zot-minimal + extensions
 
 ![504567.jpg](../assets/images/504567.jpg){width="400"}
 

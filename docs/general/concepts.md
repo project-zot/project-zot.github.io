@@ -2,8 +2,7 @@
 
 ## What is `zot`?
 
-> Zot is a production-ready, open-source, vendor-neutral container image
-> registry server based purely on OCI standards.
+> :point_right: Zot is a production-ready, open-source, vendor-neutral container image registry server based purely on OCI standards.
 
 Two broad trends are changing how we build, distribute, and consume
 software. The first trend is the increasing adoption of container
@@ -33,7 +32,7 @@ software supply chain for container images.
 
 ## Why `zot`?
 
-> :white_medium_square: zot = OCI Distribution Specification + OCI Image Format
+> :point_right: zot = OCI Distribution Specification + OCI Image Format
 
 At its heart, zot is a production-ready, vendor-neutral OCI image
 registry with images stored in the OCI image format and with the OCI
@@ -71,7 +70,7 @@ The following table lists additional advantages of `zot`:
 |                                   |               |
 |-----------------------------------|--------------------|
 | **Distribution Spec conformance** | yes                |
-| **CNCF project**                  | submitted                |
+| **CNCF project**                  | accepted as a Sandbox Project |
 | **License**                       | Apache 2.0         |
 | **On-premise deployment**         | yes                |
 | **OCI conformance**\*             | yes                |

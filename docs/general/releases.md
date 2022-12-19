@@ -1,6 +1,6 @@
 # Released Images for zot
 
-> This document describes the available zot images for the various supported hardware and software platforms, along with information about image variations, image locations, and image naming formats.
+> :point_right: This document describes the available zot images for the various supported hardware and software platforms, along with information about image variations, image locations, and image naming formats.
 
 <a name='supported-platforms-zot'></a>
 

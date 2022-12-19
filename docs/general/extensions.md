@@ -1,6 +1,6 @@
 # Extensions
 
-> :white_medium_square: Extensions provide additional registry features that are not a part of the Distribution Specification.
+> :point_right: Extensions provide additional registry features that are not a part of the Distribution Specification.
 >
 >The following extensions are currently available with `zot`:
 >
@@ -34,7 +34,7 @@ The following extensions are currently supported:
    -   "Does an image depend on this image via its layers?"
    -   "What vulnerabilities exist in an image or its dependent images?"
 
-> :white_medium_square: 
+> :point_right: 
 > Currently, _search_ is the only `zot` extension that is accessible via HTTP APIs and is [discoverable](https://github.com/opencontainers/distribution-spec/blob/main/extensions/_oci.md#module-discover) using the OCI extensions mechanism.
 
 ### **Sync**

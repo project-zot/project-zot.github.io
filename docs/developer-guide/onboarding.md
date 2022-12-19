@@ -1,5 +1,7 @@
 # Onboarding zot for Development
 
+> :point_right: `zot` is a production-ready, open-source, extensible OCI-native image registry, built for developers by developers.
+
 ## Getting Started
 
 <a name='supported-platforms-zot'></a>
@@ -68,6 +70,16 @@ The `make` command builds an executable image in the `zot/bin`
 directory. The original filename of the zot executable image will
 indicate the build options. For example, the filename of an Intel-based
 linux minimal image is `zot-linux-amd64-minimal`.
+
+<details>
+  <summary markdown="span">Click here to view an example of the getting started process.</summary>
+
+<p align="center">
+  <img width="600" src="https://raw.githubusercontent.com/project-zot/zot/710395377747b93ac11b7d1304cb2ab1059d34f6/demos/multi-arch-getting-started.svg"></img>
+</p>
+
+</details>
+
 
 ### Running zot
 

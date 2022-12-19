@@ -1,6 +1,6 @@
 # Monitoring the registry
 
-> `zot` supports a range of monitoring tools including logging, metrics, and benchmarking.
+> :point_right: `zot` supports a range of monitoring tools including logging, metrics, and benchmarking.
 
 ## Logging
 

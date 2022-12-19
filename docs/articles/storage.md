@@ -1,6 +1,6 @@
 # Storage Planning with zot
 
-> `zot` supports the following features to provide OCI standards-based, vendor-agnostic image storage:
+> :point_right: `zot` supports the following features to provide OCI standards-based, vendor-agnostic image storage:
 >
 > -   Local and remote file storage
 > -   Inline deduplication and garbage collection
