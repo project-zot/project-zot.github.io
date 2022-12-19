@@ -1,5 +1,7 @@
 # Installing zot on Bare Metal Linux
 
+> :point_right: Using an available executable zot image, you can easily deploy zot on a Linux server.
+
 ## Before you begin
 
 ### About binary images

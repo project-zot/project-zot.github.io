@@ -1,6 +1,6 @@
 # User Authentication and Authorization with zot
 
-> A robust set of authentication/authorization options are supported:
+> :point_right: A robust set of authentication/authorization options are supported:
 >
 > -   Authentication
 >

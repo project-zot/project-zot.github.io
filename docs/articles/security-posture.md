@@ -1,6 +1,6 @@
 # zot Security Posture
 
-> An overview of `zot` build-time and runtime security hardening features, including:
+> :point_right: An overview of `zot` build-time and runtime security hardening features, including:
 >
 > -   Build-time hardening such as PIE-mode builds
 > -   Minimal-build option for smaller attack surface
