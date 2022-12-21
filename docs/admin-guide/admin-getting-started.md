@@ -102,7 +102,6 @@ image registry at <http://localhost:5000>.
 
 </details>
 
-
 ### Building zot from source
 
 #### Prerequisites

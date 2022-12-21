@@ -1,7 +1,7 @@
 # Using the command line interface (zli)
 
 > :point_right: **zli**: The command line tool for zot servers
-> 
+
 ## What is zli?
 
 zli is a binary that implements a set of command line commands for interacting with the zot registry server.
