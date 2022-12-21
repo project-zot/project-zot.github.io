@@ -1,10 +1,10 @@
 # Monitoring the registry
 
-> :point_right: `zot` supports a range of monitoring tools including logging, metrics, and benchmarking.
+> :point_right: **zot** supports a range of monitoring tools including logging, metrics, and benchmarking.
 
 ## Logging
 
-Logging for `zot` operations is configured with the `log` attribute in the configuration file, as shown in the following example.
+Logging for zot operations is configured with the `log` attribute in the configuration file, as shown in the following example.
 
 ``` json
 "log":{
@@ -49,9 +49,9 @@ The levels are:<br />
 
 ## Metrics
 
-The available methods for collecting metrics varies depending on whether your `zot` installation is a minimal (distribution-spec-only) image or a full image including extensions.
+The available methods for collecting metrics varies depending on whether your zot installation is a minimal (distribution-spec-only) image or a full image including extensions.
 
-### Enabling metrics for a full `zot` image with extensions
+### Enabling metrics for a full zot image with extensions
 
 Add the `metrics` attribute under `extensions` in the configuration file to enable and configure metrics, as shown in the following example.
 
@@ -74,11 +74,11 @@ The following table lists the configurable attributes for metrics collection.
 | `prometheus` | Attributes under `prometheus` contain configuration settings for the Prometheus node exporter.                                                   |
 | `path`       | The server path on which metrics will be exposed.                                                                                                |
 
-### Collecting metrics from a minimal `zot` image using a node exporter
+### Collecting metrics from a minimal zot image using a node exporter
 
-Although a minimal `zot` image does not contain a node exporter, it exposes internal metrics in a Prometheus format for collection by a separate node exporter tool such as zxp. The `zot` companion binary zxp is a node exporter that can be deployed with a minimal `zot` image in order to scrape metrics from the `zot` server.
+Although a minimal zot image does not contain a node exporter, it exposes internal metrics in a Prometheus format for collection by a separate node exporter tool such as zxp. The zot companion binary `zxp` is a node exporter that can be deployed with a minimal zot image in order to scrape metrics from the zot server.
 
-Metrics are automatically enabled in the `zot` server upon first scrape from the node exporter and the metrics are automatically disabled when the node exporter has not performed any scraping for some period. No extra `zot` configuration is needed for this behavior.
+Metrics are automatically enabled in the zot server upon first scrape from the node exporter and the metrics are automatically disabled when the node exporter has not performed any scraping for some period. No extra zot configuration is needed for this behavior.
 
 You can download the zxp executable binary for your server platform and architecture under "Assets" on the GitHub [zot releases](https://github.com/project-zot/zot/releases) page.
 
@@ -86,15 +86,15 @@ The binary image is named using the target platform and architecture. For exampl
 
 `zxp-darwin-amd64 config zxp-config-file`
 
-> **Tip:**
+> :bulb:
 > For convenience, you can rename the binary image file to simply `zxp.`
 
 
-> **Tip:**
+> :bulb:
 > A sample Dockerfile for zxp is available at [Dockerfile-zxp](https://github.com/project-zot/zot/blob/main/Dockerfile-zxp).
 
 
-The configuration file of zxp contains connection details for the `zot` server from which it will scrape metrics. The following JSON structure is an example of the `zxp-config-file` contents:
+The configuration file of zxp contains connection details for the zot server from which it will scrape metrics. The following JSON structure is an example of the `zxp-config-file` contents:
 
 ``` json
 {
@@ -112,18 +112,18 @@ The configuration file of zxp contains connection details for the `zot` server f
 }
 ```
 
-> **Tip:**
+> :bulb:
 > The zxp module does not have Prometheus integration.
 >
-> The zxp module is not needed with a full `zot` image.
+> The zxp module is not needed with a full zot image.
 
 
 
 ## Benchmarking zot with zb
 
-The [zot project](https://github.com/project-zot/zot) includes the `zb` tool, which allows you to benchmark a `zot` registry or any other container image registry that conforms to the [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec) published by the Open Container Initiative (OCI).
+The [zot project](https://github.com/project-zot/zot) includes the `zb` tool, which allows you to benchmark a zot registry or any other container image registry that conforms to the [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec) published by the Open Container Initiative (OCI).
 
-The `zb` tool is useful for benchmarking `zot` registry workloads in
+The `zb` tool is useful for benchmarking zot registry workloads in
 scenarios such as the following:
 
 -   comparing configuration changes

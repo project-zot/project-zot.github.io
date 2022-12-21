@@ -68,7 +68,7 @@ Create a `/etc/systemd/system/zot.service` file to define the zot service in sys
     [Install]
     WantedBy=multi-user.target
 
-> **Note:**
+> :pencil2:
 > Be sure to configure a dedicated non-root user ID as the User and Group in the zot service definition. The 'zot' user ID in this example is created in the next step.
 
 

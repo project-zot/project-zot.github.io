@@ -1,18 +1,18 @@
 # Using the command line interface (zli)
 
-> :point_right: zli: The command line tool for zot servers
+> :point_right: **zli**: The command line tool for zot servers
 > 
 ## What is zli?
 
 zli is a binary that implements a set of command line commands for interacting with the zot registry server.
 
-> **Tip:**
-> We recommend installing zli when you install `zot`.
+> :bulb:
+> We recommend installing zli when you install zot.
 
 
 ## How to get zli
 
-zli is hosted with `zot` on GitHub at [project-zot](https://github.com/project-zot/zot). From GitHub, you can download the zli binary or you can build zli from the source.
+zli is hosted with zot on GitHub at [project-zot](https://github.com/project-zot/zot). From GitHub, you can download the zli binary or you can build zli from the source.
 
 
 <a name="supported-platforms-zli"></a>
@@ -37,7 +37,7 @@ The binary image is named using the OS and architecture from the [Supported plat
 
 ### Building zli from source
 
-To build the zli binary, copy or clone the `zot` project from GitHub and execute the `make cli` command in the `zot` directory. Use the same command options that you used to build zot, as shown:
+To build the zli binary, copy or clone the zot project from GitHub and execute the `make cli` command in the `zot` directory. Use the same command options that you used to build zot, as shown:
 
 `make OS=os ARCH=architecture cli`
 
@@ -51,10 +51,8 @@ In this example, the resulting executable file is `zli-darwin-amd64` in the `zot
 
 This section includes examples of common zot server tasks using the zli command line interface. For a detailed listing of zli commands, see the [zli Command Reference](#_zli-command-reference) in this guide.
 
-> **Tip:**
-> For convenience, you can rename the binary image file to simply `zot`.The instructions and examples in this guide use `zli` as the name of the executable file.
->
-> The original filename of the executable file will reflect the build options, such as `zli-linux-amd64`. For convenience, you can rename the executable to simply `zli`.
+> :bulb:
+> The original filename of the zli executable file will reflect the build options, such as `zli-linux-amd64`. For convenience, you can rename the executable to simply `zli`. The instructions and examples in this guide use `zli` as the name of the executable file.
 
 
 ### Adding a zot server URL

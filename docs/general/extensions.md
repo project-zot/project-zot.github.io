@@ -2,7 +2,7 @@
 
 > :point_right: Extensions provide additional registry features that are not a part of the Distribution Specification.
 >
->The following extensions are currently available with `zot`:
+>The following extensions are currently available with zot:
 >
 > -  **Search (enhanced)**
 > -  **Sync**
@@ -17,7 +17,7 @@ The OCI Distribution Specification supports extending the functionality of an OC
 Wherever applicable, extensions can be dynamically discovered using the extensions support of the OCI Distribution Specification. 
 
 > :warning:
-> Extension features of `zot` are available only with a full `zot` image. They are excluded from the minimal `zot` image.
+> Extension features of zot are available only with a full zot image. They are excluded from the minimal zot image.
 
 ## Extensions implemented in zot
 
@@ -35,11 +35,11 @@ The following extensions are currently supported:
    -   "What vulnerabilities exist in an image or its dependent images?"
 
 > :point_right: 
-> Currently, _search_ is the only `zot` extension that is accessible via HTTP APIs and is [discoverable](https://github.com/opencontainers/distribution-spec/blob/main/extensions/_oci.md#module-discover) using the OCI extensions mechanism.
+> Currently, _search_ is the only zot extension that is accessible via HTTP APIs and is [discoverable](https://github.com/opencontainers/distribution-spec/blob/main/extensions/_oci.md#module-discover) using the OCI extensions mechanism.
 
 ### **Sync**
 
-   You can deplay a local mirror pointing to an upstream `zot` instance with various container image download policies, including on-demand and periodic downloads. The **sync** function is useful to avoid overwhelming the upstream instance, or if the upstream instance has rate-limited access.
+   You can deplay a local mirror pointing to an upstream zot instance with various container image download policies, including on-demand and periodic downloads. The **sync** function is useful to avoid overwhelming the upstream instance, or if the upstream instance has rate-limited access.
 
 > :bulb:
 > `docker.io` is supported as an upstream mirror.
@@ -56,4 +56,4 @@ The following extensions are currently supported:
   
    The **metrics** extension adds a node exporter, which is not present in the minimal build.
 
-For information about configuring `zot` extensions, see [*Configuring zot*](../admin-guide/admin-configuration.md).
+For information about configuring zot extensions, see [*Configuring zot*](../admin-guide/admin-configuration.md).

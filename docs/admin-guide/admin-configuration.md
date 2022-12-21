@@ -1,15 +1,15 @@
-# Configuring `zot`
+# Configuring zot
 
-> :point_right: The registry administrator configures `zot` primarily through settings in the configuration file. 
+> :point_right: The registry administrator configures zot primarily through settings in the configuration file. 
 > 
-> Using the information in this guide, you can compose a configuration file with the settings and features you require for your `zot` registry server.
+> Using the information in this guide, you can compose a configuration file with the settings and features you require for your zot registry server.
 >
-> Before launching `zot` with a new configuration, we recommend that you verify the syntax of your configuration as described in [Verifying the configuration file](#verifying-config).
+> Before launching zot with a new configuration, we recommend that you verify the syntax of your configuration as described in [Verifying the configuration file](#verifying-config).
 
 
 ## Configuration file
 
-The configuration file is a JSON or YAML file that contains all configuration settings for `zot` functions such as:
+The configuration file is a JSON or YAML file that contains all configuration settings for zot functions such as:
 
 -   network
 -   storage
@@ -20,14 +20,14 @@ The configuration file is a JSON or YAML file that contains all configuration se
 -   synchronization with other registries
 -   clustering
 
-The `zot` service is initiated with the `zot serve` command followed by the name of a configuration file, as in this example:
+The zot service is initiated with the `zot serve` command followed by the name of a configuration file, as in this example:
 
 `zot serve config.json`
 
-> **Note:**
-> The instructions and examples in this guide use `zot` as the name of the `zot` executable file. The examples do not include the path to the executable file.
+> :pencil2:
+> The instructions and examples in this guide use `zot` as the name of the zot executable file. The examples do not include the path to the executable file.
 
-When you first build `zot` or deploy an image or container from the distribution, a basic configuration file `config.json` is created. This initial file is similar to the following example:
+When you first build zot or deploy an image or container from the distribution, a basic configuration file `config.json` is created. This initial file is similar to the following example:
 
 ``` json
 {
@@ -54,7 +54,7 @@ described in the later sections of this guide.
 
 Additional registry features that are not a part of the Distribution Specification are allowed to be added as [Extensions](https://github.com/opencontainers/distribution-spec/tree/main/extensions).  
 
-With a full (not minimal) `zot` image, the additional extension features can be enabled and configured under an `extensions` attribute in the configuration file as shown in the following example.
+With a full (not minimal) zot image, the additional extension features can be enabled and configured under an `extensions` attribute in the configuration file as shown in the following example.
 
 ``` json
 {
@@ -63,24 +63,23 @@ With a full (not minimal) `zot` image, the additional extension features can be 
     "metrics": {},
     "sync": {},
     "search": {},
-    "scrub": {}
+    "scrub": {},
+    "lint": {}
   }
 }
 ```
 
-> **Note:**
-> The extension features are available only with a full `zot` image. With a minimal `zot` image, the `extensions` section is ignored if present.
+> :warning:
+> The extension features are available only with a full zot image. With a minimal zot image, the `extensions` section is ignored if present.
 
 
 The following features are configured under the `extensions` attribute.
 
 -   [Metrics](admin-monitoring.md#metrics)
-
 -   [Sync](#sync_config)
-
 -   [Search](#search_config)
-
 -   [Scrub](#scrub_config)
+-   [Lint](#lint_config)
 
 An extension feature is enabled by the presence of the feature’s
 attribute under `extensions`. An extension feature can be disabled by
@@ -118,13 +117,15 @@ The scrub feature is disabled in the following cases.
 }
 ```
 
+> :pencil2:
+> New functionality can be added to the zot registry by developing custom extensions for integration into zot. For information about developing extensions, see [_Developing New Extensions_](../developer-guide/extensions-dev.md).
 
 <a name="network_config"></a>
 
 ## Network configuration
 
 Use the `http` attribute in the configuration file to configure the
-`zot` network settings, as shown in the following example.
+zot network settings, as shown in the following example.
 
 ``` json
 "http": {
@@ -142,8 +143,8 @@ The following table lists the configurable attributes.
 
 | Attribute | Description                                                                                                 |
 |-----------|-------------------------------------------------------------------------------------------------------------|
-| `address` | The IP address of the `zot` server.                                                                |
-| `port`    | The port number of the `zot` server.                                                               |
+| `address` | The IP address of the zot server.                                                                |
+| `port`    | The port number of the zot server.                                                               |
 | `realm`   | The security policy domain defined for the server.                                                          |
 | `tls`     | The included attributes in this section specify the Transport Layer Security (TLS) settings for the server. |
 | `cert`    | The path and filename of the server’s SSL/TLS certificate.                                                  |
@@ -156,13 +157,13 @@ The following table lists the configurable attributes.
 
 ### Storage options
 
-With `zot`, you have the option to store your registry image
+With zot, you have the option to store your registry image
 files either in local filesystem storage or in cloud storage, such as an
 Amazon Simple Storage Service (S3) bucket.
 
 ### Configuring local storage
 
-Local filesystem storage for `zot` is configured with the
+Local filesystem storage for zot is configured with the
 `storage` attribute in the configuration file, as shown in the following
 example.
 
@@ -199,7 +200,7 @@ server file system.</p></td>
 <tr class="even">
 <td style="text-align: left;"><p><code>commit</code></p></td>
 <td style="text-align: left;"><p>For faster performance, data written by
-`zot` is retained in memory before being periodically committed
+zot is retained in memory before being periodically committed
 to disk by the operating system. To eliminate this retention time and
 cause data to be written to disk immediately, set to <code>true</code>.
 This prevents data loss but reduces performance.</p></td>
@@ -263,7 +264,7 @@ class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="
 
 ### Configuring S3 storage
 
-Amazon Simple Storage Service (S3) for `zot` can be configured
+Amazon Simple Storage Service (S3) for zot can be configured
 with the `storageDriver` attribute in the configuration file, as shown
 in the following example:
 
@@ -313,7 +314,7 @@ file.
 
 -   Environment variables
 
-    `zot` looks for credentials in the following environment
+    zot looks for credentials in the following environment
     variables:
 
         AWS_ACCESS_KEY_ID
@@ -339,7 +340,7 @@ file.
         aws_secret_access_key = <YOUR_PROD_SECRET_ACCESS_KEY>
 
     The `[default]` heading defines credentials for the default profile,
-    which `zot` will use unless you configure it to use another
+    which zot will use unless you configure it to use another
     profile. You can specify a profile using the `AWS_PROFILE`
     environment variable as in this example:
 
@@ -347,7 +348,7 @@ file.
 
     The credential file must be named `credentials.` The file must be
     located in the `.aws/` folder in the home directory of the same
-    server that is running your `zot` application.
+    server that is running your zot application.
 
 For more details about specifying S3 credentials, see the [AWS
 documentation](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials).
@@ -359,7 +360,7 @@ documentation](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configu
 
 ### Authentication
 
-`zot` supports authentication by the following methods:
+zot supports authentication by the following methods:
 
 -   TLS mutual authentication
 
@@ -369,7 +370,7 @@ documentation](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configu
 
 -   Bearer (OAuth2) authentication using an HTTP Bearer token
 
-For detailed information about configuring authentication for your `zot`
+For detailed information about configuring authentication for your zot
 registry, see [User Authentication and Authorization with zot](../articles/authn-authz.md).
 
 ### Identity-based authorization
@@ -380,7 +381,7 @@ choose to allow any combination of read, create, update, or delete
 actions on specific repository paths.
 
 For detailed information about configuring access control policies for
-your `zot` registry, see [User Authentication and Authorization with
+your zot registry, see [User Authentication and Authorization with
 zot](../articles/authn-authz.md).
 
 ### Preventing automated attacks with failure delay
@@ -399,7 +400,7 @@ is shown in the following example.
 ```
 
 The `failDelay` attribute specifies a waiting time, in seconds, before
-`zot` sends a failure notification to an authenticating user
+zot sends a failure notification to an authenticating user
 who has been denied access.
 
 ### Rate limiting
@@ -431,37 +432,37 @@ API `GET` calls are limited to five per second.
 
 ### Additional security features
 
-For detailed information about configuring additional security features for your `zot` registry, see [Security Posture](../articles/security-posture.md).
+For detailed information about configuring additional security features for your zot registry, see [Security Posture](../articles/security-posture.md).
 
 
 <a name="monitor_config"></a>
 
 ## Monitoring
 
-`zot` supports a range of monitoring tools including the following:
+zot supports a range of monitoring tools including the following:
 
 * Logging
 
-    Logging for `zot` operations is configured with the `log` attribute in the configuration file.
+    Logging for zot operations is configured with the `log` attribute in the configuration file.
 
 *  Metrics
 
-   Metrics data is available in a Prometheus format. A full `zot` image with extensions includes a node exporter. A minimal `zot` image can use an external node exporter such as `zxp`.
+   Metrics data is available in a Prometheus format. A full zot image with extensions includes a node exporter. A minimal zot image can use an external node exporter such as `zxp`.
 
 * Benchmarking
 
-  The zot project includes the `zb` tool, which allows you to benchmark a `zot` registry or any other container image registry that conforms to the [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec).
+  The zot project includes the `zb` tool, which allows you to benchmark a zot registry or any other container image registry that conforms to the [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec).
 
 For detailed information about the monitoring tools, see [Monitoring the registry](admin-monitoring.md).
 
 
 <a name="cluster_config"></a>
 
-## Clustering `zot`
+## Clustering zot
 
-To ensure high-availability of the registry,`zot` supports a clustering scheme with stateless `zot` instances/replicas fronted by a loadbalancer and a shared remote backend storage. This scheme allows the registry service to remain available even if a few replicas fail or become unavailable. Loadbalancing across many zot replicas can also increase aggregate network throughput.
+To ensure high-availability of the registry, zot supports a clustering scheme with stateless zot instances/replicas fronted by a loadbalancer and a shared remote backend storage. This scheme allows the registry service to remain available even if a few replicas fail or become unavailable. Loadbalancing across many zot replicas can also increase aggregate network throughput.
 
-For detailed information about clustering with `zot`, see [zot Clustering](../articles/clustering.md).
+For detailed information about clustering with zot, see [zot Clustering](../articles/clustering.md).
 
 
 <a name="sync_config"></a>
@@ -470,7 +471,7 @@ For detailed information about clustering with `zot`, see [zot Clustering](../ar
 
 ### Synchronizing registries
 
-Add the `sync` attribute under `extensions` in the configuration file to enable and configure the periodic or on-demand synchronization of your `zot` image registry with other image registries, as shown in the following example.
+Add the `sync` attribute under `extensions` in the configuration file to enable and configure the periodic or on-demand synchronization of your zot image registry with other image registries, as shown in the following example.
 
 ``` json
 "extensions": {
@@ -744,7 +745,7 @@ The following table lists the configurable attributes for scrubbing the registry
 
 ## Enhanced searching and querying images
 
-While basic searching is always enabled for images in the `zot` registry, you can enable enhanced registry searching and filtering using graphQL.
+While basic searching is always enabled for images in the zot registry, you can enable enhanced registry searching and filtering using graphQL.
 
 Add the `search` attribute under `extensions` in the configuration file to enable and configure the enhanced search extension, as shown in the following example.
 
@@ -772,15 +773,15 @@ The following table lists the configurable attributes for enhanced search.
 
 ## Verifying the configuration file
 
-Before launching `zot`, verify the syntax of your configuration
+Before launching zot, verify the syntax of your configuration
 file using the following command:
 
 `zot verify <configfile>`
 
-> **Note:**
-> Verifying the configuration file protects against operator errors and any conflicts arising from `zot` release version changes.
+> :pencil2:
+> Verifying the configuration file protects against operator errors and any conflicts arising from zot release version changes.
 
 
-After verifying your configuration file, you can launch `zot` with the following command:
+After verifying your configuration file, you can launch zot with the following command:
 
 `zot serve <configfile>`

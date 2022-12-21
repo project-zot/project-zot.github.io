@@ -40,7 +40,7 @@ image variations, image locations, and image naming formats.
 
         "project-zot" has been added to your repositories
 
-    > **Note:**
+    > :pencil2:
     >
     >The Helm charts for zot are currently hosted in these publicly-accessible repositories:  
     > - zotregistry.io  
@@ -57,7 +57,7 @@ image variations, image locations, and image naming formats.
         project-zot/zot  0.1.0          v1.4.3       A Helm chart for Kubernetes
 
 
-    > **Note:**
+    > :pencil2:
     >
     >The APP VERSION is the version/tag of the zot image used for the
     deployment.

@@ -2,7 +2,7 @@
 
 ## Project Repository
 
-The `zot` project is hosted on GitHub:
+The zot project is hosted on GitHub:
 
 [project-zot/zot](https://github.com/project-zot/zot)
 

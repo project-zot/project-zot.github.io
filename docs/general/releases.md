@@ -6,7 +6,7 @@
 
 ## Supported platforms
 
-`zot` is supported on Linux and Apple MacOS platforms with Intel or ARM processors.
+zot is supported on Linux and Apple MacOS platforms with Intel or ARM processors.
 
 Table: Supported platforms and architectures
 
@@ -21,13 +21,13 @@ Table: Supported platforms and architectures
 
 In addition to variations for specific platforms and architectures, binary images are also available in full and minimal flavors:
 
--   A full `zot` binary image is compiled with all extensions. Extensions include functions such as metrics, registry synchronization, search, and scrub.
+-   A full zot binary image is compiled with all extensions. Extensions include functions such as metrics, registry synchronization, search, and scrub.
 
--   A minimal distribution-spec conformant `zot` binary image is compiled with only a minimal set of code and libraries, reducing the attack surface. This option might be optimal for a registry embedded in a shipping product.
+-   A minimal distribution-spec conformant zot binary image is compiled with only a minimal set of code and libraries, reducing the attack surface. This option might be optimal for a registry embedded in a shipping product.
 
 ## Binary image file naming
 
-An executable binary image for `zot` is named using the target platform and architecture from the [Supported platforms and architectures](#supported-platforms-zot) table. The general format of a binary image file name is one of these two:
+An executable binary image for zot is named using the target platform and architecture from the [Supported platforms and architectures](#supported-platforms-zot) table. The general format of a binary image file name is one of these two:
 
 `zot-<os>-<architecture>`
 
@@ -37,15 +37,29 @@ An executable binary image for `zot` is named using the target platform and arch
 
 -   A minimal distribution-spec conformant zot binary image has a filename of the form `zot-<os>-<architecture>-minimal`. For example, the minimal binary image for an Intel-based linux server is `zot-linux-amd64-minimal`.
 
-> **Tip:**
+> :bulb:
 > For convenience, you can rename the binary image file to simply `zot` after downloading.
 
 
 ## Where to get zot
 
-The `zot` project is hosted on GitHub at [project-zot](https://github.com/project-zot/zot).  
+You can download native executable binary images or container (Docker) images.
 
-You can download a specific image from `ghcr.io` by forming a URL with the desired image name, such as:
+### Getting binary images
+
+The zot project is hosted on GitHub at [project-zot](https://github.com/project-zot/zot).  
+
+To download a binary image, go to the [zot releases](https://github.com/project-zot/zot/releases) and select a release. Go to the **Assets** section of the release page and download the binary for your platform and architecture.
+
+> :pencil2: 
+> You may need to use the `chmod` command to make the image executable.
+
+> :pencil2: 
+> When downloading a binary image for MacOS, download the darwin image.
+
+### Getting container images 
+
+You can download a container image from `ghcr.io` by forming a URL with the desired image name, such as:
 
     https://ghcr.io/project-zot/zot-<os>-<architecture>[-<build>]
 
@@ -53,20 +67,9 @@ If `<build>` is not specified, the default is `full`. For example, to download t
 
     https://ghcr.io/project-zot/zot-linux-amd64-minimal
 
-`zot` images are also currently hosted in these publicly-accessible repositories:
-
--   zotregistry.io
-
--   artifacthub.io
-
-You can download native executable binary images or container (Docker) images.
-
-> **Note:** 
-> When downloading a container image for MacOS, download the Linux image, not the Darwin image. When downloading an executable binary, download the Darwin image.
-
-> **Tip:**
-> You may need to use the `chmod` command to make the image executable.
+> :pencil2: 
+> When downloading a container image for MacOS, download the linux image, not the darwin image.
 
 ## Licensing
 
-`zot` is released under the [Apache License 2.0](https://github.com/project-zot/zot/blob/main/LICENSE).
+zot is released under the [Apache License 2.0](https://github.com/project-zot/zot/blob/main/LICENSE).
