@@ -1,6 +1,6 @@
 # Benchmarking zot with zb
 
-> :point_right: The `zb` tool is useful for benchmarking OCI registry workloads in scenarios such as the following:
+> :point_right: The **zb** tool is useful for benchmarking OCI registry workloads in scenarios such as the following:
 >
 > -   comparing configuration changes
 > -   comparing software versions
@@ -8,20 +8,20 @@
 > -   comparing with other registries
 
 
-With the `zb` tool, you can benchmark a `zot` registry or any other container image registry that conforms to the [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec) published by the Open Container Initiative (OCI).
+With the zb tool, you can benchmark a zot registry or any other container image registry that conforms to the [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec) published by the Open Container Initiative (OCI).
 
-> **Tip:**
-> We recommend installing and benchmarking with `zb` when you install `zot`.
+> :bulb:
+> We recommend installing and benchmarking with zb when you install zot.
 
 
 ## How to get zb
 
-The `zb` project is hosted with `zot` on GitHub at [project-zot](https://github.com/project-zot/zot). From GitHub, you can download the `zb` binary or you can build `zb` from the source. You can also directly run the released docker image.
+The zb project is hosted with zot on GitHub at [project-zot](https://github.com/project-zot/zot). From GitHub, you can download the zb binary or you can build zb from the source. You can also directly run the released docker image.
 
 <a name="supported-platforms"></a>
 ## Supported platforms and architectures
 
-`zb` is supported for the following operating systems and platform architectures:
+zb is supported for the following operating systems and platform architectures:
 
 | OS     | ARCH  | Platform                            |
 |--------|-------|-------------------------------------|
@@ -39,28 +39,27 @@ The binary image is named using the target platform and architecture from the [S
 
 ## Building zb from source
 
-To build the `zb` binary, copy or clone the `zot` project from GitHub and execute the `make bench` command in the `zot` directory. Use the same command options that you used to build `zot`, as shown:
+To build the zb binary, copy or clone the zot project from GitHub and execute the `make bench` command in the `zot` directory. Use the same command options that you used to build zot, as shown:
 
 `make OS=os ARCH=architecture bench`
 
-For example, the following command builds `zb` for an Intel-based MacOS server:
+For example, the following command builds zb for an Intel-based MacOS server:
 
 `make OS=darwin ARCH=amd64 bench`
 
 In this example, the resulting executable file is `zb-darwin-amd64` in the `zot/bin` directory.
 
-> **Tip:**
-> A sample Dockerfile for `zb` is available at [Dockerfile-zb](https://github.com/project-zot/zot/tree/main/build/Dockerfile-zb).
+> :bulb:
+> A sample Dockerfile for zb is available at [Dockerfile-zb](https://github.com/project-zot/zot/tree/main/build/Dockerfile-zb).
 
 
 
 ## Running zb
 
-> **Tip:**
+The original filename of the executable file will reflect the build options, such as `zb-linux-amd64.` For convenience, you can rename the executable to simply `zb`.
+
+> :bulb:
 > The instructions and examples in this guide use `zb` as the name of the executable file.
-
-The original filename of the executable file will reflect the build options, such as `zb-linux-amd64.` For convenience, you can rename the executable to simply `zb.`
-
 
 ### Usage
 

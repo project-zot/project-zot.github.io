@@ -1,22 +1,22 @@
 # Getting Started with zot Administration
 
-> :point_right: This document helps you to deploy an appropriate `zot` image or to build `zot` if desired.
+> :point_right: This document helps you to deploy an appropriate zot image or to build zot if desired.
 > 
-> After deploying `zot`, proceed to [Configuring `zot`](admin-configuration.md) to choose and configure the features you need.
+> After deploying zot, proceed to [Configuring zot](admin-configuration.md) to choose and configure the features you need.
 
-## Installing `zot`
+## Installing zot
 
-### How to get `zot`
+### How to get zot
 
-The `zot` project is hosted on GitHub at
+The zot project is hosted on GitHub at
 [project-zot](https://github.com/project-zot/zot). From GitHub, you can
-download `zot` executable binary images or full source code.
+download zot executable binary images or full source code.
 
 <a name="supported-platforms-zot"></a>
 
 #### Supported platforms
 
-`zot` is officially supported on Linux and Apple MacOS
+zot is officially supported on Linux and Apple MacOS
 platforms, using Intel or ARM processors. However, development should be
 possible on any platform that supports the `golang` toolchain.
 
@@ -39,18 +39,18 @@ image variations, image locations, and image naming formats.
 
 #### Deployment methods
 
-Several options exist for deploying `zot`:
+Several options exist for deploying zot:
 
--   You can launch a `zot` binary as a container service using
+-   You can launch a zot binary as a container service using
     a container management tool such as Podman, Docker, or Helm.
 
--   You can launch `zot` as a host-level service by downloading
+-   You can launch zot as a host-level service by downloading
     a binary image and running it as a systemd service.
 
--   You can copy or clone the full `zot` source code and build
+-   You can copy or clone the full zot source code and build
     an image with custom build flags.
 
-### Deploying a `zot` binary image
+### Deploying a zot binary image
 
 Executable binary images for supported server platforms and
 architectures are available from the [zot package
@@ -62,13 +62,13 @@ your server, or you can use a container management tool such as Podman,
 runc, Helm, or Docker to fetch and deploy the image in a container on
 your server.
 
-> **Tip:** For convenience, you can rename the binary image file to simply `zot.`
+> :bulb: For convenience, you can rename the binary image file to simply `zot`.
 
 
 #### Example: Deploying with a container manager
 
 Using a container manager such as Podman, runc, Helm, or Docker, you can
-install a `zot` binary image, as in the following examples.
+install a zot binary image, as in the following examples.
 
 **Using podman**
 
@@ -89,8 +89,8 @@ install a `zot` binary image, as in the following examples.
 
     docker run -p 5000:5000 ghcr.io/project-zot/zot-linux-amd64:latest
 
-Each of these example commands pulls a `zot` binary image from
-the GitHub Container Registry (ghcr.io) and launches a `zot`
+Each of these example commands pulls a zot binary image from
+the GitHub Container Registry (ghcr.io) and launches a zot
 image registry at <http://localhost:5000>.
 
 <details>
@@ -102,8 +102,7 @@ image registry at <http://localhost:5000>.
 
 </details>
 
-
-### Building `zot` from source
+### Building zot from source
 
 #### Prerequisites
 
@@ -116,13 +115,13 @@ your IDE can find the toolchain.
 
 #### Building an executable binary from source
 
-Download or clone the full `zot` project from GitHub at
+Download or clone the full zot project from GitHub at
 [project-zot](https://github.com/project-zot/zot). To clone the
-`zot` project from GitHub, use this command:
+zot project from GitHub, use this command:
 
     git clone https://github.com/project-zot/zot.git
 
-To build `zot`, execute the `make` command in the
+To build zot, execute the `make` command in the
 `zot` directory using the following general syntax:
 
 `make OS=os ARCH=architecture {binary | binary-minimal}`
@@ -134,34 +133,34 @@ To build `zot`, execute the `make` command in the
     table. If an option is not specified, the defaults are `linux` and
     `amd64`.
 >
-> -   The `binary` option builds the full `zot` binary image with
+> -   The `binary` option builds the full zot binary image with
     all extensions.
 >
 > -   The `binary-minimal` option builds the minimal distribution-spec
-    conformant `zot` binary image without extensions, reducing
+    conformant zot binary image without extensions, reducing
     the attack surface.
 
 
-For example, to build a `zot` image with extensions for an
+For example, to build a zot image with extensions for an
 Intel-based linux server, use the following command:
 
     make OS=linux ARCH=amd64 binary
 
 The `make` command builds an executable image in the `zot/bin`
-directory. The original filename of the `zot` executable image
+directory. The original filename of the zot executable image
 will indicate the build options. For example, the filename of an
 Intel-based linux minimal image is `zot-linux-amd64-minimal`.
 
-> **Tip:**
+> :bulb:
 > For convenience, you can rename the binary image file to simply `zot`.
 
 
-#### Building a `zot` container image from source
+#### Building a zot container image from source
 
 **with Stacker**
 
 Using the settings in stacker.yaml, you can build a container image that
-runs the latest `zot` by running the following command:
+runs the latest zot by running the following command:
 
     make binary-stacker
 
@@ -179,7 +178,7 @@ build, as in this example:
     RUN make COMMIT=$COMMIT OS=$OS ARCH=$ARCH clean binary-minimal
 
 Using your edited Dockerfile, you can build a container image that runs
-the latest `zot` by running the following command:
+the latest zot by running the following command:
 
     make image
 
@@ -217,25 +216,25 @@ This command causes the registry to listen on port 8080 and to use
 
 ### Additional recommended steps
 
-We recommend that, when deploying `zot`, you also install the command line ([zli](../user-guides/zli.md)) and benchmarking ([zb](../articles/benchmarking-with-zb.md)) packages.
+We recommend that, when deploying zot, you also install the command line ([zli](../user-guides/zli.md)) and benchmarking ([zb](../articles/benchmarking-with-zb.md)) packages.
 
-### Launching `zot`
+### Launching zot
 
-The `zot` service is initiated with the `zot serve` command followed by the name of a configuration file, as in this example:
+The zot service is initiated with the `zot serve` command followed by the name of a configuration file, as in this example:
 
 `zot serve config.yml`
 
-> **Note:**
-> For convenience, you can rename the binary image file to simply `zot`.The instructions and examples in this guide use `zot` as the name of the `zot` executable file and do not include the path to the executable file.
+> :bulb:
+> For convenience, you can rename the binary image file to simply `zot`.The instructions and examples in this guide use `zot` as the name of the zot executable file and do not include the path to the executable file.
 
 
 ## Next Steps
 
-### Configuring `zot`
+### Configuring zot
 
-You configure `zot` primarily through adding and modifying settings in the `zot` configuration file. The configuration file is a JSON or YAML file that contains all configuration settings for `zot` functions. 
+You configure zot primarily through adding and modifying settings in the zot configuration file. The configuration file is a JSON or YAML file that contains all configuration settings for zot functions. 
 
-When you first build `zot` or deploy an image or container from the distribution, a basic configuration file `config.json` is created. You can modify the initial file or you can create a new file.
+When you first build zot or deploy an image or container from the distribution, a basic configuration file `config.json` is created. You can modify the initial file or you can create a new file.
 
-Follow the instructions in [Configuring `zot`](admin-configuration.md), to compose a configuration file with the settings and features you require for your `zot` registry server.
+Follow the instructions in [Configuring zot](admin-configuration.md), to compose a configuration file with the settings and features you require for your zot registry server.
 

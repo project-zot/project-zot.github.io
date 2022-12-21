@@ -14,13 +14,13 @@
 >     -   Powerful identity-based access controls for repositories or specific repository paths
 
 
-The `zot` configuration model supports both authentication and authorization. Authentication credentials allow access to `zot` HTTP APIs. Authorization policies provide fine-grained control of the actions each authenticated user can perform in the registry.
+The zot configuration model supports both authentication and authorization. Authentication credentials allow access to zot HTTP APIs. Authorization policies provide fine-grained control of the actions each authenticated user can perform in the registry.
 
 ## Authentication
 
 ### TLS authentication
 
-Because authentication credentials are passed over HTTP, it is imperative that TLS be enabled. You can enable and configure TLS authentication in the `zot` configuration file, as shown in the following example.
+Because authentication credentials are passed over HTTP, it is imperative that TLS be enabled. You can enable and configure TLS authentication in the zot configuration file, as shown in the following example.
 
 ``` json
 "http": {
@@ -39,9 +39,9 @@ When [basic HTTP authentication](https://www.rfc-editor.org/rfc/rfc7617.html) is
 
 ### HTTP bearer authentication
 
-To avoid passing the username and password credentials for every HTTP request, a `zot` client can use [bearer token-based authentication](https://www.rfc-editor.org/rfc/rfc6750). In this method, the client first authenticates with a token server and receives a short-lived token. The client then passes this token in the HTTP Authorization header, specifying `Bearer` as the authentication scheme.
+To avoid passing the username and password credentials for every HTTP request, a zot client can use [bearer token-based authentication](https://www.rfc-editor.org/rfc/rfc6750). In this method, the client first authenticates with a token server and receives a short-lived token. The client then passes this token in the HTTP Authorization header, specifying `Bearer` as the authentication scheme.
 
-Configure bearer authentication in the `zot` configuration file as shown in this example.
+Configure bearer authentication in the zot configuration file as shown in this example.
 
     "http": {
     ...
@@ -64,7 +64,7 @@ The following table lists the configurable attributes.
 <a name="mtls-authentication"></a>
 ## Mutual TLS authentication
 
-`zot` supports basic TLS and password-less mutual TLS authentication (mTLS). Specifying a `cacert` file in the TLS section of the `zot` configuration file enables mTLS. The `cacert` parameter is used to validate the client-side TLS certificates.
+zot supports basic TLS and password-less mutual TLS authentication (mTLS). Specifying a `cacert` file in the TLS section of the zot configuration file enables mTLS. The `cacert` parameter is used to validate the client-side TLS certificates.
 
     "http": {
     ...
@@ -96,18 +96,18 @@ configuration file as shown in the following example.
 }
 ```
 
-The `failDelay` attribute specifies a waiting time, in seconds, before `zot` sends a failure notification to an authenticating user who has been denied access.
+The `failDelay` attribute specifies a waiting time, in seconds, before zot sends a failure notification to an authenticating user who has been denied access.
 
 ## Server-side authentication
 
-You can implement server-side authentication for `zot` using `htpasswd` or LDAP or both.
+You can implement server-side authentication for zot using `htpasswd` or LDAP or both.
 
-> **Note:** 
+> :pencil2: 
 > When both `htpasswd` and LDAP configuration are specified, LDAP authentication is given preference. Because `htpasswd` authentication is strictly local and requires no remote service, `htpasswd` serves as a fail-safe authentication mechanism should LDAP become unavailable.
 
 ### LDAP
 
-`zot` supports integration with an LDAP-based authentication service such as Microsoft Windows Active Directory (AD). Enable and configure LDAP authentication in the `zot` configuration file, as shown in the following example.
+zot supports integration with an LDAP-based authentication service such as Microsoft Windows Active Directory (AD). Enable and configure LDAP authentication in the zot configuration file, as shown in the following example.
 
 ``` json
 "http": {
@@ -145,7 +145,7 @@ authentication.
 
 ### htpasswd
 
-Enable and configure `htpasswd` authentication in the `zot`
+Enable and configure `htpasswd` authentication in the zot
 configuration file, as shown in the following example.
 
 1.  Create and store an `htpasswd` file on the server.
@@ -153,7 +153,7 @@ configuration file, as shown in the following example.
         $ htpasswd -bBn <username> <password> >> /etc/zot/htpasswd
 
 2.  Enable `htpasswd` authentication and configure the path to the
-    `htpasswd` authentication in the `zot` configuration file.
+    `htpasswd` authentication in the zot configuration file.
 
     ``` json
     "http": {
@@ -169,7 +169,7 @@ configuration file, as shown in the following example.
 
 ## Authorization
 
-With an access scheme that relies solely on authentication, any authenticated user would be given complete access to the registry. To better control access, `zot` supports identity-based repository-level access control (authorization) policies.
+With an access scheme that relies solely on authentication, any authenticated user would be given complete access to the registry. To better control access, zot supports identity-based repository-level access control (authorization) policies.
 
 ### Access control policies
 
@@ -190,7 +190,7 @@ When you define policies for specific repository paths, the paths can be specifi
 
 Note that `**` effectively defines the default policy, as it matches any path not matched by any other per-repository policy. To override all other policies, you can specify a global admin policy.
 
-> **Note:**
+> :pencil2:
 > Always include the read action in any policy that you define. The create, update, and delete actions cannot be used without the read action.
 
 

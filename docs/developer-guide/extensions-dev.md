@@ -1,22 +1,23 @@
 # Developing New Extensions
 
-> :point_right: You can add new functionality to the `zot` registry by developing *extensions* for integration into `zot`.
+> :point_right: You can add new functionality to the zot registry by developing *extensions* for integration into zot.
 
 The OCI Distribution Specification supports extending the functionality of an OCI-compliant registry implementation by adding *extensions*. Extensions are new APIs developed outside of the core OCI specs. Developers may propose their extensions to the OCI for possible future addition to the Distribution Specification.
 
-**Note:** When planning the develoment of a new extension, be sure to familiarize yourself with the [OCI documentation and guidelines for extensions](https://github.com/opencontainers/distribution-spec/tree/main/extensions).
+:pencil2: When planning the develoment of a new extension, be sure to familiarize yourself with the [OCI documentation and guidelines for extensions](https://github.com/opencontainers/distribution-spec/tree/main/extensions).
 
 
 ## Current extensions
 
-The following extensions are currently available in the `zot` project: 
+The following extensions are currently available in the zot project: 
 
 - metrics
 - sync
 - search
 - scrub
+- lint
 
-You can examine the implementation of these extensions in the `zot` project [extensions section](https://github.com/project-zot/zot/tree/main/pkg/extensions). The operation and configuration of the current extensions is described in [Configuring `zot`](../admin-guide/admin-configuration.md).
+You can examine the implementation of these extensions in the zot project [extensions section](https://github.com/project-zot/zot/tree/main/pkg/extensions). The operation and configuration of the current extensions is described in [Configuring zot](../admin-guide/admin-configuration.md).
 
 
 ## Guidelines for developing new extensions
@@ -50,14 +51,24 @@ You can examine the implementation of these extensions in the `zot` project [ext
     
     ...
   ```
-    See [extension-lint-disabled.go](https://github.com/project-zot/zot/blob/main/pkg/extensions/lint/lint-disabled.go) in the `zot` project for an example of a "no-op" file.
+    See [extension-lint-disabled.go](https://github.com/project-zot/zot/blob/main/pkg/extensions/lint/lint-disabled.go) in the zot project for an example of a "no-op" file.
 
-- When developing a new extension, you should create a blackbox test in which a binary containing the new extension can be tested in a usage scenario. See the [test/blackbox](https://github.com/project-zot/zot/tree/main/test/blackbox) folder in the `zot` project for examples of extension tests.
+- When developing a new extension, you should create a blackbox test in which a binary containing the new extension can be tested in a usage scenario. See the [test/blackbox](https://github.com/project-zot/zot/tree/main/test/blackbox) folder in the zot project for examples of extension tests.
 
-    - Create targets in `Makefile` for newly added blackbox tests. You should also add them as GitHub Workflows in [.github/workflows/ecosystem-tools.yaml](https://github.com/project-zot/zot/blob/main/.github/workflows/ecosystem-tools.yaml) in the `zot` project.
+    - Create targets in `Makefile` for newly added blackbox tests. You should also add them as GitHub Workflows in [.github/workflows/ecosystem-tools.yaml](https://github.com/project-zot/zot/blob/main/.github/workflows/ecosystem-tools.yaml) in the zot project.
 
-- Modify the **EXTENSIONS** variable in `Makefile` by adding the new extension. The **EXTENSIONS** variable represents all extensions and is used in `make` targets that require all (for example, `make test`).
+- When configuring multiple extensions in the `extensions` section of the zot configuration file, list new extensions after the current extensions in the recommended order, such as:
 
-- When configuring multiple extensions in the `extensions` section of the `zot` configuration file, list new extensions after the current extensions in the recommended order, such as:
+    metrics, sync, search, scrub, lint, _new_extension_1_, _new_extension_2_, ...
 
-    metrics, sync, search, scrub, <new_extension_1>, <new_extension_2>, ...
+## Building zot with extensions
+
+When you build the full zot image (for example, `make binary`), all extensions listed in the **EXTENSIONS** variable in `Makefile` are included in the build. When you've created a new extension, you must modify the **EXTENSIONS** variable in `Makefile` by adding the new extension. 
+
+To build an image with only selected extensions, you can specify the desired extensions by declaring them in the build command:
+
+    make binary EXTENSIONS=extension1,extension2,extension3...
+
+For example, to build with only sync and scrub, the command would be:
+
+    make binary EXTENSIONS=sync,scrub

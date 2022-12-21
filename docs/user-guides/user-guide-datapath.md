@@ -1,6 +1,6 @@
 # Push and Pull Image Content
 
-> :point_right: Zot is an OCI image registry that allows you to store, manage, and share container images.
+> :point_right: **zot** is an OCI image registry that allows you to store, manage, and share container images.
 
 A zot registry can store and serve a variety of content, but the type of
 content may dictate your choice of a client tool.
@@ -16,8 +16,10 @@ shows which content and client tools are demonstrated.
 | OCI artifacts | [oras](#using-oras)                    |
 | Helm charts   | [helm](#using-helm)                    |
 
-> **Note:**
-> In the following examples, the zot registry is located at localhost, using port number 5000.
+> :pencil2: zot is compatible with kubernetes/cri-o using `docker://` transport, which is the default.
+
+> :pencil2:
+> In the following examples, the zot registry is located at `localhost`, using port number 5000.
 
 <a name="using-skopeo"></a>
 
@@ -27,7 +29,7 @@ shows which content and client tools are demonstrated.
 client that performs various operations on OCI container images and
 image repositories.
 
-> **Note:**
+> :pencil2:
 > For detailed information about using skopeo, see the [skopeo man page](https://github.com/containers/skopeo/blob/main/docs/skopeo.1.md).
 
 
@@ -91,7 +93,7 @@ interface that performs various operations on OCI container images and
 image repositories. The command line interface for regclient is
 `regctl.`
 
-> **Note:**
+> :pencil2:
 > For detailed information about `regctl` commands, see the [regctl Documentation](https://github.com/regclient/regclient/blob/main/docs/regctl.md).
 
 ### Push an OCI image
@@ -150,7 +152,7 @@ can omit this command from your `regctl` session.
 [ORAS](https://oras.land/cli/) (OCI Registry As Storage) is a command
 line client for storing OCI artifacts on OCI repositories.
 
-> **Note:**
+> :pencil2:
 > For detailed information about the `oras` commands in these examples,
 see the [ORAS CLI documentation](https://oras.land/cli/).
 
@@ -202,7 +204,7 @@ example:
 
     $ oras pull -u myUsername -p myPassword localhost:5000/hello-artifact:v2 -d -v
 
-> **Note:**
+> :pencil2:
 > For additional authentication options, including interactive credential entry and disabling TLS, see the [ORAS login documentation](https://github.com/oras-project/oras/blob/main/cmd/oras/login.go).
 
 <a name="using-helm"></a>
@@ -213,7 +215,7 @@ example:
 other capabilities, helm can store and retrieve helm charts on OCI image
 repositories.
 
-> **Note:**
+> :pencil2:
 > For detailed information about the `helm` commands in these examples, see [Commands for working with registries](https://helm.sh/docs/topics/registries/) in the helm documentation.
 
 ### Push a helm chart

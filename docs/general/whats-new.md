@@ -8,7 +8,7 @@
 
 ### Remote-only Storage Support
 
-- The two types of state (images and image metadata) can both now be on [remote storage](https://github.com/project-zot/zot/blob/v1.4.3/examples/config-all-remote.json) so that `zot` process lifecycle and its storage can be managed and scaled independently.
+- The two types of state (images and image metadata) can both now be on [remote storage](https://github.com/project-zot/zot/blob/v1.4.3/examples/config-all-remote.json) so that zot process lifecycle and its storage can be managed and scaled independently.
 
 ### Digest Collision Detection During Image Deletion
 

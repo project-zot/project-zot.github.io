@@ -19,7 +19,7 @@
 
 The [Open Container Initiative (OCI)](https://opencontainers.org/) is an open governance structure for the express purpose of creating open industry standards around container formats and runtimes.
 
-This document describes a step-by-step procedure towards achieving an OCI-native secure software supply chain using [`zot`](https://github.com/project-zot/zot) in collaboration with other opensource tools. The following diagram shows a portion of the CI/CD pipeline.
+This document describes a step-by-step procedure towards achieving an OCI-native secure software supply chain using [zot](https://github.com/project-zot/zot) in collaboration with other opensource tools. The following diagram shows a portion of the CI/CD pipeline.
 
 ![504568](../assets/images/504568.jpg){width="400"}
 
@@ -35,7 +35,7 @@ This document describes a step-by-step procedure towards achieving an OCI-native
 
 ## Image registry
 
-[`zot`](https://github.com/project-zot/zot) is a production-ready vendor-neutral OCI image registry server purely based on the [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec). If `stacker` is used to build the OCI image, it can also be used to publish the built image to an OCI registry.
+[zot](https://github.com/project-zot/zot) is a production-ready vendor-neutral OCI image registry server purely based on the [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec). If `stacker` is used to build the OCI image, it can also be used to publish the built image to an OCI registry.
 
 
 **example: stacker publish command**
@@ -79,6 +79,7 @@ Alternatively, you can use [`skopeo`](https://github.com/containers/skopeo), a c
 
 [`cri-o`](https://github.com/cri-o/cri-o) is an implementation of the [Kubernetes Container Runtime Interface (CRI)](https://kubernetes.io/docs/concepts/architecture/cri/) to enable using OCI compatible runtimes. It is a lightweight alternative to using Docker as the runtime for Kubernetes.
 
+> :pencil2: zot is compatible with kubernetes/cri-o using `docker://` transport, which is the default.
 
 **example: kubelet configuration file**
 

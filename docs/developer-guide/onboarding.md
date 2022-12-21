@@ -1,6 +1,6 @@
 # Onboarding zot for Development
 
-> :point_right: `zot` is a production-ready, open-source, extensible OCI-native image registry, built for developers by developers.
+> :point_right: zot is a production-ready, open-source, extensible OCI-native image registry, built for developers by developers.
 
 ## Getting Started
 
@@ -104,7 +104,7 @@ at <https://github.com/go-delve/delve>.
 
 ## Code Organization
 
-The `zot` project codebase is organized as follows:
+The zot project codebase is organized as follows:
 
     /
     - pkg/              # Source code for all libraries

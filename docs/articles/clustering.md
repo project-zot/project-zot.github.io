@@ -1,13 +1,13 @@
 # zot Clustering
 
-> :point_right: High availability of the `zot` registry is supported by the following features:
+> :point_right: High availability of the zot registry is supported by the following features:
 >
-> -   Stateless `zot` instances to simplify scale out
+> -   Stateless zot instances to simplify scale out
 > -   Bare-metal and Kubernetes deployments
 
 
-To ensure high-availability of the registry,`zot` supports a clustering
-scheme with stateless `zot` instances/replicas fronted by a loadbalancer
+To ensure high-availability of the registry, zot supports a clustering
+scheme with stateless zot instances/replicas fronted by a loadbalancer
 and a shared remote backend storage. This scheme allows the registry
 service to remain available even if a few replicas fail or become
 unavailable. Loadbalancing across many zot replicas can also increase
@@ -16,7 +16,7 @@ aggregate network throughput.
 ![504569](../assets/images/504569.jpg){width="400"}
 
 Clustering is supported in both bare-metal and Kubernetes environments.
-> **Note:**
+> :pencil2:
 > The remote backend storage must be [S3 API-compatible](https://docs.aws.amazon.com/AmazonS3/latest/API/Welcome.html).
 
 
@@ -24,9 +24,9 @@ Clustering is supported in both bare-metal and Kubernetes environments.
 
 ### Prerequisites
 
--   A highly-available loadbalancer such as `HAProxy` configured to direct traffic to `zot` replicas.
+-   A highly-available loadbalancer such as `HAProxy` configured to direct traffic to zot replicas.
 
--   Multiple `zot` replicas as `systemd` services hosted on mutiple hosts or VMs.
+-   Multiple zot replicas as `systemd` services hosted on mutiple hosts or VMs.
 
 -   AWS S3 API-compatible remote backend storage.
 
@@ -34,22 +34,22 @@ Clustering is supported in both bare-metal and Kubernetes environments.
 
 ### Prerequisites
 
--   A `zot` Kubernetes
+-   A zot Kubernetes
     [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
     with required number of replicas.
 
 -   AWS S3 API-compatible remote backend storage.
 
--   A `zot` Kubernetes
+-   A zot Kubernetes
     [Service](https://kubernetes.io/docs/concepts/services-networking/service/).
 
--   A `zot` Kubernetes [Ingress
+-   A zot Kubernetes [Ingress
     Gateway](https://kubernetes.io/docs/concepts/services-networking/ingress/)
     if the service needs to be exposed outside.
 
 ## Implementing stateless zot
 
-`zot` maintains two types of durable state:
+zot maintains two types of durable state:
 
 -   the actual image data itself
 
@@ -69,7 +69,7 @@ prefixes during loadbalancing and ingress gateway configuration.
 
 ## Examples
 
-`zot` supports clustering by using multiple stateless `zot` replicas with shared S3 storage and an `HAProxy` (with sticky session) load-balancing traffic to the replicas.
+zot supports clustering by using multiple stateless zot replicas with shared S3 storage and an `HAProxy` (with sticky session) load-balancing traffic to the replicas.
 
 ### YAML configuration
 
