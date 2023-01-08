@@ -10,12 +10,6 @@
 * Supports [helm charts](https://helm.sh/docs/topics/registries/)
 * Behavior controlled via [configuration](https://github.com/project-zot/zot/blob/main/examples/README.md)
 * Binaries released for multiple os/arch
-    | OS | Arch | Use Case |
-    | --- | --- | --- |
-    | linux | amd64 | Intel-based Linux platforms |
-    | linux | arm64 | ARM servers and Raspberry PI4 |
-    | darwin | amd64 | Intel-based Macs |
-    | darwin | arm64 | ARM-based Macs |
 * Supports advanced image queries using _search_ extension
 * Supports image deletion by tag
 * Currently suitable for on-prem deployments (e.g. colocated with Kubernetes)
