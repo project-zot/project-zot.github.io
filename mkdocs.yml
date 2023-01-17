@@ -4,7 +4,7 @@ site_description: Zot Registry
 repo_url: https://github.com/project-zot/zot
 repo_name: project-zot/zot
 edit_uri: ""
-copyright: Copyright &copy; 2017 - 2022 The zot project authors, All Rights Reserved.
+copyright: Copyright &copy; 2019 - 2023 The zot project authors, All Rights Reserved.
 theme:
   name: material
   custom_dir: material
