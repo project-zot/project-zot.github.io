@@ -13,6 +13,7 @@ shows which content and client tools are demonstrated.
 |---------------|----------------------------------------|
 | OCI images    | [skopeo](#using-skopeo)                |
 | OCI images    | [regclient](#using-regedit) (`regctl`) |
+| OCI images    | [crane](#using-crane)                  |
 | OCI artifacts | [oras](#using-oras)                    |
 | Helm charts   | [helm](#using-helm)                    |
 
@@ -241,3 +242,62 @@ using the following command:
     $ helm registry login -u myUsername localhost:5000
 
 You will be prompted to manually enter a password.
+
+<a name="using-crane"></a>
+
+## Common tasks using crane for OCI images
+
+[crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/README.md) is an open-source project that provides a command-line interface (CLI) for interacting with container registries, such as Docker Hub and Google Container Registry.
+
+> :pencil2:
+> For detailed information about `crane` commands, see the [crane Documentation](https://github.com/google/go-containerregistry/blob/main/cmd/crane/doc/crane.md).
+
+### Push an OCI image
+
+This example pushes the latest container image for the `alpine`
+application to a  registry.
+
+    $ crane --insecure push \
+       oci/images/alpine:latest \
+       localhost:5000/alpine:latest
+
+### Pull an OCI image
+
+This example pulls the latest container image for the `alpine`
+application and stores the image to a local OCI-layout directory
+(`/oci/images`).
+
+    $ crane --insecure pull \
+       --format oci \
+       localhost:5000/alpine:latest \
+       oci/images/alpine:latest
+
+### Copy an OCI image to a private docker registry
+
+This example pulls the latest container image for the `alpine`
+application and stores the image to a local private docker registry.
+
+    $ crane --insecure copy \
+       alpine:latest \
+       localhost:5000/alpine:latest
+
+### List tags
+
+This example lists all tags in the `alpine` image within the
+registry.
+
+    $ crane ls localhost:5000/alpine
+
+### Find the digest of an image
+
+This example gets the digest of the `alpine` image within the
+registry.
+
+    $ crane digest localhost:5000/alpine:latest
+
+### Authentication
+
+To authenticate with the registry server, log in at the start of your session
+using the following command:
+
+    $ crane auth login -u myUsername localhost:5000
