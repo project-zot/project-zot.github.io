@@ -169,7 +169,7 @@ configuration file, as shown in the following example.
 
 ## Authorization
 
-With an access scheme that relies solely on authentication, any authenticated user would be given complete access to the registry. To better control access, zot supports identity-based repository-level access control (authorization) policies.
+With an access scheme that relies solely on authentication, any authenticated user would be given complete access to the registry. To better control access, zot supports identity-based repository-level access control (authorization) policies. The access control policy is a function of _repository_, _user_ and _action_ being performed on that repository.
 
 ### Access control policies
 
@@ -177,10 +177,12 @@ Four types of access control policies are supported:
 
 | Policy type   | Access allowed                                                                                                                                                                       |
 |---------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Anonymous     | An anonymous policy specifies what an unauthenticated user is allowed to do. This is an appropriate policy when you want to grant open read-only access to one or more repositories. |
-| User-specific | A user-specific policy specifies access and actions for explicitly named users.                                                                                                      |
-| Default       | The default policy specifies what actions are allowed if a user is authenticated but does match any user-specific policy.                                                            |
-| Admin         | The admin policy is a global access control policy that grants privileges to perform actions on any repository.                                                                      |
+| Default (`defaultPolicy`)       | The default policy specifies what actions are allowed if a user is authenticated but doesn't match any user-specific policy.                                                            |
+| User-specific | A user-specific policy allows for certain users to override the default policy by specifying access and actions for explicitly named users.                                                                                                      |
+| Anonymous (`anonymousPolicy`)     | An anonymous policy specifies what an unauthenticated user is allowed to do. This is an appropriate policy when you want to grant open read-only access to one or more repositories. |
+| Admin (`adminPolicy`)        | The admin policy is a global access control policy that grants privileges to perform actions on any repository.                                                                      |
+
+The underlying rationale is that access is organized along repositories, users and their actions. Most users for a particular repository will have similar access control requirements and hence fall under the `defaultPolicy`. There could be a few users as exceptions who will require a user-specific override. Some repositories can additionally allow anonymous actions which do not require authentication. Finally, some users can be specified to be administrators and the global administrator policy applies.
 
 ### Configuring access control
 
