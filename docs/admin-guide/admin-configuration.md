@@ -305,6 +305,14 @@ example.
 }
 ```
 
+`subPaths` feature ties together several separate storage filesystems and
+backends behind the same HTTP API interface. In the example above, both
+repository paths "/a" and "/b" are exposed to clients and images can be pulled
+and pulled respectively but behind-the-scenes the corresponding backing store
+for those images can be disparate. This is useful if one uses zot to serve
+existing OCI images in different folders and also if storage can be expanded
+only using different backing stores.
+
 #### S3 Credentials
 
 In the first configuration file example, the S3 credentials were
