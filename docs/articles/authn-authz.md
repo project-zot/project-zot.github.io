@@ -169,18 +169,20 @@ configuration file, as shown in the following example.
 
 ## Authorization
 
-With an access scheme that relies solely on authentication, any authenticated user would be given complete access to the registry. To better control access, zot supports identity-based repository-level access control (authorization) policies.
+With an access scheme that relies solely on authentication, any authenticated user would be given complete access to the registry. To better control access, zot supports identity-based repository-level access control (authorization) policies. The access control policy is a function of _repository_, _user_, and the _action_ being performed on that repository.
 
 ### Access control policies
 
 Four types of access control policies are supported:
 
-| Policy type   | Access allowed                                                                                                                                                                       |
-|---------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Anonymous     | An anonymous policy specifies what an unauthenticated user is allowed to do. This is an appropriate policy when you want to grant open read-only access to one or more repositories. |
-| User-specific | A user-specific policy specifies access and actions for explicitly named users.                                                                                                      |
-| Default       | The default policy specifies what actions are allowed if a user is authenticated but does match any user-specific policy.                                                            |
-| Admin         | The admin policy is a global access control policy that grants privileges to perform actions on any repository.                                                                      |
+| Policy type   | Attribute | Access allowed |
+|---------------|-----------|-----|
+| Default       | `defaultPolicy` | The default policy specifies what actions are allowed if a user is authenticated but does match any user-specific policy. |
+| User-specific | `users`, `actions` | A user-specific policy specifies access and actions for explicitly named users. |
+| Anonymous     | `anonymousPolicy` | An anonymous policy specifies what an unauthenticated user is allowed to do. This is an appropriate policy when you want to grant open read-only access to one or more repositories. |
+| Admin         | `adminPolicy` | The admin policy is a global access control policy that grants privileges to perform actions on any repository.  |
+
+Access control is organized by repositories, users, and their actions. Most users of a particular repository will have similar access control requirements and can be served by a repository-specific `defaultPolicy`. Should a user require an exception to the default policy, a user-specific override policy can be configured. With an `anonymousPolicy`, a repository can additionally allow anonymous actions which do not require user authentication. Finally, one or more users can be designated as administrators, to whom the global administrator policy applies.
 
 ### Configuring access control
 
@@ -210,6 +212,7 @@ Use the `accessControl` attribute in the configuration file to define a set of i
       "defaultPolicy": ["read", "create"]
     },
     "tmp/**": {
+      "anonymousPolicy": ["read"],
       "defaultPolicy": ["read", "create", "update"]
     },
     "infra/*": {
@@ -245,20 +248,12 @@ Use the `accessControl` attribute in the configuration file to define a set of i
 
 In this example, five policies are defined:
 
--   The default policy (`**`) gives all users the ability to read or
-    create content, while giving user "charlie" the additional ability
-    to update content.
+-   The default policy (`**`) gives all authenticated users the ability to read or create content, while giving user "charlie" the additional ability to update content.
 
--   The policy for `tmp/**` matches all repositories under `tmp`
-    recursively and allows all users to read, create, or update content
-    in those repositories.
+-   The policy for `tmp/**` matches all repositories under `tmp` recursively and allows all authenticated users to read, create, or update content in those repositories. Unauthenticated users have read-only access to these repositories.
 
--   The policy for `infra/*` matches all repositories directly under
-    `infra.` Separate policies are defined for specific users, along
-    with a default read-only policy for all other users.
+-   The policy for `infra/*` matches all repositories directly under `infra.` Separate policies are defined for specific users, along with a default read-only policy for all other users.
 
 -   The policy for `repos2/repo` matches only that specific repository.
 
--   An admin policy (`adminPolicy`) gives the user "admin" global
-    authorization to read, create, update, or delete content in any
-    repository, overriding all other policies.
+-   An admin policy (`adminPolicy`) gives the user "admin" global authorization to read, create, update, or delete content in any repository, overriding all other policies.

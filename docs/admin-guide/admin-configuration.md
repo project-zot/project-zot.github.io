@@ -305,6 +305,8 @@ example.
 }
 ```
 
+The `subPaths` feature ties together several separate storage filesystems and backends behind the same HTTP API interface. In the example above, both repository paths "/a" and "/b" are exposed to clients. Content on these two paths can be hosted completely separately by different storage services, locations, or filesystems, with no difference to the user interface and no perceptible difference to the user experience. This is useful if one wants to serve existing OCI images from different backends or if storage can be expanded only by using different backing stores.
+
 #### S3 Credentials
 
 In the first configuration file example, the S3 credentials were
