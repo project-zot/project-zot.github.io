@@ -4,7 +4,7 @@
 
 The OCI Distribution Specification supports extending the functionality of an OCI-compliant registry implementation by adding *extensions*. Extensions are new APIs developed outside of the core OCI specs. Developers may propose their extensions to the OCI for possible future addition to the Distribution Specification.
 
-:pencil2: When planning the develoment of a new extension, be sure to familiarize yourself with the [OCI documentation and guidelines for extensions](https://github.com/opencontainers/distribution-spec/tree/main/extensions).
+:pencil2: When planning the development of a new extension, be sure to familiarize yourself with the [OCI documentation and guidelines for extensions](https://github.com/opencontainers/distribution-spec/tree/main/extensions).
 
 
 ## Current extensions
