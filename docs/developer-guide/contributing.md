@@ -12,19 +12,25 @@
 > 
 ### License
 
-zot is released under the [Apache License 2.0](https://github.com/project-zot/zot/blob/main/LICENSE). All contributions must adhere to this license.
+zot is released under the [Apache License 2.0](https://github.com/project-zot/zot/blob/main/LICENSE). All contributions must adhere to this license and must explicitly state adherence.
 
 ### Submitting a Pull Request (PR)
 
-First, fork the zot project on GitHub and submit a commit to your fork. Then open a new pull request (PR) to the zot project. All commits must meet these requirements:
+First, fork the zot project on GitHub and submit a commit to your fork. Then open a new pull request (PR) to the zot project. All pull requests must meet these requirements:
+
+- License statement
+
+  Either the commit messsage or the PR description must contain the following statement:
+
+  "By submitting this pull request, I confirm that my contribution is made under the terms of the Apache 2.0 license."
 
 - Developer Certificate of Origin (DCO) and sign-off
   
-  All commits require a Developer Certificate of Origin via the "Signed-off-by:" commit message and commit signatures using GPG keys. Include the `-s` flag in your commit command.
+  All commits require a Developer Certificate of Origin via the "Signed-off-by:" commit message and commit signatures using GPG keys. Include the `-s` flag in your `git commit` command.
 
 - Commit message format
 
-  The commit message must begin with a keyword that categorizes the commit, followed by a colon. Validation of a commit message is determined by this expression:
+  The commit message must follow the [Convention Commits](https://www.conventionalcommits.org/) format. The message must begin with a keyword that categorizes the commit, followed by a colon. Validation of a commit message is determined by this expression:
   
   `"^((build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\(.+\))?(!)?(: (.*\s*)*))" `
 
