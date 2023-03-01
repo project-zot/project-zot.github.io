@@ -114,6 +114,7 @@ nav:
     - Authentication and Authorization: articles/authn-authz.md
     - Security Posture: articles/security-posture.md
     - Storage Planning: articles/storage.md
+    - Mirroring: articles/mirroring.md
     - Clustering: articles/clustering.md
     - Benchmarking with zb: articles/benchmarking-with-zb.md
 extra_css:
