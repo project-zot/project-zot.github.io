@@ -1,6 +1,6 @@
 # OCI Registry Mirroring With zot
 
-> :point_right: A `zot` registry can mirror one or more upstream OCI registries.
+> :point_right: A `zot` registry can mirror one or more upstream OCI registries, including popular cloud registries such as Docker Hub and Google Container Registry (gcr.io).
 >
 
 A key use case for zot is to act as a mirror for upstream registries. If an upstream registry is OCI distribution-spec conformant for pulling images, you can use zot's `sync` feature to implement a downstream mirror, synchronizing OCI images and corresponding artifacts.
@@ -258,10 +258,10 @@ The following is an example of sync configuration for mirroring multiple registr
 With this zot configuration, the sync behavior is as follows:
 
 1. This user request for content from the zot registry:<br/>
-   `skopeo copy --src-tls-verify=false docker://localhost:8080/docker-images/alpine <dest>`<br/>causes zot to synchronize the content with this remote registry:<br/>&nbsp;&nbsp;&nbsp;&nbsp;`docker.io/library/alpine:latest`<br/>to the zot registry:<br>&nbsp;&nbsp;&nbsp;&nbsp;`localhost:8080/docker-images/alpine:latest`<br/>before delivering the content to the requestor at `<dest>`.
+   `skopeo copy --src-tls-verify=false docker://localhost:8080/docker-images/alpine <dest>`<br/>causes zot to synchronize the content with the docker.io registry:<br/>&nbsp;&nbsp;&nbsp;&nbsp;`docker.io/library/alpine:latest`<br/>to the zot registry:<br>&nbsp;&nbsp;&nbsp;&nbsp;`localhost:8080/docker-images/alpine:latest`<br/>before delivering the content to the requestor at `<dest>`.
 
 2. This user request for content from the zot registry:<br/>
-  `skopeo copy --src-tls-verify=false docker://localhost:8080/k8s-images/kube-proxy:v1.19.2 <dest>`<br/>causes zot to synchronize the content with this remote registry:<br/>&nbsp;&nbsp;&nbsp;&nbsp;`k8s.gcr.io/kube-proxy:v1.19.2` <br/>to the zot registry:<br/>&nbsp;&nbsp;&nbsp;&nbsp;`localhost:8080/k8s-images/kube-proxy:v1.19.2`<br/>before delivering the content to the requestor at `<dest>`.
+  `skopeo copy --src-tls-verify=false docker://localhost:8080/k8s-images/kube-proxy:v1.19.2 <dest>`<br/>causes zot to synchronize the content with the gcr.io registry:<br/>&nbsp;&nbsp;&nbsp;&nbsp;`k8s.gcr.io/kube-proxy:v1.19.2` <br/>to the zot registry:<br/>&nbsp;&nbsp;&nbsp;&nbsp;`localhost:8080/k8s-images/kube-proxy:v1.19.2`<br/>before delivering the content to the requestor at `<dest>`.
 
 You can use this command:<br/>&nbsp;&nbsp;&nbsp;&nbsp;
 `curl http://localhost:8080/v2/_catalog`<br/>to display the local repositories:
@@ -276,8 +276,7 @@ You can use this command:<br/>&nbsp;&nbsp;&nbsp;&nbsp;
 
 ## Example: Multiple registries with mixed mirroring modes
 
-<details>
-  <summary markdown="span">Click here to view an example of a zot configuration file for mirroring multiple upstream registries.</summary>
+The following is an example of a zot configuration file for mirroring multiple upstream registries.
 
 ```
 {
@@ -357,12 +356,11 @@ You can use this command:<br/>&nbsp;&nbsp;&nbsp;&nbsp;
   }
 }
 ```
-</details>
 
 [//]: # (https://github.com/project-zot/zot/blob/main/examples/config-sync.json)
 
 
-## Example: Support for subpaths in local storagge
+## Example: Support for subpaths in local storage
 
 ```
 {
