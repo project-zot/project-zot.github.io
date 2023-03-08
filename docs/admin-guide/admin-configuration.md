@@ -76,7 +76,7 @@ With a full (not minimal) zot image, the additional extension features can be en
 
 The following features are configured under the `extensions` attribute.
 
--   [Metrics](admin-monitoring.md#metrics)
+-   [Metrics](#monitor_config)
 -   [Sync](#sync_config)
 -   [Search](#search_config)
 -   [Scrub](#scrub_config)
@@ -456,8 +456,11 @@ zot supports a range of monitoring tools including the following:
 
   The zot project includes the `zb` tool, which allows you to benchmark a zot registry or any other container image registry that conforms to the [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec).
 
-For detailed information about the monitoring tools, see [Monitoring the registry](admin-monitoring.md).
+When zot is deployed in a Kubernetes setup, a site reliability engineering (SRE) operator can monitor service level indicators (SLI) such as metrics and logs. Metrics will appear in [Prometheus](https://prometheus.io/docs/guides/query-log/) using the zot `metrics` extension, while logs will appear in the Elasticsearch stack ([ELK stack](https://www.elastic.co/what-is/elk-stack)) using [Filebeat](https://www.elastic.co/beats/filebeat).
 
+For detailed information about the monitoring tools, see [Monitoring the registry](../articles/monitoring.md).
+
+For detailed information about benchmarking, see [Benchmarking zot with zb](../articles/benchmarking-with-zb.md).
 
 <a name="cluster_config"></a>
 
@@ -472,224 +475,11 @@ For detailed information about clustering with zot, see [zot Clustering](../arti
 
 ## Syncing and mirroring registries
 
-### Synchronizing registries
+A zot registry can mirror one or more upstream OCI registries, including popular cloud registries such as [Docker Hub](https://hub.docker.com/) and [Google Container Registry](gcr.io).  If an upstream registry is OCI distribution-spec conformant for pulling images, you can use zot's `sync` extension feature to implement a downstream mirror, synchronizing OCI images and corresponding artifacts. Synchronization between registries can be implemented by periodic polling of the upstream registry or synchronization can occur on demand, when a user pulls an image from the downstream registry.
 
-Add the `sync` attribute under `extensions` in the configuration file to enable and configure the periodic or on-demand synchronization of your zot image registry with other image registries, as shown in the following example.
+As with git, wherein every clone is a full repository, you can configure a local zot instance to be a full OCI mirror registry. This allows for a fully distributed disconnected container image build pipeline.
 
-``` json
-"extensions": {
-    "sync": {
-        "enable": true,
-        "credentialsFile": "./examples/sync-auth-filepath.json",
-        "registries": [
-        {
-            "urls": [
-                "https://registry1:5000"
-            ],
-            "onDemand": false,
-            "pollInterval": "6h",
-            "tlsVerify": true,
-            "certDir": "/home/user/certs",
-            "maxRetries": 5,
-            "retryDelay": "10m",
-            "onlySigned": true,
-            "content": [
-            {
-                "prefix": "/repo1/repo",
-                "tags":
-                {
-                    "regex": "4.*",
-                    "semver": true
-                }
-            },
-            {
-                "prefix": "/repo1/repo",
-                "destination": "/localrepo",
-                "stripPrefix": true
-            },
-            {
-                "prefix": "/repo1/**",
-                "destination": "/localrepo",
-                "stripPrefix": true
-            },
-            {
-                "prefix": "/repo2/repo*"
-            },
-            {
-                "prefix": "/repo3/**"
-            }]
-        },
-        {
-            "urls": [
-                "https://registry2:5000",
-                "https://registry3:5000"
-            ],
-            "pollInterval": "12h",
-            "tlsVerify": false,
-            "onDemand": false,
-            "content": [
-            {
-                "prefix": "/repo2",
-                "tags":
-                {
-                    "semver": true
-                }
-            }]
-        },
-        {
-            "urls": [
-                "https://docker.io/library"
-            ],
-            "onDemand": true,
-            "tlsVerify": true,
-            "maxRetries": 6,
-            "retryDelay": "5m"
-        }]
-    }
-}
-```
-
-The following table lists the configurable attributes for registry synchronization.
-
-<table>
-<colgroup>
-<col style="width: 25%" />
-<col style="width: 75%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Attribute</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><p><code>enable</code></p></td>
-<td style="text-align: left;"><p>If this attribute is missing, registry
-synchronization is enabled by default. Registry synchronization can be
-disabled by setting this attribute to <code>false</code>.</p></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><p><code>credentialsFile</code></p></td>
-<td style="text-align: left;"><p>The location of a local credentials
-file containing credentials for other registries.</p></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><p><code>urls</code></p></td>
-<td style="text-align: left;"><p>The URL of an upstream image registry.
-You can specify a comma-separated list of multiple URLs for the same
-registry in case one or more fails.</p></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><p><code>onDemand</code></p></td>
-<td style="text-align: left;"><ul>
-<li><p><code>false</code>: Pull all images not found in the local
-registry.</p></li>
-<li><p><code>true</code>: Pull any image not found in the local registry
-only when needed.</p></li>
-</ul></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><p><code>pollInterval</code></p></td>
-<td style="text-align: left;"><p>The period in seconds between polling
-of remote registries. If no value is specified, no periodic polling will
-occur.</p></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><p><code>tlsVerify</code></p></td>
-<td style="text-align: left;"><ul>
-<li><p><code>false</code>: TLS will not be verified.</p></li>
-<li><p><code>true</code>: (Default) TLS will be verified.</p></li>
-</ul></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><p><code>certDir</code></p></td>
-<td style="text-align: left;"><p>If a path is specified, use
-certificates at this path. If no path is specified, use the default
-certificates directory.</p></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><p><code>maxRetries</code></p></td>
-<td style="text-align: left;"><p>The maximum number of retries if an
-error occurs during either an on-demand or periodic synchronization. If
-no value is specified, no retries will occur.</p></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><p><code>retryDelay</code></p></td>
-<td style="text-align: left;"><p>The interval in seconds between
-retries. This attribute is mandatory when maxRetries is
-configured.</p></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><p><code>onlySigned</code></p></td>
-<td style="text-align: left;"><ul>
-<li><p><code>false</code>: Synchronize signed or unsigned
-images.</p></li>
-<li><p><code>true</code>: Synchronize only signed images (either notary
-or cosigned).</p></li>
-</ul></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><p><code>content</code></p></td>
-<td style="text-align: left;"><p>The included attributes in this section
-specify which content will be periodically pulled. If this section is
-not populated, periodically polling will not occur. The included
-attributes can also filter which on-demand images are pulled.</p></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><p><code>prefix</code></p></td>
-<td style="text-align: left;"><p>On the remote server, the path from
-which images will be pulled. This path can be a string that exactly
-matches the remote path, or it can be a <code>glob</code> pattern. For
-example, the path can include a wildcard (<strong>*</strong>) or a
-recursive wildcard (<strong>**</strong>).</p></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><p><code>destination</code></p></td>
-<td style="text-align: left;"><p>Specifies the path under which pulled
-images are to be stored.</p></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><p><code>stripPrefix</code></p></td>
-<td style="text-align: left;"><p>Specifies whether the prefix path from
-the source registry will be retained or replaced when the image is
-stored in the [zotLowerName] registry.</p>
-<ul>
-<li><p><code>false</code>: Retain the source prefix, append it to the
-destination path.</p></li>
-<li><p><code>true</code>: Remove the source prefix.</p>
-<div class="note">
-<p>Note: If the source prefix was specified with meta-characters (such as
-<strong>**</strong>), only the prefix segments that precede the
-meta-characters are removed. Any remaining path segments are appended to
-the destination path.</p>
-</div></li>
-</ul></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><p><code>tags</code></p></td>
-<td style="text-align: left;"><p>The included attributes in this
-optional section specify how remote images will be selected for
-synchronization based on image tags.</p></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><p><code>regex</code></p></td>
-<td style="text-align: left;"><p>Specifies a regular expression for
-matching image tags. Images whose tags do not match the expression are
-not pulled.</p></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><p><code>semver</code></p></td>
-<td style="text-align: left;"><p>Specifies whether image tags are to be
-filtered by <a href="https://semver.org/">Semantic Versioning</a>
-(semver) compliance.</p>
-<ul>
-<li><p><code>false</code>: Do not filter by semantic versioning</p></li>
-<li><p><code>true</code>: Filter by semantic versioning</p></li>
-</ul></td>
-</tr>
-</tbody>
-</table>
+For detailed information about syncing and mirroring, see [OCI Registry Mirroring With zot](../articles/mirroring.md).
 
 
 <a name="lint_config"></a>
