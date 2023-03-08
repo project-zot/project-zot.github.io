@@ -76,7 +76,7 @@ With a full (not minimal) zot image, the additional extension features can be en
 
 The following features are configured under the `extensions` attribute.
 
--   [Metrics](admin-monitoring.md#metrics)
+-   [Metrics](#monitor_config)
 -   [Sync](#sync_config)
 -   [Search](#search_config)
 -   [Scrub](#scrub_config)
@@ -455,6 +455,8 @@ zot supports a range of monitoring tools including the following:
 * Benchmarking
 
   The zot project includes the `zb` tool, which allows you to benchmark a zot registry or any other container image registry that conforms to the [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec).
+
+When zot is deployed in a Kubernetes setup, a site reliability engineering (SRE) operator can monitor service level indicators (SLI) such as metrics and logs. Metrics will appear in [Prometheus](https://prometheus.io/docs/guides/query-log/) using the zot `metrics` extension, while logs will appear in the Elasticsearch stack ([ELK stack](https://www.elastic.co/what-is/elk-stack)) using [Filebeat](https://www.elastic.co/beats/filebeat).
 
 For detailed information about the monitoring tools, see [Monitoring the registry](../articles/monitoring.md).
 
