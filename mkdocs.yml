@@ -104,7 +104,6 @@ nav:
   - Administrator Guides: 
     - Getting Started: admin-guide/admin-getting-started.md
     - Configuring zot: admin-guide/admin-configuration.md
-    - Monitoring: admin-guide/admin-monitoring.md
   - Developer Guide: 
     - Onboarding: developer-guide/onboarding.md
     - Extensions: developer-guide/extensions-dev.md
@@ -116,6 +115,7 @@ nav:
     - Storage Planning: articles/storage.md
     - Mirroring: articles/mirroring.md
     - Clustering: articles/clustering.md
+    - Monitoring: articles/monitoring.md
     - Benchmarking with zb: articles/benchmarking-with-zb.md
 extra_css:
   - stylesheets/custom.css
