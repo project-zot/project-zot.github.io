@@ -2,6 +2,8 @@
 
 > :point_right: **zot** supports a range of monitoring tools including logging, metrics, and benchmarking.
 
+The following sections describe how to configure logging and monitoring with zot. You can use zot's benchmarking tool to test your configuration and deployment, as described in [Benchmarking zot with zb](benchmarking-with-zb.md).
+
 ## Logging
 
 Logging for zot operations is configured with the `log` attribute in the configuration file, as shown in the following example.
