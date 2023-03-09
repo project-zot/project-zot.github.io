@@ -116,22 +116,3 @@ The configuration file of zxp contains connection details for the zot server fro
 > The zxp module does not have Prometheus integration.
 >
 > The zxp module is not needed with a full zot image.
-
-
-
-## Benchmarking zot with zb
-
-The [zot project](https://github.com/project-zot/zot) includes the `zb` tool, which allows you to benchmark a zot registry or any other container image registry that conforms to the [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec) published by the Open Container Initiative (OCI).
-
-The `zb` tool is useful for benchmarking zot registry workloads in
-scenarios such as the following:
-
--   comparing configuration changes
-
--   comparing software versions
-
--   comparing hardware/deployment environments
-
--   comparing with other registries
-
-For detailed information about benchmarking with `zb`, see [Benchmarking zot with zb](../articles/benchmarking-with-zb.md).
