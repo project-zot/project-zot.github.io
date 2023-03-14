@@ -4,10 +4,9 @@
 
 |Icon     | Description      |
 |---------|------------------|
-| :white_medium_square: |  |
-| :pencil2: |  |
-| :bulb: | Note. A helpful suggestion or a reference to additional material not covered in this document. |
-| :warning: | Warning. A suggestion or advisory intended to avoid a loss of service or data. | 
+| :pencil2: | Note &mdash; A point of emphasis or caution. |
+| :bulb: | Tip &mdash; A helpful suggestion or a reference to additional material not covered in this document. |
+| :warning: | Warning &mdash; A suggestion or advisory intended to avoid a loss of service or data. | 
 
 ## Definitions
 
@@ -35,4 +34,5 @@
 | tag | A label applied to an image that distinguishes the image from other images in the same repository. A common example is a version tag. |
 | zb | A benchmarking tool, available as a zot companion binary, for benchmarking a zot registry or any other container image registry that conforms to the [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec). |
 | zli | A zot companion binary that implements a set of command line commands for interacting with the zot registry server. |
+| zui | A zot companion binary that implements a graphical user interface (GUI) for interacting with the zot registry server. |
 | zxp | A node exporter, available as a zot companion binary,  that can be deployed with a minimal zot image in order to scrape metrics from the zot server. |
