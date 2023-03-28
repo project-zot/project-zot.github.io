@@ -2,15 +2,17 @@
 
 > :point_right: A `zot` registry can mirror one or more upstream OCI registries, including popular cloud registries such as Docker Hub and Google Container Registry (gcr.io).
 
-A key use case for zot is to act as a mirror for upstream registries. If an upstream registry is OCI distribution-spec conformant for pulling images, you can use zot's `sync` feature to implement a downstream mirror, synchronizing OCI images and corresponding artifacts.
+A key use case for zot is to act as a mirror for upstream registries. If an upstream registry is OCI distribution-spec conformant for pulling images, you can use zot's `sync` feature to implement a downstream mirror, synchronizing OCI images and corresponding artifacts. Because synchronized images are stored in zot's local storage, registry mirroring allows for a fully distributed disconnected container image build pipeline. Container image operations terminate in local zot storage, which may reduce network latency and costs.
+
+> :warning: Because zot is a OCI-only registry, any upstream image stored in the Docker image format is converted to OCI format when downloading to zot. In the conversion, some non-OCI attributes may be lost. Signatures, for example, are removed due to the incompatibility between formats. 
 
 ## Mirroring modes
 
-For mirroring an upstream registry, two common use cases are a full mirror or a pull-through cache registry.
+For mirroring an upstream registry, two common use cases are a fully mirrored or a pull through (on-demand) cache registry.
 
-The full mirror mode allows for a fully distributed disconnected container image build pipeline.  As with git, wherein every clone is a full repository, you can configure your local zot instance to be a full OCI mirror registry. For this mode, configure zot for synchronization by periodic polling, not on-demand. Zot copies and caches a full copy of every image on the upstream registry, updating the cache whenever polling discovers a change in content or image version at the upstream registry. 
+As with git, wherein every clone is a full repository, you can configure your local zot instance to be a fully mirrored OCI registry. For this mode, configure zot for synchronization by periodic polling, not on-demand. Zot copies and caches a full copy of every image on the upstream registry, updating the cache whenever polling discovers a change in content or image version at the upstream registry. 
 
-Pull-through cache mode can conserve memory in the mirror registry. For this mode, configure zot for on-demand synchronization. When an image is first requested from the local zot registry, the image is downloaded from the upstream registry and cached. Subsequent requests for the same image are served from zot's cache. Images that have not been requested are not downloaded. If a polling interval is also configured, zot periodically polls the upstream registry for changes, updating any cached images if changes are detected. 
+ For a pull through cache mirrored registry, configure zot for on-demand synchronization. When an image is first requested from the local zot registry, the image is downloaded from the upstream registry and cached in local storage. Subsequent requests for the same image are served from zot's cache. Images that have not been requested are not downloaded. If a polling interval is also configured, zot periodically polls the upstream registry for changes, updating any cached images if changes are detected. 
 
 > :pencil2: 
 > Because Docker Hub rate-limits pulls and does not support catalog listing, do not use polled mirroring with Docker Hub. Use only on-demand mirroring with Docker Hub.
