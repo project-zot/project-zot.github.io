@@ -1,13 +1,18 @@
 # OCI Registry Mirroring With zot
 
 > :point_right: A `zot` registry can mirror one or more upstream OCI registries, including popular cloud registries such as Docker Hub and Google Container Registry (gcr.io).
->
 
-A key use case for zot is to act as a mirror for upstream registries. If an upstream registry is OCI distribution-spec conformant for pulling images, you can use zot's `sync` feature to implement a downstream mirror, synchronizing OCI images and corresponding artifacts.
+A key use case for zot is to act as a mirror for upstream registries. If an upstream registry is OCI distribution-spec conformant for pulling images, you can use zot's `sync` feature to implement a downstream mirror, synchronizing OCI images and corresponding artifacts. Because synchronized images are stored in zot's local storage, registry mirroring allows for a fully distributed disconnected container image build pipeline. Container image operations terminate in local zot storage, which may reduce network latency and costs.
 
-As with git, wherein every clone is a full repository, you can configure a local zot instance to be a full OCI mirror registry. This allows for a fully distributed disconnected container image build pipeline.
+> :warning: Because zot is a OCI-only registry, any upstream image stored in the Docker image format is converted to OCI format when downloading to zot. In the conversion, some non-OCI attributes may be lost. Signatures, for example, are removed due to the incompatibility between formats. 
 
-Synchronization between upstream and downstream registries can be implemented by periodic polling of the upstream registry or synchronization can occur on demand, when a user pulls an image from the downstream registry.
+## Mirroring modes
+
+For mirroring an upstream registry, two common use cases are a fully mirrored or a pull through (on-demand) cache registry.
+
+As with git, wherein every clone is a full repository, you can configure your local zot instance to be a fully mirrored OCI registry. For this mode, configure zot for synchronization by periodic polling, not on-demand. Zot copies and caches a full copy of every image on the upstream registry, updating the cache whenever polling discovers a change in content or image version at the upstream registry. 
+
+ For a pull through cache mirrored registry, configure zot for on-demand synchronization. When an image is first requested from the local zot registry, the image is downloaded from the upstream registry and cached in local storage. Subsequent requests for the same image are served from zot's cache. Images that have not been requested are not downloaded. If a polling interval is also configured, zot periodically polls the upstream registry for changes, updating any cached images if changes are detected. 
 
 > :pencil2: 
 > Because Docker Hub rate-limits pulls and does not support catalog listing, do not use polled mirroring with Docker Hub. Use only on-demand mirroring with Docker Hub.
@@ -77,12 +82,12 @@ The following table lists the configurable attributes for the `sync` feature:
 <td style="text-align: left;"><ul>
 <li><p><code>false</code>: Pull all images not found in the local
 registry.</p></li>
-<li><p><code>true</code>: Pull any image not found in the local registry only when needed.</p></li>
+<li><p><code>true</code>: Pull any image not found in the local registry only when the image is requested by a user.</p></li>
 </ul></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><p><strong>pollInterval</strong></p></td>
-<td style="text-align: left;"><p>The period in seconds between polling of remote registries. If no value is specified, no periodic polling will occur. If a value is set and the <strong>content</strong> attributes are configured, periodic synchronization is enabled and will run at the specified value.<br/><br/><strong>Note:</strong> Because Docker Hub rate-limits pulls and does not support catalog listing, do not use polled mirroring with Docker Hub. Use only onDemand mirroring with Docker Hub.</p></td>
+<td style="text-align: left;"><p>The period in seconds between polling of a remote registry. If no value is specified, no periodic polling will occur. If a value is set and the <strong>content</strong> attributes are configured, periodic synchronization is enabled and will run at the specified value.<br/><br/><strong>Note:</strong> Because Docker Hub rate-limits pulls and does not support catalog listing, do not use polled mirroring with Docker Hub. Use only onDemand mirroring with Docker Hub.</p></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"><p><strong>tlsVerify</strong></p></td>
@@ -257,10 +262,10 @@ The following is an example of sync configuration for mirroring multiple registr
 
 With this zot configuration, the sync behavior is as follows:
 
-1. This user request for content from the zot registry:<br/>
+1. This initial user request for content from the zot registry:<br/>
    `skopeo copy --src-tls-verify=false docker://localhost:8080/docker-images/alpine <dest>`<br/>causes zot to synchronize the content with the docker.io registry:<br/>&nbsp;&nbsp;&nbsp;&nbsp;`docker.io/library/alpine:latest`<br/>to the zot registry:<br>&nbsp;&nbsp;&nbsp;&nbsp;`localhost:8080/docker-images/alpine:latest`<br/>before delivering the content to the requestor at `<dest>`.
 
-2. This user request for content from the zot registry:<br/>
+2. This initial user request for content from the zot registry:<br/>
   `skopeo copy --src-tls-verify=false docker://localhost:8080/k8s-images/kube-proxy:v1.19.2 <dest>`<br/>causes zot to synchronize the content with the gcr.io registry:<br/>&nbsp;&nbsp;&nbsp;&nbsp;`k8s.gcr.io/kube-proxy:v1.19.2` <br/>to the zot registry:<br/>&nbsp;&nbsp;&nbsp;&nbsp;`localhost:8080/k8s-images/kube-proxy:v1.19.2`<br/>before delivering the content to the requestor at `<dest>`.
 
 You can use this command:<br/>&nbsp;&nbsp;&nbsp;&nbsp;
