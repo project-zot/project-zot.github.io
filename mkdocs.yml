@@ -49,6 +49,7 @@ plugins:
   - minify:
       minify_html: true
   - git-revision-date-localized
+  - macros
 markdown_extensions:
   - abbr
   - admonition
