@@ -23,7 +23,7 @@ project](https://github.com/project-zot/zot/releases). Download the
 image to the\`/usr/bin/\` directory and rename it to `zot,` as in this
 example:
 
-    $ wget -O /usr/bin/zot  https://github.com/project-zot/zot/releases/download/v1.4.2-rc2/zot-linux-amd64
+    wget -O /usr/bin/zot  https://github.com/project-zot/zot/releases/download/{{ git.tag }}/zot-linux-amd64
 
 ### Step 2: Create a zot configuration file
 
@@ -40,11 +40,11 @@ If you want to use local authentication with zot, create a
 `/etc/zot/htpasswd` file with an initial account entry using the
 `htpasswd` command as in this example:
 
-    $ htpasswd -bnB myUserName myPassword > /etc/zot/htpasswd
+    htpasswd -bnB myUserName myPassword > /etc/zot/htpasswd
 
 To add additional local users, use the `>>` redirect as in this example:
 
-    $ htpasswd -bnB myUserName2 myPassword2 >> /etc/zot/htpasswd
+    htpasswd -bnB myUserName2 myPassword2 >> /etc/zot/htpasswd
 
 ### Step 4: Define the zot service
 
@@ -78,16 +78,16 @@ Create a non-root user ID to be the owner of the zot service and its resources.
 
 In this example, the user ID 'zot' is created with the `adduser` command, and resource ownership is assigned.
 
-    $ sudo adduser --no-create-home --disabled-password --gecos --disabled-login zot
+    sudo adduser --no-create-home --disabled-password --gecos --disabled-login zot
 
-    $ sudo mkdir -p /data/zot
-    $ sudo chown -R zot:zot /data/zot
+    sudo mkdir -p /data/zot
+    sudo chown -R zot:zot /data/zot
 
-    $ sudo mkdir -p /var/log/zot
-    $ sudo chown -R zot:zot /var/log/zot
+    sudo mkdir -p /var/log/zot
+    sudo chown -R zot:zot /var/log/zot
 
-    $ sudo chown root:root /usr/bin/zot
-    $ sudo chown root:root config.json
+    sudo chown root:root /usr/bin/zot
+    sudo chown root:root config.json
 
 With the `adduser` options shown, the 'zot' user ID has no local
 directory. There is no ability to log into the zot user account, and the
@@ -97,13 +97,13 @@ account has no finger information.
 
 Enable and start the zot service with these commands:
 
-    $ sudo systemctl enable zot
-    $ sudo systemctl start zot
+    sudo systemctl enable zot
+    sudo systemctl start zot
 
 When the zot service has started, you can check its status with this
 command:
 
-    $ sudo systemctl status zot
+    sudo systemctl status zot
 
 ## After the installation
 
