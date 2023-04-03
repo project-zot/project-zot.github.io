@@ -36,7 +36,7 @@ image variations, image locations, and image naming formats.
     Give the repo a local name, such as **project-zot**, as in this
     example:
 
-    `$ helm repo add project-zot http://zotregistry.io/helm-charts`
+    `helm repo add project-zot http://zotregistry.io/helm-charts`
 
         "project-zot" has been added to your repositories
 
@@ -51,10 +51,10 @@ image variations, image locations, and image naming formats.
 2.  Search the repository to see the Helm charts for zot installation.
     Search using the keyword 'project-zot' or 'zot', as in this example:
 
-    `$ helm search repo project-zot`
+    `helm search repo project-zot`
 
         NAME             CHART VERSION  APP VERSION  DESCRIPTION
-        project-zot/zot  0.1.0          v1.4.3       A Helm chart for Kubernetes
+        project-zot/zot  <chart-version>          {{ git.tag }}       A Helm chart for Kubernetes
 
 
     > :pencil2:
@@ -65,7 +65,7 @@ image variations, image locations, and image naming formats.
 3.  Update to the latest information of available charts from the chart
     repository, as shown in this example:
 
-    `$ helm repo update project-zot`
+    `helm repo update project-zot`
 
         Hang tight while we grab the latest from your chart repositories...
         ...Successfully got an update from the "project-zot" chart repository
@@ -74,15 +74,15 @@ image variations, image locations, and image naming formats.
 4.  Display the default information of the Helm chart, as shown in this
     example:
 
-`$ helm show all project-zot/zot`
+`helm show all project-zot/zot`
 
 ``` yaml
     apiVersion: v2
-    appVersion: v1.4.3
+    appVersion: {{ git.tag }}
     description: A Helm chart for Kubernetes
     name: zot
     type: application
-    version: 0.1.16
+    version: <chart-version>
 
     # Default values for zot.
     # This is a YAML-formatted file.
@@ -91,7 +91,7 @@ image variations, image locations, and image naming formats.
     image:
       repository: ghcr.io/project-zot/zot-linux-amd64
       pullPolicy: IfNotPresent
-      tag: "v1.4.3"
+      tag: "{{ git.tag }}"
     serviceAccount:
       create: true
       annotations: {}
@@ -110,7 +110,7 @@ may be able to specify them during the installation. Not all chart
 values are configurable, but you can display those that are configurable
 using the command in the following example:
 
-`$ helm show values project-zot/zot`
+`helm show values project-zot/zot`
 
 ``` yaml
   # Default values for zot.
@@ -120,7 +120,7 @@ using the command in the following example:
   image:
     repository: ghcr.io/project-zot/zot-linux-amd64
     pullPolicy: IfNotPresent
-    tag: "v1.4.3"
+    tag: "{{ git.tag }}"
   serviceAccount:
     create: true
     annotations: {}
@@ -172,7 +172,7 @@ repository. If not specified, the policy depends on
 <td style="text-align: left;"><p>Identifies different versions the
 image. default is the chart <code>appVersion</code>.</p>
 <p>Examples: <code>:latest</code> (the default) or
-<code>:v1.4.3</code></p></td>
+<code>:{{ git.tag }}</code></p></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><p>serviceAccount.create</p></td>
@@ -251,7 +251,7 @@ settings in the Helm chart:
 
 **Example 1: use default chart parameters**
 
-`$ helm install zot project-zot/zot`
+`helm install zot project-zot/zot`
 
     NAME: zot
     LAST DEPLOYED: Thu Aug 11 19:13:02 2022
@@ -267,23 +267,23 @@ settings in the Helm chart:
 
 **Example 2: modify specific chart parameters with 'set'**
 
-`$ helm install --set replicaCount=2,service.port=5050 zot project-zot/zot`
+`helm install --set replicaCount=2,service.port=5050 zot project-zot/zot`
 
 
 **Example 3: modify specific chart parameters with a file**
 
 
-`$ helm install -f myfile.yaml zot project-zot/zot`
+`helm install -f myfile.yaml zot project-zot/zot`
 
 
 **Example 4: use a specific version of the Helm chart**
 
-`$ helm install zot project-zot/zot --version 0.1.0`
+`helm install zot project-zot/zot --version 0.1.0`
 
 
 **Example 5: link to a kubeconfig file**
 
-`$ helm install zot project-zot/zot --kubeconfig $HOME/.kube/config`
+`helm install zot project-zot/zot --kubeconfig $HOME/.kube/config`
 
 ## After the installation
 
@@ -291,10 +291,10 @@ settings in the Helm chart:
 
 1.  List all releases that are either deployed or failed.
 
-    `$ helm list`
+    `helm list`
 
         NAME  NAMESPACE  REVISION  UPDATED    STATUS    CHART      APP VERSION
-        zot   default    1         <datetime> deployed  zot-0.1.0  v1.4.3
+        zot   default    1         <datetime> deployed  <chart-version>  {{ git.tag }}
 
     This response indicates that zot is deployed.
 
@@ -362,4 +362,4 @@ Refer to [*Configuring zot*](../admin-guide/admin-configuration.md) for complete
 Should you need to uninstall zot, use the `helm uninstall` command, as
 in this example:
 
-`$ helm uninstall zot`
+`helm uninstall zot`
