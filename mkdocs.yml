@@ -99,7 +99,7 @@ nav:
   - What's New: general/whats-new.md
   - User Guides:
     - Push and Pull Image Content: user-guides/user-guide-datapath.md
-    - Use the Web Interface to Find and Pull Images: user-guides/user-guide-gui.md
+    - Use the Web Interface to Find Images: user-guides/user-guide-gui.md
     - Command Line (zli): user-guides/zli.md
   - Installation Guides:
     - Installing zot on Bare Metal Linux: install-guides/install-guide-linux.md
