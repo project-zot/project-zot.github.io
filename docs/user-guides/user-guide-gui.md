@@ -79,9 +79,9 @@ These icons appear next to the image name, indicating the results of the vulnera
 | ---- | ----------- |
 | ![](../assets/images/icon-no-vulnerability.jpg){width="35"} | A vulnerability scan of the image found no vulnerabilities | 
 | ![](../assets/images/icon-failed-to-scan.jpg){width="35"} | A vulnerability scan of the image failed<br/>(See severity icon in VULNERABILITIES tab) | 
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](../assets/images/critical.jpg){width="35"} | Critical severity | 
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](../assets/images/high.jpg){width="35"} | High severity | 
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](../assets/images/medium.jpg){width="35"} | Medium severity | 
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](../assets/images/low.jpg){width="35"} | Low severity | 
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](../assets/images/critical.jpg){width="25"} | Critical severity | 
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](../assets/images/high.jpg){width="25"} | High severity | 
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](../assets/images/medium.jpg){width="25"} | Medium severity | 
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](../assets/images/low.jpg){width="25"} | Low severity | 
 | ![](../assets/images/icon-verified-signature.jpg){width="35"} | The image signature is verified | 
 | ![](../assets/images/icon-unverified-signature.jpg){width="35"} | The image signature is not verified | 
