@@ -1,0 +1,7 @@
+zot
+OCI
+graphQL
+APIs
+SHA
+checksums
+Kubernetes
