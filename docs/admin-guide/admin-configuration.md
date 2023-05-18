@@ -154,19 +154,11 @@ The following table lists the configurable attributes.
 
 <a name="storage_config"></a>
 
-## Storage configuration
+## Storage
 
-### Storage options
+Exposing flexibility in storage capabilities is a key tenet for catering to the requirements of varied environments ranging from cloud to on-premises to IoT.
 
-With zot, you have the option to store your registry image
-files either in local filesystem storage or in cloud storage, such as an
-Amazon Simple Storage Service (S3) bucket.
-
-### Configuring local storage
-
-Local filesystem storage for zot is configured with the
-`storage` attribute in the configuration file, as shown in the following
-example.
+Filesystem storage is configured with the `storage` attribute in the zot configuration file, as shown in the following simple example.
 
 ``` json
 "storage":{
@@ -179,182 +171,42 @@ example.
 }
 ```
 
-The following table lists the configurable attributes.
+With zot, you have the option to store your registry image files either in local filesystem storage or in cloud storage, such as an Amazon Simple Storage Service (S3) bucket.
 
-<table>
-<colgroup>
-<col style="width: 25%" />
-<col style="width: 75%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Attribute</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><p><code>rootDirectory</code></p></td>
-<td style="text-align: left;"><p>Location of the images stored in the
-server file system.</p></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><p><code>commit</code></p></td>
-<td style="text-align: left;"><p>For faster performance, data written by
-zot is retained in memory before being periodically committed
-to disk by the operating system. To eliminate this retention time and
-cause data to be written to disk immediately, set to <code>true</code>.
-This prevents data loss but reduces performance.</p></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><p><code>dedupe</code></p></td>
-<td style="text-align: left;"><p>If the server filesystem supports hard
-links, you can optimize storage space by enabling inline deduplication
-of layers and blobs that are shared among multiple container images.
-Deduplication is enabled by default. Set to <code>false</code> to
-disable deduplication.</p></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><p><code>gc</code></p></td>
-<td style="text-align: left;"><p>When an image is deleted, either by tag
-or by reference, orphaned blobs can lead to wasted storage. Garbage
-collection (gc) is enabled by default to reclaim this space. Set to
-<code>false</code> to disable garbage collection.</p></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><p><code>gcDelay</code></p></td>
-<td style="text-align: left;"><p>(Optional) If garbage collection is
-enabled, causes it to run once after the specified delay time. The
-default is 1 hour. Requires the <code>gc</code> attribute to be
-<code>true</code>.</p></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><p><code>gcInterval</code></p></td>
-<td style="text-align: left;"><p>(Optional) If garbage collection is
-enabled, causes periodic collection at the specified interval. Must be
-set based on use cases and user workloads. If no value is specified,
-there is no periodic collection. Requires the <code>gc</code> attribute
-to be <code>true</code>.</p></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><p><code>subpaths</code></p></td>
-<td style="text-align: left;"><p>You can store and serve images from
-multiple filesystems, each with their own repository paths and settings.
-The following example shows three subpaths.</p>
-<div class="sourceCode" id="cb1"><pre
-class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="er">&quot;storage&quot;:</span><span class="fu">{</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;subPaths&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;/a&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;rootDirectory&quot;</span><span class="fu">:</span> <span class="st">&quot;/tmp/zot1&quot;</span><span class="fu">,</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;dedupe&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;gc&quot;</span><span class="fu">:</span> <span class="kw">true</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;/b&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;rootDirectory&quot;</span><span class="fu">:</span> <span class="st">&quot;/tmp/zot2&quot;</span><span class="fu">,</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;dedupe&quot;</span><span class="fu">:</span> <span class="kw">true</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;/c&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;rootDirectory&quot;</span><span class="fu">:</span> <span class="st">&quot;/tmp/zot3&quot;</span><span class="fu">,</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;dedupe&quot;</span><span class="fu">:</span> <span class="kw">false</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></td>
-</tr>
-</tbody>
-</table>
+### Local storage
 
-### Configuring S3 storage
+zot can store and serve files from one or more local directories (folders). A minimum of one root directory is required for local hosting, but additional hosted directories can be added. When accessed by HTTP APIs, all directories can appear as a single data store.
 
-Amazon Simple Storage Service (S3) for zot can be configured
-with the `storageDriver` attribute in the configuration file, as shown
-in the following example:
+> :pencil2:
+> Remote filesystems that are mounted and accessible locally such as `NFS` or `fuse` are treated as local filesystems.
 
-``` json
-"storageDriver": {
-    "name": "s3",
-    "region": "us-east-2",
-    "bucket": "zot-storage",
-    "secure": true,
-    "skipverify": false,
-    "accesskey": "<YOUR_ACCESS_KEY_ID>",
-    "secretkey": "<YOUR_SECRET_ACCESS_KEY>"
-}
-```
+### Remote storage
 
-As in the case with local filesystem storage, you can use multiple
-storage locations using the `subpath` attribute, as in the following
-example.
+zot can also store data remotely in the cloud, using the storage APIs of the cloud service. Currently, zot supports only the AWS S3 storage service.
 
-``` json
-"subPaths": {
-    "/a": {
-        "rootDirectory": "/zot-a",
-        "storageDriver": {
-            "name": "s3",
-            "region": "us-east-2",
-            "bucket": "zot-storage",
-            "secure": true,
-            "skipverify": false
-        }
-    },
-    "/b": {
+For detailed information about configuring S3 storage, see the [AWS S3 documentation](https://docs.aws.amazon.com/s3/?icmpid=docs_homepage_featuredsvcs) and [Storage Planning with zot](../articles/storage.md).
 
-...
+### Storage features
 
-    }
-}
-```
+#### Commit
 
-The `subPaths` feature ties together several separate storage filesystems and backends behind the same HTTP API interface. In the example above, both repository paths "/a" and "/b" are exposed to clients. Content on these two paths can be hosted completely separately by different storage services, locations, or filesystems, with no difference to the user interface and no perceptible difference to the user experience. This is useful if one wants to serve existing OCI images from different backends or if storage can be expanded only by using different backing stores.
+Most modern filesystems buffer and flush RAM data to disk after a delay. The purpose of this function is to improve performance at the cost of higher disk memory usage. In embedded devices such as Raspberry Pi, for example, where RAM may be very limited and at a premium, it is desirable to flush data to disk more frequently. The zot storage configuration exposes an option called `commit` which, when enabled, causes data writes to be committed to disk immediately. This option is disabled by default.
 
-#### S3 Credentials
+#### Deduplication
 
-In the first configuration file example, the S3 credentials were
-configured with the attributes `accesskey` and `secretkey.` As an
-alternative, you can omit these attributes from the configuration file
-and you can configure them using environment variables or a credential
-file.
+Deduplication is a storage space saving feature wherein only a single copy of specific content is maintained on disk while many different image manifests may hold references to that same content. The deduplication option (`dedupe`) is also available for supported cloud storage backends.
 
--   Environment variables
+#### Garbage collection
 
-    zot looks for credentials in the following environment
-    variables:
+After an image is deleted by deleting an image manifest, the corresponding blobs can be purged to free up space. However, since Distribution Specification APIs are not transactional between blob and manifest lifecycle, care must be taken so as not to put the storage in an inconsistent state. Garbage collection in zot is an inline feature meaning that it is **not** necessary to take the registry offline. The zot configuration model allows for enabling and disabling garbage collection (`gc`). The model also allows the configuration of a tunable delay (`gcDelay`), which can be set depending on client network speeds and the size of blobs.
 
-        AWS_ACCESS_KEY_ID
-        AWS_SECRET_ACCESS_KEY
-        AWS_SESSION_TOKEN (optional)
+#### Scrub
 
--   Credential file
+The `scrub` function, available as an *extension*, makes it possible to ascertain data validity by computing hashes on blobs periodically and continuously so that any bit rot is caught and reported early.
 
-    A credential file is a plaintext file that contains your access
-    keys, as shown in the following example.
+### Configuring storage
 
-        [default]
-        aws_access_key_id = <YOUR_DEFAULT_ACCESS_KEY_ID>
-        aws_secret_access_key = <YOUR_DEFAULT_SECRET_ACCESS_KEY>
-
-        [test-account]
-        aws_access_key_id = <YOUR_TEST_ACCESS_KEY_ID>
-        aws_secret_access_key = <YOUR_TEST_SECRET_ACCESS_KEY>
-
-        [prod-account]
-        ; work profile
-        aws_access_key_id = <YOUR_PROD_ACCESS_KEY_ID>
-        aws_secret_access_key = <YOUR_PROD_SECRET_ACCESS_KEY>
-
-    The `[default]` heading defines credentials for the default profile,
-    which zot will use unless you configure it to use another
-    profile. You can specify a profile using the `AWS_PROFILE`
-    environment variable as in this example:
-
-        AWS_PROFILE=test-account
-
-    The credential file must be named `credentials.` The file must be
-    located in the `.aws/` folder in the home directory of the same
-    server that is running your zot application.
-
-For more details about specifying S3 credentials, see the [AWS
-documentation](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials).
+For detailed information about configuring local or remote storage and storage features for your zot registry, see [Storage Planning with zot](../articles/storage.md).
 
 
 <a name="security_config"></a>
