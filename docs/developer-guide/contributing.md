@@ -1,6 +1,6 @@
 # Contributing to zot Development
 
-> :point_right: The zot project is built for developers by developers. The zot project welcones the participation of the open source community in extending and improving zot. 
+> :point_right: The zot project is built for developers by developers. The zot project welcomes the participation of the open source community in extending and improving zot. 
 
 ## Submission Requirements
 
@@ -20,7 +20,7 @@ First, fork the zot project on GitHub and submit a commit to your fork. Then ope
 
 - License statement
 
-  Either the commit messsage or the PR description must contain the following statement:
+  Either the commit message or the PR description must contain the following statement:
 
   "By submitting this pull request, I confirm that my contribution is made under the terms of the Apache 2.0 license."
 

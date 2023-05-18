@@ -72,11 +72,11 @@ The following table lists additional advantages of zot:
 | **Distribution Spec conformance** | yes                |
 | **CNCF project**                  | accepted as a Sandbox Project |
 | **License**                       | Apache 2.0         |
-| **On-premise deployment**         | yes                |
+| **On-premises deployment**        | yes                |
 | **OCI conformance**\*             | yes                |
 | **Single binary image**\*         | yes                |
 | **Minimal build**\*               | yes                |
-| **Storage Layout**                | OCIv1 Image Layout |
+| **Storage Layout**                | OCI v1 Image Layout |
 | **Authentication**                | built-in           |
 | **Authorization**                 | built-in           |
 | **Garbage collection**            | inline             |

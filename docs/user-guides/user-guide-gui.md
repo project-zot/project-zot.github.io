@@ -12,7 +12,7 @@ The initial page of the registry displays a sampling of the most popular images 
 
 ![screen-initial](../assets/images/screen-initial.jpg){width="600"}
 
-> :bulb: Wherever an image name appears, two icons follow the name, indicating the results of the vulnerabiity scan and the signature status. These icons are described in [Icons and their meanings](#icons).
+> :bulb: Wherever an image name appears, two icons follow the name, indicating the results of the vulnerability scan and the signature status. These icons are described in [Icons and their meanings](#icons).
 
 ## Find an image
 
@@ -73,7 +73,7 @@ Paste the pull command into your terminal to pull the image.
 <a name="icons"></a>
 ## Icons and their meanings
 
-These icons appear next to the image name, indicating the results of the vulnerabiity scan and the signature status. 
+These icons appear next to the image name, indicating the results of the vulnerability scan and the signature status. 
 
 | Icon | Description |
 | ---- | ----------- |
