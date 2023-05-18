@@ -39,7 +39,7 @@ The following extensions are currently supported:
 
 ### **Sync**
 
-   You can deplay a local mirror pointing to an upstream zot instance with various container image download policies, including on-demand and periodic downloads. The **sync** function is useful to avoid overwhelming the upstream instance, or if the upstream instance has rate-limited access.
+   You can deploy a local mirror pointing to an upstream zot instance with various container image download policies, including on-demand and periodic downloads. The **sync** function is useful to avoid overwhelming the upstream instance, or if the upstream instance has rate-limited access.
 
 > :bulb:
 > `docker.io` is supported as an upstream mirror.

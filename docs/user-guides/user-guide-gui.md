@@ -73,7 +73,7 @@ Paste the pull command into your terminal to pull the image.
 <a name="icons"></a>
 ## Icons and their meanings
 
-These icons appear next to the image name, indicating the results of the vulnerabiity scan and the signature status. 
+These icons appear next to the image name, indicating the results of the vulnerability scan and the signature status. 
 
 | Icon | Description |
 | ---- | ----------- |

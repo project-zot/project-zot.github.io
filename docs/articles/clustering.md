@@ -26,7 +26,7 @@ Clustering is supported in both bare-metal and Kubernetes environments.
 
 -   A highly-available loadbalancer such as `HAProxy` configured to direct traffic to zot replicas.
 
--   Multiple zot replicas as `systemd` services hosted on mutiple hosts or VMs.
+-   Multiple zot replicas as `systemd` services hosted on multiple hosts or VMs.
 
 -   AWS S3 API-compatible remote backend storage.
 
