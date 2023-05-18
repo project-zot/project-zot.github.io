@@ -49,6 +49,7 @@ filesystem
 filesystems
 fullname
 gc
+gcr
 ghcr
 github
 golang
@@ -139,7 +140,9 @@ stylesheets
 subdirectory
 sublicense
 subpath
+subpaths
 subtree
+subtrees
 systemd
 TLS
 tlsVerify
