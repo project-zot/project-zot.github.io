@@ -27,7 +27,7 @@ Mirroring zot using the `sync` feature allows you to easily migrate a registry. 
 
 - Updating (or downgrading) a zot registry. 
   
-    To minimize downtime during an update, or to avoid any incompatibilies between zot releases that would preclude an inplace update, you can bring up a new zot registry with the desired release and then migrate from the existing registry.
+    To minimize downtime during an update, or to avoid any incompatibilies between zot releases that would preclude an in place update, you can bring up a new zot registry with the desired release and then migrate from the existing registry.
 
 
 ## Basic configuration for mirroring with sync
