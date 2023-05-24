@@ -27,8 +27,24 @@ Mirroring zot using the `sync` feature allows you to easily migrate a registry. 
 
 - Updating (or downgrading) a zot registry. 
   
-    To minimize downtime during an update, or to avoid any incompatibilities between zot releases that would preclude an in place update, you can bring up a new zot registry with the desired release and then migrate from the existing registry.
+    To minimize downtime during an update, or to avoid any incompatibilities between zot releases that would preclude an in-place update, you can bring up a new zot registry with the desired release and then migrate from the existing registry.
 
+To ensure a complete migration of the registry contents, set a polling interval in the configuration of the new zot registry and set `prefix` to `**`, as shown in this example: 
+
+```
+  {
+  	"urls": [
+  		"https://registry1:5000"
+  	],
+  	"pollInterval": "12h",
+  	"onDemand": true,
+  	"content": [
+  		{
+  			"prefix": "**"
+  		}
+  	]
+  }
+```
 
 ## Basic configuration for mirroring with sync
 

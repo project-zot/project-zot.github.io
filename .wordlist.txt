@@ -64,6 +64,7 @@ html
 http
 https
 inlinehilite
+in-place
 io
 IoT
 JSON
