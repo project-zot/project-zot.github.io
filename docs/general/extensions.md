@@ -1,27 +1,35 @@
 # Extensions
 
 > :point_right: Extensions provide additional registry features that are not a part of the Distribution Specification.
->
->The following extensions are currently available with zot:
->
-> -  **Search (enhanced)**
-> -  **Sync**
-> -  **Lint**
-> -  **Scrub**
-> -  **Metrics**
+
+The following extensions are currently available with zot:
+
+-  **Search (enhanced)**
+-  **Sync**
+-  **Lint**
+-  **Scrub**
+-  **Metrics**
+-  **User preferences**
+
+
+> :bulb: For detailed information about configuring zot extensions, see [*Configuring zot*](../admin-guide/admin-configuration.md).
 
 ## About extensions
 
 The OCI Distribution Specification supports extending the functionality of an OCI-compliant registry implementation by adding [extensions](https://github.com/opencontainers/distribution-spec/tree/main/extensions). Extensions are new APIs developed outside of the core OCI specs. Developers may propose their extensions to the OCI for possible future addition to the Distribution Specification.
 
-Wherever applicable, extensions can be dynamically discovered using the extensions support of the OCI Distribution Specification. 
+Wherever applicable, extensions can be dynamically discovered using the extensions support of the OCI Distribution Specification.
 
 > :warning:
 > Extension features of zot are available only with a full zot image. They are excluded from the minimal zot image.
 
 ## Extensions implemented in zot
 
-The following extensions are currently supported:
+The extensions implemented in zot include administrator-configured functionality and end-user features. 
+
+> :pencil2: Currently, _search_ and _userprefs_ are the only zot extensions operable by end users. Only these extensions are accessible through HTTP APIs and are [discoverable](https://github.com/opencontainers/distribution-spec/blob/main/extensions/_oci.md#module-discover) using the OCI extensions mechanism.
+
+The following extensions are currently supported by zot:
 
 ### **Search**
 
@@ -33,9 +41,6 @@ The following extensions are currently supported:
    -   "What is its size?"
    -   "Does an image depend on this image via its layers?"
    -   "What vulnerabilities exist in an image or its dependent images?"
-
-> :point_right: 
-> Currently, _search_ is the only zot extension that is accessible via HTTP APIs and is [discoverable](https://github.com/opencontainers/distribution-spec/blob/main/extensions/_oci.md#module-discover) using the OCI extensions mechanism.
 
 ### **Sync**
 
@@ -55,5 +60,14 @@ The following extensions are currently supported:
 ### **Metrics**
   
    The **metrics** extension adds a node exporter, which is not present in the minimal build.
+
+### **User preferences**
+
+   The **userprefs** extension provides an API endpoint for adding configurable user preferences for a repository. This custom extension, not a part of the OCI distribution, is accessible only by authenticated users of the registry. Unauthenticated users are denied access.
+
+   The current functions implemented by this extension include:
+
+   - Toggling the star (favorites) icon for a repository.
+   - Toggling the bookmark icon for a repository.
 
 For information about configuring zot extensions, see [*Configuring zot*](../admin-guide/admin-configuration.md).

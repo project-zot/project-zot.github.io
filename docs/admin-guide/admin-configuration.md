@@ -2,10 +2,9 @@
 
 > :point_right: The registry administrator configures zot primarily through settings in the configuration file. 
 
-> 
-> Using the information in this guide, you can compose a configuration file with the settings and features you require for your zot registry server.
->
-> Before launching zot with a new configuration, we recommend that you verify the syntax of your configuration as described in [Verifying the configuration file](#verifying-config).
+Using the information in this guide, you can compose a configuration file with the settings and features you require for your zot registry server.
+
+> :bulb: Before launching zot with a new configuration, we recommend that you verify the syntax of your configuration as described in [Verifying the configuration file](#verifying-config).
 
 
 ## Configuration file
@@ -65,7 +64,8 @@ With a full (not minimal) zot image, the additional extension features can be en
     "sync": {},
     "search": {},
     "scrub": {},
-    "lint": {}
+    "lint": {},
+    "userprefs": {}
   }
 }
 ```
@@ -81,7 +81,8 @@ The following features are configured under the `extensions` attribute.
 -   [Search](#search_config)
 -   [Scrub](#scrub_config)
 -   [Lint](#lint_config)
-
+-   [User Preferences](#userprefs_config)
+  
 An extension feature is enabled by the presence of the feature’s
 attribute under `extensions`. An extension feature can be disabled by
 omitting the feature attribute or by including an `enable` attribute
@@ -413,6 +414,54 @@ The following table lists the configurable attributes for enhanced search.
 | `cve`            | Extends enhanced search to allow searching of Common Vulnerabilities and Exposures (CVE).                                                  |
 | `updateInterval` | Sets the interval at which the searchable database of CVE items is refreshed.                                                              |
 
+<a name="userprefs_config"></a>
+
+## Setting user preferences
+
+The user preferences extension provides an API endpoint for adding configurable user preferences for a repository. This custom extension, not a part of the OCI distribution, is accessible only by authenticated users of the registry. Unauthenticated users are denied access.
+
+To allow users to set preferences, add the `userprefs` attribute under `extensions` in the configuration file.
+
+The `userprefs` endpoint accepts as a query parameter an `action` to perform along with any other required parameters for the specified action. The actions currently implemented do not require an HTTP payload, nor do they return any related data other than an HTTP response code.
+
+### Current functionality
+
+The current functions implemented by this extension include:
+
+- Toggling the star (favorites) icon for a repository.
+- Toggling the bookmark icon for a repository.
+
+#### Toggle repository star
+
+This action sets the repository star property to `true` if it is `false`, and to `false` if it is `true`.
+
+| Action | Parameter | Parameter Description |
+| --- | --- | --- |
+| toggleStar | repository | The name of the repository whose star is to be changed |
+
+This example toggles a star on a repository named repoName:
+
+```
+PUT
+http://localhost:5000/v2/_zot/ext/userprefs?
+action=toggleStar&repo=repoName
+```
+
+#### Toggle repository bookmark
+
+This action sets the repository bookmark property to `true` if it is `false`, and to `false` if it is `true`.
+
+| Action | Parameter | Parameter Description |
+| --- | --- | --- |
+| toggleBookmark | repository | The name of the repository whose bookmark is to be changed |
+
+This example toggles a bookmark on a repository named repoName:
+
+```
+PUT
+http://localhost:5000/v2/_zot/ext/userprefs?
+action=toggleBookmark&repo=repoName
+```
 
 <a name="verifying-config"></a>
 
