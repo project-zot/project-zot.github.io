@@ -26,7 +26,9 @@ CNCF
 codebase
 colocated
 config
+ConfigMap
 conformant
+containerd
 credentialsFile
 cri
 CRI
@@ -67,6 +69,7 @@ inlinehilite
 io
 IoT
 JSON
+KEP
 kubeconfig
 kubectl
 kubelet
