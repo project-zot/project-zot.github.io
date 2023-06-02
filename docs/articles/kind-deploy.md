@@ -21,13 +21,6 @@ The following packages must be installed:
 - containerd
 - skopeo
 
-<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'><span><p style='margin-top:1em; text-align:center'><b>Comments</b></p>
-<ol>
-<li><p style='margin-left:1em;'>
-Now that docker is being deprecated from K8s, should we be using equivalent commands from another package, such as podman or containerd?</p></li>
-<li><p style='margin-left:1em;'>Is this a correct list of required packages?
-</p></li></ol></div><br/>
-
 Execute the following shell commands to set environment variables.
 
 ```shell
@@ -45,7 +38,11 @@ fi
 
 Create a "kind-registry" container, pulling a zot binary from the GitHub Container Registry (ghcr.io).  
 
-> :pencil2: This example uses a minimal (no extensions) zot image for an AMD-based linux server. Other available images are described at [the zot releases page](https://github.com/project-zot/zot/releases) in GitHub.
+> :pencil2: This example pulls `zot-minimal-linux-amd64:latest`,   
+> a minimal (no extensions) zot image for an AMD-based linux server. 
+>       
+> Other available images are described at the [zot releases page](https://github.com/project-zot/zot/releases) in GitHub.  
+> You can also specify a release by replacing `latest` with an available release number.
 
 ```shell
 {% raw %}
