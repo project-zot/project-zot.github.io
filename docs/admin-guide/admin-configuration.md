@@ -54,7 +54,7 @@ described in the later sections of this guide.
 
 Additional registry features that are not a part of the Distribution Specification are allowed to be added as [Extensions](https://github.com/opencontainers/distribution-spec/tree/main/extensions).  
 
-With a full (not minimal) zot image, the additional extension features can be enabled and configured under an `extensions` attribute in the configuration file as shown in the following example.
+With a full (not minimal) zot image, the following extension features can be enabled and configured under an `extensions` attribute in the configuration file as shown in the following example.
 
 ``` json
 {
@@ -64,8 +64,7 @@ With a full (not minimal) zot image, the additional extension features can be en
     "sync": {},
     "search": {},
     "scrub": {},
-    "lint": {},
-    "userprefs": {}
+    "lint": {}
   }
 }
 ```
@@ -81,14 +80,12 @@ The following features are configured under the `extensions` attribute.
 -   [Search](#search_config)
 -   [Scrub](#scrub_config)
 -   [Lint](#lint_config)
--   [User Preferences](#userprefs_config)
   
-An extension feature is enabled by the presence of the feature’s
-attribute under `extensions`. An extension feature can be disabled by
-omitting the feature attribute or by including an `enable` attribute
-with a value of `false`.
+An extension feature is usually enabled by the presence of the feature’s attribute under `extensions`. An extension feature can then be disabled by either omitting the feature attribute or by including an `enable` attribute with a value of `false`.
 
-For example, the scrub feature is enabled in the following cases.
+> :pencil2: An additional extension feature, [User Preferences](#userprefs_config), is enabled when the Search feature is enabled, and is not configured under the `extensions` section.
+
+Following is an example of enabling or disabling a feature in the `extensions` section. The scrub feature is enabled in these two configurations:
 
 ``` json
 "extensions": {
@@ -104,7 +101,7 @@ For example, the scrub feature is enabled in the following cases.
 }
 ```
 
-The scrub feature is disabled in the following cases.
+The scrub feature is disabled in these two configurations:
 
 ``` json
 "extensions": {
@@ -420,9 +417,9 @@ The following table lists the configurable attributes for enhanced search.
 
 The user preferences extension provides an API endpoint for adding configurable user preferences for a repository. This custom extension, not a part of the OCI distribution, is accessible only by authenticated users of the registry. Unauthenticated users are denied access.
 
-To allow users to set preferences, add the `userprefs` attribute under `extensions` in the configuration file.
+The user preferences extension is enabled by default when the `search` extension is enabled. There are no other configuration file fields for this extension.
 
-The `userprefs` endpoint accepts as a query parameter an `action` to perform along with any other required parameters for the specified action. The actions currently implemented do not require an HTTP payload, nor do they return any related data other than an HTTP response code.
+A `userprefs` API endpoint accepts as a query parameter an `action` to perform along with any other required parameters for the specified action. The actions currently implemented do not require an HTTP payload, nor do they return any related data other than an HTTP response code.
 
 ### Current functionality
 
@@ -437,7 +434,7 @@ This action sets the repository star property to `true` if it is `false`, and to
 
 | Action | Parameter | Parameter Description |
 | --- | --- | --- |
-| toggleStar | repository | The name of the repository whose star is to be changed |
+| toggleStar | repo | The name of the repository whose star is to be changed |
 
 This example toggles a star on a repository named repoName:
 
@@ -453,7 +450,7 @@ This action sets the repository bookmark property to `true` if it is `false`, an
 
 | Action | Parameter | Parameter Description |
 | --- | --- | --- |
-| toggleBookmark | repository | The name of the repository whose bookmark is to be changed |
+| toggleBookmark | repo | The name of the repository whose bookmark is to be changed |
 
 This example toggles a bookmark on a repository named repoName:
 
