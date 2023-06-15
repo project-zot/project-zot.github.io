@@ -12,11 +12,39 @@ For mirroring an upstream registry, two common use cases are a fully mirrored or
 
 As with git, wherein every clone is a full repository, you can configure your local zot instance to be a fully mirrored OCI registry. For this mode, configure zot for synchronization by periodic polling, not on-demand. Zot copies and caches a full copy of every image on the upstream registry, updating the cache whenever polling discovers a change in content or image version at the upstream registry. 
 
- For a pull through cache mirrored registry, configure zot for on-demand synchronization. When an image is first requested from the local zot registry, the image is downloaded from the upstream registry and cached in local storage. Subsequent requests for the same image are served from zot's cache. Images that have not been requested are not downloaded. If a polling interval is also configured, zot periodically polls the upstream registry for changes, updating any cached images if changes are detected. 
+For a pull through cache mirrored registry, configure zot for on-demand synchronization. When an image is first requested from the local zot registry, the image is downloaded from the upstream registry and cached in local storage. Subsequent requests for the same image are served from zot's cache. Images that have not been requested are not downloaded. If a polling interval is also configured, zot periodically polls the upstream registry for changes, updating any cached images if changes are detected. 
 
 > :pencil2: 
 > Because Docker Hub rate-limits pulls and does not support catalog listing, do not use polled mirroring with Docker Hub. Use only on-demand mirroring with Docker Hub.
 
+## Migrating or updating a registry using mirroring
+
+Mirroring zot using the `sync` feature allows you to easily migrate a registry. In situations such as the following, zot mirroring provides an easy solution.
+
+- Migrating an existing zot or non-zot registry to a new location. 
+  
+    Provided that the source registry is OCI-compliant for image pulls, you can mirror the registry to a new zot registry, delete the old registry, and reroute network traffic to the new registry.
+
+- Updating (or downgrading) a zot registry. 
+  
+    To minimize downtime during an update, or to avoid any incompatibilities between zot releases that would preclude an in-place update, you can bring up a new zot registry with the desired release and then migrate from the existing registry.
+
+To ensure a complete migration of the registry contents, set a polling interval in the configuration of the new zot registry and set `prefix` to `**`, as shown in this example: 
+
+```
+  {
+  	"urls": [
+  		"https://registry1:5000"
+  	],
+  	"pollInterval": "12h",
+  	"onDemand": true,
+  	"content": [
+  		{
+  			"prefix": "**"
+  		}
+  	]
+  }
+```
 
 ## Basic configuration for mirroring with sync
 
@@ -160,7 +188,10 @@ error occurs during either an on-demand or periodic synchronization. If no value
 </tbody>
 </table>
 
-## Example: Multiple repositories with polled mirroring
+
+## Configuration examples for mirroring
+
+### Example: Multiple repositories with polled mirroring
 
 The following is an example of sync configuration for mirroring multiple repositories with polled mirroring.
 
@@ -210,7 +241,7 @@ The configuration in this example will result in the following behavior:
     - From /repo2/repo, images with all tags. <br/>Because `stripPrefix` is enabled, files are stored locally in /repo2. For example, docker://upstream/repo2/repo:v1 is stored as docker://local/repo2:v1.
     - From /repo3/repo, images with all tags. <br/>Files are stored locally in /repo3/repo.
 
-## Example: Multiple registries with on-demand mirroring
+### Example: Multiple registries with on-demand mirroring
 
 The following is an example of sync configuration for mirroring multiple registries with on-demand mirroring.
 
@@ -279,7 +310,7 @@ You can use this command:<br/>&nbsp;&nbsp;&nbsp;&nbsp;
   }
 ``` 
 
-## Example: Multiple registries with mixed mirroring modes
+### Example: Multiple registries with mixed mirroring modes
 
 The following is an example of a zot configuration file for mirroring multiple upstream registries.
 
@@ -365,7 +396,7 @@ The following is an example of a zot configuration file for mirroring multiple u
 [//]: # (https://github.com/project-zot/zot/blob/main/examples/config-sync.json)
 
 
-## Example: Support for subpaths in local storage
+### Example: Support for subpaths in local storage
 
 ```
 {
