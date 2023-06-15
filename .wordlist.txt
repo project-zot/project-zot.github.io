@@ -119,6 +119,7 @@ regclient
 regctl
 replicaCount
 repo
+repoName
 repos
 requestor
 retryDelay
@@ -148,6 +149,8 @@ systemd
 TLS
 tlsVerify
 tmp
+toggleBookmark
+toggleStar
 toolchain
 tooltips
 transactional
@@ -160,6 +163,7 @@ URI
 url
 urls
 URL
+userprefs
 usr
 VM
 VMs

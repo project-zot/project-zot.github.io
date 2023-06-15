@@ -2,10 +2,9 @@
 
 > :point_right: The registry administrator configures zot primarily through settings in the configuration file. 
 
-> 
-> Using the information in this guide, you can compose a configuration file with the settings and features you require for your zot registry server.
->
-> Before launching zot with a new configuration, we recommend that you verify the syntax of your configuration as described in [Verifying the configuration file](#verifying-config).
+Using the information in this guide, you can compose a configuration file with the settings and features you require for your zot registry server.
+
+> :bulb: Before launching zot with a new configuration, we recommend that you verify the syntax of your configuration as described in [Verifying the configuration file](#verifying-config).
 
 
 ## Configuration file
@@ -55,7 +54,7 @@ described in the later sections of this guide.
 
 Additional registry features that are not a part of the Distribution Specification are allowed to be added as [Extensions](https://github.com/opencontainers/distribution-spec/tree/main/extensions).  
 
-With a full (not minimal) zot image, the additional extension features can be enabled and configured under an `extensions` attribute in the configuration file as shown in the following example.
+With a full (not minimal) zot image, the following extension features can be enabled and configured under an `extensions` attribute in the configuration file as shown in the following example.
 
 ``` json
 {
@@ -81,13 +80,12 @@ The following features are configured under the `extensions` attribute.
 -   [Search](#search_config)
 -   [Scrub](#scrub_config)
 -   [Lint](#lint_config)
+  
+An extension feature is usually enabled by the presence of the feature’s attribute under `extensions`. An extension feature can then be disabled by either omitting the feature attribute or by including an `enable` attribute with a value of `false`.
 
-An extension feature is enabled by the presence of the feature’s
-attribute under `extensions`. An extension feature can be disabled by
-omitting the feature attribute or by including an `enable` attribute
-with a value of `false`.
+> :pencil2: An additional extension feature, [User Preferences](#userprefs_config), is enabled when the Search feature is enabled, and is not configured under the `extensions` section.
 
-For example, the scrub feature is enabled in the following cases.
+Following is an example of enabling or disabling a feature in the `extensions` section. The scrub feature is enabled in these two configurations:
 
 ``` json
 "extensions": {
@@ -103,7 +101,7 @@ For example, the scrub feature is enabled in the following cases.
 }
 ```
 
-The scrub feature is disabled in the following cases.
+The scrub feature is disabled in these two configurations:
 
 ``` json
 "extensions": {
@@ -413,6 +411,54 @@ The following table lists the configurable attributes for enhanced search.
 | `cve`            | Extends enhanced search to allow searching of Common Vulnerabilities and Exposures (CVE).                                                  |
 | `updateInterval` | Sets the interval at which the searchable database of CVE items is refreshed.                                                              |
 
+<a name="userprefs_config"></a>
+
+## Setting user preferences
+
+The user preferences extension provides an API endpoint for adding configurable user preferences for a repository. This custom extension, not a part of the OCI distribution, is accessible only by authenticated users of the registry. Unauthenticated users are denied access.
+
+The user preferences extension is enabled by default when the `search` extension is enabled. There are no other configuration file fields for this extension.
+
+A `userprefs` API endpoint accepts as a query parameter an `action` to perform along with any other required parameters for the specified action. The actions currently implemented do not require an HTTP payload, nor do they return any related data other than an HTTP response code.
+
+### Current functionality
+
+The current functions implemented by this extension include:
+
+- Toggling the star (favorites) icon for a repository.
+- Toggling the bookmark icon for a repository.
+
+#### Toggle repository star
+
+This action sets the repository star property to `true` if it is `false`, and to `false` if it is `true`.
+
+| Action | Parameter | Parameter Description |
+| --- | --- | --- |
+| toggleStar | repo | The name of the repository whose star is to be changed |
+
+This example toggles a star on a repository named repoName:
+
+```
+PUT
+http://localhost:5000/v2/_zot/ext/userprefs?
+action=toggleStar&repo=repoName
+```
+
+#### Toggle repository bookmark
+
+This action sets the repository bookmark property to `true` if it is `false`, and to `false` if it is `true`.
+
+| Action | Parameter | Parameter Description |
+| --- | --- | --- |
+| toggleBookmark | repo | The name of the repository whose bookmark is to be changed |
+
+This example toggles a bookmark on a repository named repoName:
+
+```
+PUT
+http://localhost:5000/v2/_zot/ext/userprefs?
+action=toggleBookmark&repo=repoName
+```
 
 <a name="verifying-config"></a>
 
