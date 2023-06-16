@@ -1,25 +1,25 @@
-# Using kind for Deployment Testing
+# Using `kind` for Deployment Testing
 
-> :point_right: Use [kind](https://kind.sigs.k8s.io/) to try out zot deployment with Kubernetes.
+> :point_right: Use [`kind`](https://kind.sigs.k8s.io/) to try out zot deployment with Kubernetes.
 
-This article describes how to create a kind cluster that includes a local zot registry. 
+This article describes how to create a `kind` cluster that includes a local zot registry. 
 
 ## Deploying the cluster and registry
 
-The procedure described installs a kind cluster with a zot registry at `localhost:5001` and then loads and runs a "hello" app to test the installation. Although the procedure is given as a series of steps, you can find [a complete shell script](#reference-a-complete-script) to perform these steps at the end of this article.
+The procedure described installs a `kind` cluster with a zot registry at `localhost:5001` and then loads and runs a "hello" app to test the installation. Although the procedure is given as a series of steps, you can find [a complete shell script](#reference-a-complete-script) to perform these steps at the end of this article.
 
-> :pencil2: This article is based on [Create A Cluster And Registry](https://kind.sigs.k8s.io/docs/user/local-registry/#create-a-cluster-and-registry), which you can find on the [kind website](https://kind.sigs.k8s.io/).
+> :pencil2: This article is based on [Create A Cluster And Registry](https://kind.sigs.k8s.io/docs/user/local-registry/#create-a-cluster-and-registry), which you can find on the `kind` [website](https://kind.sigs.k8s.io/).
 
 
 ### Step 1: Prepare the environment 
 
 The following packages must be installed:
 
-- docker
-- kubernetes
-- kind
-- containerd
-- skopeo
+- `docker`
+- `kubernetes`
+- `kind`
+- `containerd`
+- `skopeo`
 
 Execute the following shell commands to set environment variables.
 
@@ -36,7 +36,7 @@ fi
 
 ### Step 2: Create a registry container
 
-Create a "kind-registry" container, pulling a zot binary from the GitHub Container Registry (ghcr.io).  
+Create a `kind-registry` container, pulling a zot binary from the GitHub Container Registry (ghcr.io).  
 
 > :pencil2: This example pulls `zot-minimal-linux-amd64:latest`,   
 > a minimal (no extensions) zot image for an AMD-based linux server. 
@@ -57,7 +57,7 @@ fi
 {% endraw %}
 ```
 
-### Step 3: Create the kind cluster
+### Step 3: Create the `kind` cluster
 
 Create a cluster with the local registry enabled.
 
@@ -125,7 +125,7 @@ kubectl wait deployment -n default hello-server \
 
 ## Clean up
 
-To clean up after testing, run the following commands to delete the cluster and registry.
+To clean up after testing, run the following commands to delete the `kind` cluster and registry.
 
 ```shell
 kind delete cluster
