@@ -10,6 +10,7 @@
 
 ## Definitions
 
+
 |Term     | Description      |
 |---------|------------------|
 | artifact | A file of any kind produced during a container build process or associated with the operation of a container. For example, a Helm chart is an artifact that might be stored along with a container. |
@@ -32,6 +33,7 @@
 | skopeo | [`skopeo`](https://github.com/containers/skopeo) is a command line utility that performs various operations on container images and image repositories. |
 | stacker | [`stacker`](https://github.com/project-stacker/stacker) is a standalone tool for building OCI images via a declarative `yaml` format. The output of the build process is a container image in an OCI layout. |
 | tag | A label applied to an image that distinguishes the image from other images in the same repository. A common example is a version tag. |
+| referrer | A image containing a non-nil subject field with a descriptor to the referred imaged. |
 | zb | A benchmarking tool, available as a zot companion binary, for benchmarking a zot registry or any other container image registry that conforms to the [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec). |
 | zli | A zot companion binary that implements a set of command line commands for interacting with the zot registry server. |
 | zui | A zot companion binary that implements a graphical user interface (GUI) for interacting with the zot registry server. |

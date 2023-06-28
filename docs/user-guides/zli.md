@@ -300,3 +300,36 @@ This command lists all repositories in the zot registry.
       -u, --user string   User Credentials of zot server in "username:password" format
 
     Run 'zli config -h' for details on [config-name] argument
+
+### zli search
+The `search` command has been added and it allows smart searching for repos by name or images by their repo:tag
+
+[comment]: <> (zli search --help )
+
+    $ ./zli search --help
+    Search repos or images
+    Example:
+      # For repo search specify a substring of the repo name without the tag
+      zli search --query test/repo
+
+      # For image search specify the full repo name followed by the tag or a prefix of the tag.
+      zli search --query test/repo:2.1.
+
+      # For referrers search specify the referred subject using it's full digest or tag:
+      zli search --subject repo@sha256:f9a0981...
+      zli search --subject repo:tag
+
+    Usage:
+      zli search [config-name] [flags]
+
+    Flags:
+          --debug            Show debug output
+      -h, --help             help for search
+      -o, --output string    Specify output format [text/json/yaml]
+      -q, --query string     Specify what repo or image(repo:tag) to be searched
+      -s, --subject string   List all referrers for this subject. The subject can be specified    by tag(repo:tag) or by digest(repo@digest)
+          --url string       Specify zot server URL if config-name is not mentioned
+      -u, --user string      User Credentials of zot server in "username:password" format
+          --verbose          Show verbose output
+
+    Run 'zli config -h' for details on [config-name] argument
