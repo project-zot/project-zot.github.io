@@ -77,6 +77,7 @@ kubelet
 kubernetes
 Kubernetes
 LDAP
+ldap
 licensable
 LICENSE
 Licensor
@@ -92,6 +93,8 @@ localhost
 MacOS
 maxRetries
 md
+Mgmt
+mgmt
 MERCHANTABILITY
 minify
 mkdocs

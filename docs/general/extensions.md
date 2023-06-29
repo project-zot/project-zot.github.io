@@ -10,6 +10,7 @@ The following extensions are currently available with zot:
 -  **Scrub**
 -  **Metrics**
 -  **User preferences**
+-  **Mgmt**
 
 
 > :bulb: For detailed information about configuring zot extensions, see [*Configuring zot*](../admin-guide/admin-configuration.md).
@@ -71,3 +72,11 @@ The following extensions are currently supported by zot:
    - Toggling the bookmark icon for a repository.
 
 For information about configuring zot extensions, see [*Configuring zot*](../admin-guide/admin-configuration.md).
+
+### **Mgmt**
+
+   The **mgmt** extension provides an API endpoint for configuration management.
+
+   The current functions implemented by the extension include:
+
+      - Get the current authentication methods enabled in configuration - can be used by all users authenticated or unauthenticated.
