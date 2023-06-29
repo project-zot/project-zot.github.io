@@ -41,6 +41,7 @@ darwin
 datapath
 DCO
 deduplication
+deduplicates
 detectManifestCollision
 discoverable
 DN
