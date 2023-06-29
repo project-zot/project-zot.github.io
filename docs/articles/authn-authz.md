@@ -179,6 +179,7 @@ Four types of access control policies are supported:
 |---------------|-----------|-----|
 | Default       | `defaultPolicy` | The default policy specifies what actions are allowed if a user is authenticated but does match any user-specific policy. |
 | User-specific | `users`, `actions` | A user-specific policy specifies access and actions for explicitly named users. |
+| Group-specific | `groups`, `actions` | A group-specific policy specifies access and actions for explicitly named groups. |
 | Anonymous     | `anonymousPolicy` | An anonymous policy specifies what an unauthenticated user is allowed to do. This is an appropriate policy when you want to grant open read-only access to one or more repositories. |
 | Admin         | `adminPolicy` | The admin policy is a global access control policy that grants privileges to perform actions on any repository.  |
 
@@ -186,7 +187,7 @@ Access control is organized by repositories, users, and their actions. Most user
 
 ### Configuring access control
 
-User identity can be used as an authorization criterion for allowing actions on one or more repository paths. For specific users, you can choose to allow any combination of read, create, update, or delete actions on specific paths.
+User identity/ group can be used as an authorization criterion for allowing actions on one or more repository paths. For specific users, you can choose to allow any combination of read, create, update, or delete actions on specific paths.
 
 When you define policies for specific repository paths, the paths can be specified explicitly or by using `glob` patterns with simple or recursive wildcards. When a repository path matches more than one path description, authorization is granted based on the policy of the longest (most specific) path matched. For example, if policies are defined for path descriptions `**` and `repos2/repo,` the `repos2/repo` path will match both `**` and `repos2/repo` descriptions. In this case, the `repos2/repo` policy will be applied because it is longer.
 
@@ -204,51 +205,64 @@ Use the `accessControl` attribute in the configuration file to define a set of i
 "http": {
 ...
   "accessControl": {
-    "**": {
-      "policies": [{
-        "users": ["charlie"],
-        "actions": ["read", "create", "update"]
-      }],
-      "defaultPolicy": ["read", "create"]
+    "groups": {
+      "group1": {
+        "users": ["bob", "mary"]
+      },
+      "group2": {
+        "users": ["alice", "mallory", "jim"]
+      }
     },
-    "tmp/**": {
-      "anonymousPolicy": ["read"],
-      "defaultPolicy": ["read", "create", "update"]
-    },
-    "infra/*": {
-      "policies": [{
-          "users": ["alice", "bob"],
-          "actions": ["create", "read", "update", "delete"]
-        },
-        {
-          "users": ["mallory"],
-          "actions": ["create", "read"]
-        }
-      ],
-      "defaultPolicy": ["read"]
-    },
-    "repos2/repo": {
-      "policies": [{
-          "users": ["bob"],
-          "actions": ["read", "create"]
-        },
-        {
-          "users": ["mallory"],
-          "actions": ["create", "read"]
-        }
-      ],
-      "defaultPolicy": ["read"]
+    "repositories": {
+      "**": {
+        "policies": [{
+          "users": ["charlie"],
+          "groups": ["group2"],
+          "actions": ["read", "create", "update"]
+        }],
+        "defaultPolicy": ["read", "create"]
+      },
+      "tmp/**": {
+        "anonymousPolicy": ["read"],
+        "defaultPolicy": ["read", "create", "update"]
+      },
+      "infra/*": {
+        "policies": [{
+            "users": ["alice", "bob"],
+            "actions": ["create", "read", "update", "delete"]
+          },
+          {
+            "users": ["mallory"],
+            "groups": ["group1"],
+            "actions": ["create", "read"]
+          }
+        ],
+        "defaultPolicy": ["read"]
+      },
+      "repos2/repo": {
+        "policies": [{
+            "users": ["bob"],
+            "actions": ["read", "create"]
+          },
+          {
+            "users": ["mallory"],
+            "actions": ["create", "read"]
+          }
+        ],
+        "defaultPolicy": ["read"]
+      }
     },
     "adminPolicy": {
       "users": ["admin"],
       "actions": ["read", "create", "update", "delete"]
     }
+    
   }
 ```
 
 In this example, five policies are defined:
 
--   The default policy (`**`) gives all authenticated users the ability to read or create content, while giving user "charlie" the additional ability to update content.
+-   The default policy (**) gives all authenticated users the ability to read or create content, while giving user "charlie" and those in group2 the additional ability to update content.
 
 -   The policy for `tmp/**` matches all repositories under `tmp` recursively and allows all authenticated users to read, create, or update content in those repositories. Unauthenticated users have read-only access to these repositories.
 
