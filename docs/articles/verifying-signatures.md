@@ -17,47 +17,49 @@ These files are uploaded by the user.
  Uploaded public keys and certificates are currently stored only in the local filesystem, in specific directories named `_cosign` and `_notation` under `$rootDir`.
 
    - The `_cosign` directory contains uploaded public key files in the following structure:
-        ```
-        _cosign
-        ├── $publicKey1
-	    └── $publicKey2
-        ```
+
+    ```shell
+    _cosign
+    ├── $publicKey1
+    └── $publicKey2
+    ```
 
    - The `_notation` directory contains a set of files in the following structure:
 
-        ```
-        _notation
-        ├── trustpolicy.json
-	    └── truststore
-	        └── x509
-	            └── $truststoreType
-	                └── $truststoreName
-	                    └── $certificate
-        ```
+    ```shell
+    _notation
+    ├── trustpolicy.json
+	└── truststore
+	    └── x509
+	        └── $truststoreType
+	            └── $truststoreName
+	                └── $certificate
+    ```
 
-        In this directory, the `trustpolicy.json` file contains content that is updated automatically whenever a new certificate is added to a new truststore. This content cannot be changed by the user. An example of the `trustpolicy.json` file content is shown below:
-        ```
-        {
-            "version": "1.0",
-            "trustPolicies": [
-                {
-                    "name": "default-config",
-                    "registryScopes": [ "*" ],
-                    "signatureVerification": {
-                        "level" : "strict" 
-                    },
-                    "trustStores": [],
-                    "trustedIdentities": [
-                        "*"
-                    ]
-                }
-            ]
-	    }
-        ```
+    In this directory, the `trustpolicy.json` file contains content that is updated automatically whenever a new certificate is added to a new truststore. This content cannot be changed by the user. An example of the `trustpolicy.json` file content is shown below:
 
-        By default, the `trustpolicy.json` file sets the `signatureVerification.level` property to `strict`, which enforces all validations. For example, a signature is not trusted if its certificate has expired, even if the certificate verifies the signature.
+    ```json
+    {
+        "version": "1.0",
+        "trustPolicies": [
+            {
+                "name": "default-config",
+                "registryScopes": [ "*" ],
+                "signatureVerification": {
+                    "level" : "strict" 
+                },
+                "trustStores": [],
+                "trustedIdentities": [
+                    "*"
+                ]
+            }
+        ]
+	}
+    ```
 
-        The content of the `trustStores` field will match the content of the `_notation/truststore` directory, containing entries of this format: `$truststoreType:$truststoreName`.
+    By default, the `trustpolicy.json` file sets the `signatureVerification.level` property to `strict`, which enforces all validations. For example, a signature is not trusted if its certificate has expired, even if the certificate verifies the signature.
+
+    The content of the `trustStores` field will match the content of the `_notation/truststore` directory, containing entries of this format: `$truststoreType:$truststoreName`.
 
 ## How signature verification works
 
