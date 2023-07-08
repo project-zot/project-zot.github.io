@@ -8,9 +8,40 @@ To verify the validity of a signature for an image, zot makes use of two types o
 
 - A certificate file that is used to sign an image with `notation`
 
-These files are uploaded by the user.
+These files can be uploaded by the user using the `mgmt` extension of the zot API, as shown in the following examples:
 
-> :pencil2: The procedure for uploading these files by a user has not yet been finalized at the time of this writing.
+1. **To upload a public key**: 
+
+    *API path*
+    ```
+    /v2/_zot/ext/mgmt?resource=signatures&tool=cosign
+    ```
+    *Example request*
+    ```
+    curl --data-binary @file.pub -X POST "http://localhost:8080/v2/_zot/ext/mgmt?resource=signatures&tool=cosign"
+    ```
+
+2. **To upload a certificate**:
+
+    *API path*
+    ```
+    /v2/_zot/ext/mgmt?resource=signatures&tool=notation&truststoreType=ca&truststoreName=upload-cert
+    ```
+    *Example request*
+    ```
+    curl --data-binary @filet.crt -X POST "http://localhost:8080/v2/_zot/ext/mgmt?resource=signatures&tool=notation&truststoreType=ca&truststoreName=upload-cert"
+    ```
+
+The value of `resource` must be `signatures`. In addition to the requested files, the user must also specify the `tool`, which must be one of the following:
+    
+   - `cosign` for uploading public keys
+   - `notation` for uploading certificates
+
+If the uploaded file is a certificate, the user should specify these additional attributes describing the truststore:
+
+   - `truststoreType`: If the truststore is a certificate authority, the values is `ca`. This is the default if the attribute is omitted.
+
+   - `truststoreName`: The name of the truststore.
 
 ## Where needed files are stored
 
@@ -69,8 +100,8 @@ These files are uploaded by the user.
 - The trustworthiness of the signature, such as whether a certificate or public key exists that can successfully verify the signature
 - The author of the signature, which can be either:
 
-    - the public key, for signatures generated using `cosign`
-    - the subject of the certificate, for signatures generated using `notation`
+    - The public key, for signatures generated using `cosign`
+    - The subject of the certificate, for signatures generated using `notation`
 
 ## Example of GraphQL output
 
