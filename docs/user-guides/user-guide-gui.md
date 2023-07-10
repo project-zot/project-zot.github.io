@@ -70,6 +70,19 @@ Paste the pull command into your terminal to pull the image.
 
 > :bulb: For information about using image management tools to pull images, see [Push and Pull Image Content](user-guide-datapath.md).
 
+<a name="bookmarks"></a>
+## Adding Bookmarks
+
+To mark an image so that it can be easily found later, click the bookmark icon on the image page. Bookmarked images appear in search queries when the Bookmarked option is enabled.
+
+The bookmark icon before selection:
+
+![](../assets/images/alpine_not_bookmarked.png){width="600"}
+
+The bookmark icon after selection:
+
+![](../assets/images/alpine_bookmarked.png){width="600"}
+
 <a name="icons"></a>
 ## Icons and their meanings
 
@@ -85,3 +98,5 @@ These icons appear next to the image name, indicating the results of the vulnera
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](../assets/images/low.jpg){width="25"} | Low severity | 
 | ![](../assets/images/icon-verified-signature.jpg){width="35"} | The image signature is verified | 
 | ![](../assets/images/icon-unverified-signature.jpg){width="35"} | The image signature is not verified | 
+| ![](../assets/images/bookmarked_off.png){width="25"} | The image is not bookmarked by the user | 
+| ![](../assets/images/bookmarked_on.png){width="25"} | The image is bookmarked by the user | 
