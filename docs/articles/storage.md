@@ -29,6 +29,8 @@ Most modern filesystems buffer and flush RAM data to disk after a delay. The pur
 
 Deduplication is a storage space saving feature wherein only a single copy of specific content is maintained on disk while many different image manifests may hold references to that same content. The deduplication option (`dedupe`) is also available for supported cloud storage backends.
 
+Upon startup, zot enforces the `dedupe` status on the existing storage. If the `dedupe` status upon startup is `true`, zot deduplicates all blobs found in storage, both local and remote.  If the status upon startup is `false`, zot restores cloud storage blobs to their original state. There is no need for zot to restore local filesystem storage if hard links are used.
+
 #### Garbage collection
 
 After an image is deleted by deleting an image manifest, the corresponding blobs can be purged to free up space. However, since Distribution Specification APIs are not transactional between blob and manifest lifecycle, care must be taken so as not to put the storage in an inconsistent state. Garbage collection in zot is an inline feature meaning that it is **not** necessary to take the registry offline. The zot configuration model allows for enabling and disabling garbage collection (`gc`). The model also allows the configuration of a tunable delay (`gcDelay`), which can be set depending on client network speeds and the size of blobs.
