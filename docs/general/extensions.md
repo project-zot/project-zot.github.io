@@ -10,6 +10,7 @@ The following extensions are currently available with zot:
 -  **Scrub**
 -  **Metrics**
 -  **User preferences**
+-  **Mgmt**
 
 
 > :bulb: For detailed information about configuring zot extensions, see [*Configuring zot*](../admin-guide/admin-configuration.md).
@@ -65,9 +66,17 @@ The following extensions are currently supported by zot:
 
    The **userprefs** extension provides an API endpoint for adding configurable user preferences for a repository. This custom extension, not a part of the OCI distribution, is accessible only by authenticated users of the registry. Unauthenticated users are denied access.
 
-   The current functions implemented by this extension include:
+   The functions currently implemented by this extension include:
 
    - Toggling the star (favorites) icon for a repository.
    - Toggling the bookmark icon for a repository.
 
-For information about configuring zot extensions, see [*Configuring zot*](../admin-guide/admin-configuration.md).
+### **Mgmt**
+
+The **mgmt** extension provides an API endpoint for configuration management.
+
+The functions currently implemented by this extension include:
+
+- Reports which current authentication methods are enabled in the zot configuration.  This function can be used by all users, authenticated or unauthenticated.
+
+> :bulb: For information about configuring zot extensions, see [*Configuring zot*](../admin-guide/admin-configuration.md).

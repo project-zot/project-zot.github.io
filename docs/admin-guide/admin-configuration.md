@@ -64,7 +64,8 @@ With a full (not minimal) zot image, the following extension features can be ena
     "sync": {},
     "search": {},
     "scrub": {},
-    "lint": {}
+    "lint": {},
+    "mgmt": {}
   }
 }
 ```
@@ -80,6 +81,7 @@ The following features are configured under the `extensions` attribute.
 -   [Search](#search_config)
 -   [Scrub](#scrub_config)
 -   [Lint](#lint_config)
+-   [Mgmt](#mgmt_config)
   
 An extension feature is usually enabled by the presence of the feature’s attribute under `extensions`. An extension feature can then be disabled by either omitting the feature attribute or by including an `enable` attribute with a value of `false`.
 
@@ -359,6 +361,61 @@ The following table lists the configurable attributes of the `lint` extension.
 If the mandatory annotations option is configured when you push an image, linter will verify that the mandatory annotations list present in the configuration is also found in the manifest's annotations list. If any annotations are missing, the push is denied.
 
 
+<a name="mgmt_config"></a>
+
+## Configuration management
+
+The `mgmt` extension provides an API endpoint for configuration management.
+
+To configure `mgmt`, add the `mgmt` attribute under `extensions` in the configuration file, as shown in the following example:
+
+```json
+"extensions": {
+    "mgmt": {
+      "enable": true
+      }
+  }
+```
+
+The following table lists the configurable attributes for the `mgmt` extension.
+
+| Attribute  | Description                                                                                                                             |
+|------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| `enable`   | If this attribute is missing, the extension is enabled by default. The extension can be disabled by setting this attribute to `false`. |
+
+### Current functionality
+
+The functions currently implemented by this extension include:
+
+- Reports which current authentication methods are enabled in the zot configuration.  This function can be used by all users, authenticated or unauthenticated.
+
+#### Get the current configuration
+
+Request:
+```
+GET
+http://localhost:5000/v2/_zot/ext/mgmt
+``` 
+Response:
+```
+{
+  "distSpecVersion": "1.1.0-dev",
+  "binaryType": "-sync-search-scrub-metrics-lint-ui-mgmt",
+  "http": {
+    "auth": {
+      "htpasswd": {},
+      "bearer": {
+        "realm": "https://auth.myreg.io/auth/token",
+        "service": "myauth"
+      }
+    }
+  }
+}
+```
+
+If ldap or htpasswd are enabled, the `mgmt` API command returns {"htpasswd": {}}, indicating that clients can authenticate with basic auth credentials.
+
+
 <a name="scrub_config"></a>
 
 ## Scrubbing the image registry
@@ -471,7 +528,6 @@ file using the following command:
 
 > :pencil2:
 > Verifying the configuration file protects against operator errors and any conflicts arising from zot release version changes.
-
 
 After verifying your configuration file, you can launch zot with the following command:
 
