@@ -4,9 +4,9 @@
 >
 > -   Authentication
 >
->    -   TLS, including mTLS
->    -   Username/password or token-based user authentication
->    -   LDAP
+>     -   TLS, including mTLS
+>     -   Username/password or token-based user authentication
+>     -   LDAP
 >     -   htpasswd
 > 
 > -   Authorization
@@ -164,8 +164,9 @@ configuration file, as shown in the following example.
           },
     ```
 
-    The `path` attribute specifies the path and filename of the
-    `htpasswd` file, which contains user names and hashed passwords.
+    The `path` attribute specifies the path and filename of the `htpasswd` file, which contains user names and hashed passwords. 
+    
+  :bulb: Passwords are hashed using bcrypt for storing in the `htpasswd` file.
 
 ## Authorization
 

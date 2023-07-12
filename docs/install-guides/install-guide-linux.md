@@ -23,7 +23,7 @@ project](https://github.com/project-zot/zot/releases). Download the
 image to the\`/usr/bin/\` directory and rename it to `zot,` as in this
 example:
 
-    wget -O /usr/bin/zot  https://github.com/project-zot/zot/releases/download/{{ git.tag }}/zot-linux-amd64
+    wget -O /usr/bin/zot  https://github.com/project-zot/zot/releases/download/{{version.number}}/zot-linux-amd64
 
 ### Step 2: Create a zot configuration file
 
