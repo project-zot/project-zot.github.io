@@ -42,7 +42,6 @@ extra:
       link: https://cloud-native.slack.com/archives/C03EGRE4QGH
   generator: false
   version:
-    number: v2.0.0-rc3
     provider: mike
     default: latest
 plugins:
