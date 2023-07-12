@@ -10,6 +10,7 @@ authz
 autocompletion
 backend
 backends
+bcrypt
 benchmarking
 blackbox
 BoltDB
