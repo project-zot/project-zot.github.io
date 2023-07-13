@@ -1,5 +1,28 @@
 # What's New
 
+## [v2.0.0](https://github.com/project-zot/zot/releases/tag/v2.0.0)
+
+### Command line search
+
+- The [`zli search`](user-guides/zli.md#_zli-search) command allows smart searching for a repository by its name or for an image by its repo:tag.
+
+### Bookmarks
+
+- In the zot GUI, you can [bookmark](user-guides/user-guide-gui.md#bookmarks) an image so that it can be easily found later. Bookmarked images appear in search queries when the bookmarked option is enabled.
+
+### Group policies for authorization
+
+- When creating authorization policies, you can assign multiple users to a named group. A [group-specific authorization policy](articles/authn-authz.md) can then be defined, specifying allowed access and actions for the group.
+
+### Signature verification
+
+- The validity of an image's signature can be [verified](articles/verifying-signatures.md) by zot. Users can upload public keys or certificates to zot using the new [`mgmt` extension]() of the zot API.
+
+### Storage deduplication on demand on startup
+
+- [Deduplication](articles/storage.md), a storage space saving feature, now runs or reverts at startup depending on whether the feature is enabled or disabled. You can trigger deduplication by enabling it and then restarting zot.
+
+
 ## [v1.4.3](https://github.com/project-zot/zot/releases/tag/v1.4.3)
 
 ### Support for [OCI Artifacts and References](https://github.com/opencontainers/image-spec/blob/main/artifact.md)
