@@ -4,9 +4,9 @@
 >
 > -   Authentication
 >
->    -   TLS, including mTLS
->    -   Username/password or token-based user authentication
->    -   LDAP
+>     -   TLS, including mTLS
+>     -   Username/password or token-based user authentication
+>     -   LDAP
 >     -   htpasswd
 > 
 > -   Authorization
@@ -152,6 +152,8 @@ configuration file, as shown in the following example.
 
         $ htpasswd -bBn <username> <password> >> /etc/zot/htpasswd
 
+    :pencil2: For strong security, make sure to use the -B option, specifying the bcrypt hashing algorithm. This is the only algorithm supported by zot for `htpasswd`.
+
 2.  Enable `htpasswd` authentication and configure the path to the
     `htpasswd` authentication in the zot configuration file.
 
@@ -164,8 +166,7 @@ configuration file, as shown in the following example.
           },
     ```
 
-    The `path` attribute specifies the path and filename of the
-    `htpasswd` file, which contains user names and hashed passwords.
+    The `path` attribute specifies the path and filename of the `htpasswd` file, which contains user names and hashed passwords. 
 
 ## Authorization
 
