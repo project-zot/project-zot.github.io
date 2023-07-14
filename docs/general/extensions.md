@@ -78,5 +78,6 @@ The **mgmt** extension provides an API endpoint for configuration management.
 The functions currently implemented by this extension include:
 
 - Reports which current authentication methods are enabled in the zot configuration.  This function can be used by all users, authenticated or unauthenticated.
+- Allows users to upload certificates and public keys for verifying images.
 
 > :bulb: For information about configuring zot extensions, see [*Configuring zot*](../admin-guide/admin-configuration.md).

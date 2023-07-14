@@ -327,7 +327,7 @@ For detailed information about clustering with zot, see [zot Clustering](../arti
 
 ## Syncing and mirroring registries
 
-A zot registry can mirror one or more upstream OCI registries, including popular cloud registries such as [Docker Hub](https://hub.docker.com/) and [Google Container Registry](gcr.io).  If an upstream registry is OCI distribution-spec conformant for pulling images, you can use zot's `sync` extension feature to implement a downstream mirror, synchronizing OCI images and corresponding artifacts. Synchronization between registries can be implemented by periodic polling of the upstream registry or synchronization can occur on demand, when a user pulls an image from the downstream registry.
+A zot registry can mirror one or more upstream OCI registries, including popular cloud registries such as [Docker Hub](https://hub.docker.com/) and [Google Container Registry](https://cloud.google.com/artifact-registry).  If an upstream registry is OCI distribution-spec conformant for pulling images, you can use zot's `sync` extension feature to implement a downstream mirror, synchronizing OCI images and corresponding artifacts. Synchronization between registries can be implemented by periodic polling of the upstream registry or synchronization can occur on demand, when a user pulls an image from the downstream registry.
 
 As with git, wherein every clone is a full repository, you can configure a local zot instance to be a full OCI mirror registry. This allows for a fully distributed disconnected container image build pipeline.
 
@@ -388,6 +388,7 @@ The following table lists the configurable attributes for the `mgmt` extension.
 The functions currently implemented by this extension include:
 
 - Reports which current authentication methods are enabled in the zot configuration.  This function can be used by all users, authenticated or unauthenticated.
+- Allows users to upload certificates and public keys for verifying images. For details, see [User Authentication and Authorization with zot](../articles/authn-authz.md).
 
 #### Get the current configuration
 
