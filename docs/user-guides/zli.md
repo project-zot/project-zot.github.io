@@ -59,7 +59,7 @@ This section includes examples of common zot server tasks using the zli command 
 
 You can modify the zot server configuration using the [`zli config add`](#_zli-config) command. This example adds a zot server URL with an alias of `remote-zot`:
 
-    bin/zli config add remote-zot https://server-example:8080
+    $ bin/zli config add remote-zot https://server-example:8080
 
 Use the [`zli config`](#_zli-config) command to list all configured URLs with their aliases:
 
@@ -159,6 +159,47 @@ You can list all repositories hosted on a zot server using the [`zli repos`](#_z
     alpine
     busybox
 
+### Searching for repositories and images
+
+You can locate repositories and images hosted on a zot server using the [`zli search`](#_zli-search) command.
+
+- To search for a repository, specify the full name with a colon or a partial name with no colon.
+- To search for an image, specify the full repository name followed by the tag or a prefix of the tag.
+
+This example searches the zot registry named 'local' for a repository whose name contains the substring 'ng':
+
+    $ bin/zli search --query ng local
+
+    NAME            SIZE        LAST UPDATED                             DOWNLOADS   STARS
+    nginx           794MB       2023-03-01 18:44:17.707690369 +0000 UTC  0           0
+    mongo           232MB       2022-10-18 15:03:40.7646203 +0300 +0300  0           0
+    golang          1.1GB       2023-06-22 00:32:38.613354854 +0000 UTC  0           0
+
+This example searches the zot registry named 'local' for a repository named 'nginx'. Because the repository name is followed by a colon, the search results must match the name exactly. 
+
+    $ bin/zli search --query nginx: local
+
+    REPOSITORY  TAG          OS/ARCH         DIGEST      SIGNED      SIZE
+    nginx       1.23.1       linux/amd64     d2ad9089    true        57MB
+    nginx       latest       *               c724afdf    true        448MB
+                             linux/amd64     009c6fda    false       57MB
+                             linux/arm/v5    1d5d4f53    false       54MB
+                             linux/arm/v7    f809744c    false       50MB
+                             linux/arm64/v8  ebb807a9    false       56MB
+                             linux/386       19cf4b3c    false       59MB
+                             linux/mips64le  45ab60e6    false       55MB
+                             linux/ppc64le   89511bee    false       63MB
+                             linux/s390x     713b9329    false       55MB
+    nginx       stable-perl  *               4383a0b8    true        534MB
+                             linux/amd64     308a37a0    false       68MB
+                             linux/arm/v5    0fb8fb71    false       64MB
+                             linux/arm/v7    6868f552    false       60MB
+                             linux/arm64/v8  aed72c86    false       66MB
+                             linux/386       5c7ed456    false       69MB
+                             linux/mips64le  546d2bae    false       65MB
+                             linux/ppc64le   7db02f5a    false       74MB
+                             linux/s390x     800fd86f    false       66MB
+
 
 <a name="_zli-command-reference"></a>
 
@@ -216,18 +257,22 @@ This command modifies and lists modified settings for a running zot registry.
 
     $ bin/zli config --help
 
+    Configure zot registry parameters for CLI
+
     Usage:
       zli config <config-name> [variable] [value] [flags]
       zli config [command]
 
     Examples:
       zli config add main https://zot-foo.com:8080
+      zli config --list
       zli config main url
       zli config main --list
-      zli config --list
+      zli config remove main
 
     Available Commands:
       add         Add configuration for a zot registry
+      remove      Remove configuration for a zot registry
 
     Flags:
       -h, --help    help for config
@@ -237,7 +282,7 @@ This command modifies and lists modified settings for a running zot registry.
     Use "zli config [command] --help" for more information about a command.
 
     Useful variables:
-      url       zot server URL
+      url           zot server URL
       showspinner   show spinner while loading data [true/false]
       verify-tls    enable TLS certificate verification of the server [default: true]
 
