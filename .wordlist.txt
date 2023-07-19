@@ -158,6 +158,7 @@ toggleStar
 toolchain
 tooltips
 transactional
+truststore
 tunable
 twemoji
 UI
