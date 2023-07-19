@@ -8,17 +8,9 @@
 
     :pencil2:  Support is deprecated for earlier release candidates.
 
-### Built-in UI support
-
-- Using the new zot [GUI](../user-guides/user-guide-gui.md), you can browse a zot registry for container images and artifacts. The web interface provides the shell commands for downloading an image using popular third-party tools such as Docker, podman, and skopeo.
-
 ### Command line search
 
 - The [`zli search`](../user-guides/zli.md#_zli-search) command allows smart searching for a repository by its name or for an image by its repo:tag.
-
-### Bookmarks
-
-- In the zot GUI, you can [bookmark](../user-guides/user-guide-gui.md#bookmarks) an image so that it can be easily found later. Bookmarked images appear in search queries when the bookmarked option is enabled.
 
 ### Group policies for authorization
 
@@ -32,6 +24,13 @@
 
 - [Deduplication](../articles/storage.md), a storage space saving feature, now runs or reverts at startup depending on whether the feature is enabled or disabled. You can trigger deduplication by enabling it and then restarting zot.
 
+### Built-in UI support
+
+- Using the new zot [GUI](../user-guides/user-guide-gui.md), you can browse a zot registry for container images and artifacts. The web interface provides the shell commands for downloading an image using popular third-party tools such as Docker, podman, and skopeo.
+
+### Bookmarks
+
+- In the zot GUI, you can [bookmark](../user-guides/user-guide-gui.md#bookmarks) an image so that it can be easily found later. Bookmarked images appear in search queries when the bookmarked option is enabled.
 
 ## [v1.4.3](https://github.com/project-zot/zot/releases/tag/v1.4.3)
 
