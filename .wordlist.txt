@@ -118,6 +118,7 @@ PRs
 prometheus
 pullPolicy
 Qualys
+rc
 regclient
 regctl
 replicaCount
