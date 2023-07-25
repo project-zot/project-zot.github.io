@@ -41,6 +41,7 @@ CVEs
 darwin
 datapath
 DCO
+deduplicates
 deduplication
 detectManifestCollision
 discoverable
