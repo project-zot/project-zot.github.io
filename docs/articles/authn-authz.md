@@ -261,7 +261,7 @@ Use the `accessControl` attribute in the configuration file to define a set of i
 
 In this example, five policies are defined:
 
--   The default policy (`**`) gives all authenticated users the ability to read or create content, while giving user "charlie" and those in group2 the additional ability to update content.
+-   The default policy (`**`) gives all authenticated users the ability to read or create content, while giving user "charlie" and those in "group2" the additional ability to update content.
 
 -   The policy for `tmp/**` matches all repositories under `tmp` recursively and allows all authenticated users to read, create, or update content in those repositories. Unauthenticated users have read-only access to these repositories.
 
