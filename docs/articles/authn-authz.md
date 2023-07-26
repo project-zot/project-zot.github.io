@@ -119,6 +119,7 @@ zot supports integration with an LDAP-based authentication service such as Micro
       "startTLS": false,
       "baseDN": "ou=Users,dc=example,dc=org",
       "userAttribute": "uid",
+      "userGroupAttribute": "memberOf",
       "bindDN": "cn=ldap-searcher,ou=Users,dc=example,dc=org",
       "bindPassword": "ldap-searcher-password",
       "skipVerify": false,
@@ -138,6 +139,7 @@ authentication.
 | `startTLS`      | Set to `true` to enable TLS communication with the LDAP server.                  |
 | `baseDN`        | Starting location within the LDAP directory for performing user searches.        |
 | `userAttribute` | Attribute name used for a user.                                                  |
+| `userGroupAttribute` | Attribute name used for a group.                                            |
 | `bindDN`        | Base Distinguished Name for the LDAP search.                                     |
 | `bindPassword`  | Password of the bind LDAP user.                                                  |
 | `skipVerify`    | Skip TLS verification.                                                           |
@@ -174,20 +176,27 @@ With an access scheme that relies solely on authentication, any authenticated us
 
 ### Access control policies
 
-Four types of access control policies are supported:
+Five identity-based types of access control policies are supported:
 
 | Policy type   | Attribute | Access allowed |
 |---------------|-----------|-----|
 | Default       | `defaultPolicy` | The default policy specifies what actions are allowed if a user is authenticated but does match any user-specific policy. |
 | User-specific | `users`, `actions` | A user-specific policy specifies access and actions for explicitly named users. |
+| Group-specific | `groups`, `actions` | A group-specific policy specifies access and actions for explicitly named groups. |
 | Anonymous     | `anonymousPolicy` | An anonymous policy specifies what an unauthenticated user is allowed to do. This is an appropriate policy when you want to grant open read-only access to one or more repositories. |
 | Admin         | `adminPolicy` | The admin policy is a global access control policy that grants privileges to perform actions on any repository.  |
 
-Access control is organized by repositories, users, and their actions. Most users of a particular repository will have similar access control requirements and can be served by a repository-specific `defaultPolicy`. Should a user require an exception to the default policy, a user-specific override policy can be configured. With an `anonymousPolicy`, a repository can additionally allow anonymous actions which do not require user authentication. Finally, one or more users can be designated as administrators, to whom the global administrator policy applies.
+Access control is organized by repositories, users, and their actions. Most users of a particular repository will have similar access control requirements and can be served by a repository-specific `defaultPolicy`. Should a user require an exception to the default policy, a user-specific or group-specific override policy can be configured. 
+
+With an `anonymousPolicy`, a repository can allow anonymous actions which do not require user authentication. Finally, one or more users can be designated as administrators, to whom the global `adminPolicy` applies.
+
+A user's access to a particular repository is evaluated first by whether a user-specific policy exists, then by group-specific policies, and then (in order) by default and admin policies.
+
+A group-specific policy can be applied within any type of access policy, including default or admin policies. The group policy name can also be used with LDAP.
 
 ### Configuring access control
 
-User identity can be used as an authorization criterion for allowing actions on one or more repository paths. For specific users, you can choose to allow any combination of read, create, update, or delete actions on specific paths.
+User identity or group identity can be used as an authorization criterion for allowing actions on one or more repository paths. For specific users, you can choose to allow any combination of read, create, update, or delete actions on specific paths.
 
 When you define policies for specific repository paths, the paths can be specified explicitly or by using `glob` patterns with simple or recursive wildcards. When a repository path matches more than one path description, authorization is granted based on the policy of the longest (most specific) path matched. For example, if policies are defined for path descriptions `**` and `repos2/repo,` the `repos2/repo` path will match both `**` and `repos2/repo` descriptions. In this case, the `repos2/repo` policy will be applied because it is longer.
 
@@ -205,40 +214,52 @@ Use the `accessControl` attribute in the configuration file to define a set of i
 "http": {
 ...
   "accessControl": {
-    "**": {
-      "policies": [{
-        "users": ["charlie"],
-        "actions": ["read", "create", "update"]
-      }],
-      "defaultPolicy": ["read", "create"]
+    "groups": {
+      "group1": {
+        "users": ["bob", "mary"]
+      },
+      "group2": {
+        "users": ["alice", "mallory", "jim"]
+      }
     },
-    "tmp/**": {
-      "anonymousPolicy": ["read"],
-      "defaultPolicy": ["read", "create", "update"]
-    },
-    "infra/*": {
-      "policies": [{
-          "users": ["alice", "bob"],
-          "actions": ["create", "read", "update", "delete"]
-        },
-        {
-          "users": ["mallory"],
-          "actions": ["create", "read"]
-        }
-      ],
-      "defaultPolicy": ["read"]
-    },
-    "repos2/repo": {
-      "policies": [{
-          "users": ["bob"],
-          "actions": ["read", "create"]
-        },
-        {
-          "users": ["mallory"],
-          "actions": ["create", "read"]
-        }
-      ],
-      "defaultPolicy": ["read"]
+    "repositories": {
+      "**": {
+        "policies": [{
+          "users": ["charlie"],
+          "groups": ["group2"],
+          "actions": ["read", "create", "update"]
+        }],
+        "defaultPolicy": ["read", "create"]
+      },
+      "tmp/**": {
+        "anonymousPolicy": ["read"],
+        "defaultPolicy": ["read", "create", "update"]
+      },
+      "infra/*": {
+        "policies": [{
+            "users": ["alice", "bob"],
+            "actions": ["create", "read", "update", "delete"]
+          },
+          {
+            "users": ["mallory"],
+            "groups": ["group1"],
+            "actions": ["create", "read"]
+          }
+        ],
+        "defaultPolicy": ["read"]
+      },
+      "repos2/repo": {
+        "policies": [{
+            "users": ["bob"],
+            "actions": ["read", "create"]
+          },
+          {
+            "users": ["mallory"],
+            "actions": ["create", "read"]
+          }
+        ],
+        "defaultPolicy": ["read"]
+      }
     },
     "adminPolicy": {
       "users": ["admin"],
@@ -249,7 +270,7 @@ Use the `accessControl` attribute in the configuration file to define a set of i
 
 In this example, five policies are defined:
 
--   The default policy (`**`) gives all authenticated users the ability to read or create content, while giving user "charlie" the additional ability to update content.
+-   The default policy (`**`) gives all authenticated users the ability to read or create content, while giving user "charlie" and those in "group2" the additional ability to update content.
 
 -   The policy for `tmp/**` matches all repositories under `tmp` recursively and allows all authenticated users to read, create, or update content in those repositories. Unauthenticated users have read-only access to these repositories.
 
