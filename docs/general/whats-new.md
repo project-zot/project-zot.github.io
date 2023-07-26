@@ -4,7 +4,7 @@
 
 ### Updated OCI support
 
-- Support is added for [OCI Distribution Spec v1.1.0-rc3](https://github.com/opencontainers/distribution-spec/releases/tag/v1.1.0-rc3) and [OCI Image Spec v1.1.0-rc4](https://github.com/opencontainers/image-spec/releases/tag/v1.1.0-rc4).
+- Support is added for [OCI Distribution Spec v1.1.0-rc3](https://github.com/opencontainers/distribution-spec/releases/tag/v1.1.0-rc3) and [OCI Image Spec v1.1.0-rc4](https://github.com/opencontainers/image-spec/releases/tag/v1.1.0-rc4). The OCI changes are summarized [here](https://opencontainers.org/posts/blog/2023-07-07-summary-of-upcoming-changes-in-oci-image-and-distribution-specs-v-1-1/).
 
     :warning:  Support is deprecated for earlier release candidates.
 
@@ -46,7 +46,7 @@
 
 ### Scheduling of background tasks
 
-- You can configure scheduling of background tasks such as garbage collection.
+- You can adjust the background scheduler based on your deployment requirements for tasks that are handled in the background, such as garbage collection.
 
 [//]: # (add to config guide when details are available)
 
