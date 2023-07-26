@@ -138,8 +138,8 @@ authentication.
 | `port`          | The port number used by the LDAP service.                                        |
 | `startTLS`      | Set to `true` to enable TLS communication with the LDAP server.                  |
 | `baseDN`        | Starting location within the LDAP directory for performing user searches.        |
-| `userAttribute` | Attribute name used for a user.                                                  |
-| `userGroupAttribute` | Attribute name used for a group.                                            |
+| `userAttribute` | Attribute name used to obtain the username.                                                  |
+| `userGroupAttribute` | Attribute name used to obtain groups to which a user belongs.                                            |
 | `bindDN`        | Base Distinguished Name for the LDAP search.                                     |
 | `bindPassword`  | Password of the bind LDAP user.                                                  |
 | `skipVerify`    | Skip TLS verification.                                                           |
