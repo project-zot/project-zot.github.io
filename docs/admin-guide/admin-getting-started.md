@@ -26,7 +26,10 @@ possible on any platform that supports the `golang` toolchain.
 | linux  | arm64 | ARM-based servers and Raspberry Pi4 |
 | darwin | amd64 | Intel-based MacOS                   |
 | darwin | arm64 | ARM-based MacOS                     |
+| freebsd | amd64 | Intel-based FreeBSD<sup>*</sup>    |
+| freebsd | arm64 | ARM-based FreeBSD<sup>*</sup>      |
 
+<sup>*</sup> **NOTE:** While binary images are available for FreeBSD, building container images is not supported at this time.
 
 #### About binary images
 
