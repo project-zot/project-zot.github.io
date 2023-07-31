@@ -16,6 +16,10 @@ Table: Supported platforms and architectures
 | linux  | arm64 | ARM-based servers and Raspberry Pi4 |
 | darwin | amd64 | Intel-based MacOS                   |
 | darwin | arm64 | ARM-based MacOS (Apple M1)          |
+| freebsd | amd64 | Intel-based FreeBSD<sup>*</sup>    |
+| freebsd | arm64 | ARM-based FreeBSD<sup>*</sup>      |
+
+<sup>*</sup> **NOTE:** While binary images are available for FreeBSD, building container images is not supported at this time.
 
 ## Full and minimal binary images
 

@@ -50,6 +50,11 @@
 
 [//]: # (add to config guide when details are available)
 
+### Binaries for FreeBSD
+
+- zot binary images are available for the [FreeBSD](https://www.freebsd.org/) operating system. Supported architectures are amd64 and arm64.
+
+    :pencil2:  &nbsp;zot container images for FreeBSD will be available in a future release.
 
 ***
 
