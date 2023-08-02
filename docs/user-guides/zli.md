@@ -219,6 +219,8 @@ This example searches the zot registry named 'local' for a repository named 'ngi
       cve         Lookup CVEs in images hosted on the zot registry
       help        Help about any command
       images      List images hosted on the zot registry
+      repos       List all repositories
+      search      Search images and their tags
 
     Flags:
       -h, --help      help for zli
@@ -299,10 +301,12 @@ This command lists CVEs (Common Vulnerabilities and Exposures) of images hosted 
 
     Flags:
       -i, --cve-id string   List images affected by a CVE
+          --debug           Show debug output
           --fixed           List tags which have fixed a CVE
       -h, --help            help for cve
       -I, --image string    List CVEs by IMAGENAME[:TAG]
       -o, --output string   Specify output format [text/json/yaml]. JSON and YAML format return all info for CVEs
+      -s, --search string   Search specific CVEs by name/id
           --url string      Specify zot server URL if config-name is not mentioned
       -u, --user string     User Credentials of zot server in USERNAME:PASSWORD format
 
@@ -318,6 +322,9 @@ This command lists images hosted on the zot registry.
       zli images [config-name] [flags]
 
     Flags:
+      -b, --base-images string      List images that are base for the given image
+          --debug                   Show debug output
+      -D, --derived-images string   List images that are derived from given image
       -d, --digest string   List images containing a specific manifest, config, or layer digest
       -h, --help            help for images
       -n, --name string     List image details by name
@@ -340,6 +347,7 @@ This command lists all repositories in the zot registry.
       zli repos [config-name] [flags]
 
     Flags:
+          --debug         Show debug output
       -h, --help          help for repos
           --url string    Specify zot server URL if config-name is not mentioned
       -u, --user string   User Credentials of zot server in "username:password" format
