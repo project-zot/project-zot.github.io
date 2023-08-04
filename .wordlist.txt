@@ -59,6 +59,9 @@ gc
 gcr
 ghcr
 github
+GitHub
+gitlab
+GitLab
 golang
 GPG
 graphQL
@@ -108,6 +111,7 @@ nginx
 NodePort
 OAuth
 OCI
+OIDC
 onboarding
 Onboarding
 onDemand

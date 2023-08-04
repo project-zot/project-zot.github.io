@@ -8,10 +8,12 @@
 >     -   Username/password or token-based user authentication
 >     -   LDAP
 >     -   htpasswd
+>     -   OAuth2 with bearer token
 > 
 > -   Authorization
 >
 >     -   Powerful identity-based access controls for repositories or specific repository paths
+>     -   OpenID/OAuth2 social login with Google, GitHub, GitLab, and dex
 
 
 The zot configuration model supports both authentication and authorization. Authentication credentials allow access to zot HTTP APIs. Authorization policies provide fine-grained control of the actions each authenticated user can perform in the registry.
@@ -119,6 +121,7 @@ zot supports integration with an LDAP-based authentication service such as Micro
       "startTLS": false,
       "baseDN": "ou=Users,dc=example,dc=org",
       "userAttribute": "uid",
+      "userGroupAttribute": "memberOf",
       "bindDN": "cn=ldap-searcher,ou=Users,dc=example,dc=org",
       "bindPassword": "ldap-searcher-password",
       "skipVerify": false,
@@ -137,7 +140,8 @@ authentication.
 | `port`          | The port number used by the LDAP service.                                        |
 | `startTLS`      | Set to `true` to enable TLS communication with the LDAP server.                  |
 | `baseDN`        | Starting location within the LDAP directory for performing user searches.        |
-| `userAttribute` | Attribute name used for a user.                                                  |
+| `userAttribute` | Attribute name used to obtain the username.                                                  |
+| `userGroupAttribute` | Attribute name used to obtain groups to which a user belongs.                                            |
 | `bindDN`        | Base Distinguished Name for the LDAP search.                                     |
 | `bindPassword`  | Password of the bind LDAP user.                                                  |
 | `skipVerify`    | Skip TLS verification.                                                           |
@@ -174,20 +178,27 @@ With an access scheme that relies solely on authentication, any authenticated us
 
 ### Access control policies
 
-Four types of access control policies are supported:
+Five identity-based types of access control policies are supported:
 
 | Policy type   | Attribute | Access allowed |
 |---------------|-----------|-----|
 | Default       | `defaultPolicy` | The default policy specifies what actions are allowed if a user is authenticated but does match any user-specific policy. |
 | User-specific | `users`, `actions` | A user-specific policy specifies access and actions for explicitly named users. |
+| Group-specific | `groups`, `actions` | A group-specific policy specifies access and actions for explicitly named groups. |
 | Anonymous     | `anonymousPolicy` | An anonymous policy specifies what an unauthenticated user is allowed to do. This is an appropriate policy when you want to grant open read-only access to one or more repositories. |
 | Admin         | `adminPolicy` | The admin policy is a global access control policy that grants privileges to perform actions on any repository.  |
 
-Access control is organized by repositories, users, and their actions. Most users of a particular repository will have similar access control requirements and can be served by a repository-specific `defaultPolicy`. Should a user require an exception to the default policy, a user-specific override policy can be configured. With an `anonymousPolicy`, a repository can additionally allow anonymous actions which do not require user authentication. Finally, one or more users can be designated as administrators, to whom the global administrator policy applies.
+Access control is organized by repositories, users, and their actions. Most users of a particular repository will have similar access control requirements and can be served by a repository-specific `defaultPolicy`. Should a user require an exception to the default policy, a user-specific or group-specific override policy can be configured. 
 
-### Configuring access control
+With an `anonymousPolicy`, a repository can allow anonymous actions which do not require user authentication. Finally, one or more users can be designated as administrators, to whom the global `adminPolicy` applies.
 
-User identity can be used as an authorization criterion for allowing actions on one or more repository paths. For specific users, you can choose to allow any combination of read, create, update, or delete actions on specific paths.
+A user's access to a particular repository is evaluated first by whether a user-specific policy exists, then by group-specific policies, and then (in order) by default and admin policies.
+
+A group-specific policy can be applied within any type of access policy, including default or admin policies. The group policy name can also be used with LDAP.
+
+#### Configuring access control
+
+User identity or group identity can be used as an authorization criterion for allowing actions on one or more repository paths. For specific users, you can choose to allow any combination of read, create, update, or delete actions on specific paths.
 
 When you define policies for specific repository paths, the paths can be specified explicitly or by using `glob` patterns with simple or recursive wildcards. When a repository path matches more than one path description, authorization is granted based on the policy of the longest (most specific) path matched. For example, if policies are defined for path descriptions `**` and `repos2/repo,` the `repos2/repo` path will match both `**` and `repos2/repo` descriptions. In this case, the `repos2/repo` policy will be applied because it is longer.
 
@@ -197,7 +208,7 @@ Note that `**` effectively defines the default policy, as it matches any path no
 > Always include the read action in any policy that you define. The create, update, and delete actions cannot be used without the read action.
 
 
-### Example: Access control configuration
+#### Example: Access control configuration
 
 Use the `accessControl` attribute in the configuration file to define a set of identity-based authorization policies, as shown in the following example.
 
@@ -205,40 +216,52 @@ Use the `accessControl` attribute in the configuration file to define a set of i
 "http": {
 ...
   "accessControl": {
-    "**": {
-      "policies": [{
-        "users": ["charlie"],
-        "actions": ["read", "create", "update"]
-      }],
-      "defaultPolicy": ["read", "create"]
+    "groups": {
+      "group1": {
+        "users": ["bob", "mary"]
+      },
+      "group2": {
+        "users": ["alice", "mallory", "jim"]
+      }
     },
-    "tmp/**": {
-      "anonymousPolicy": ["read"],
-      "defaultPolicy": ["read", "create", "update"]
-    },
-    "infra/*": {
-      "policies": [{
-          "users": ["alice", "bob"],
-          "actions": ["create", "read", "update", "delete"]
-        },
-        {
-          "users": ["mallory"],
-          "actions": ["create", "read"]
-        }
-      ],
-      "defaultPolicy": ["read"]
-    },
-    "repos2/repo": {
-      "policies": [{
-          "users": ["bob"],
-          "actions": ["read", "create"]
-        },
-        {
-          "users": ["mallory"],
-          "actions": ["create", "read"]
-        }
-      ],
-      "defaultPolicy": ["read"]
+    "repositories": {
+      "**": {
+        "policies": [{
+          "users": ["charlie"],
+          "groups": ["group2"],
+          "actions": ["read", "create", "update"]
+        }],
+        "defaultPolicy": ["read", "create"]
+      },
+      "tmp/**": {
+        "anonymousPolicy": ["read"],
+        "defaultPolicy": ["read", "create", "update"]
+      },
+      "infra/*": {
+        "policies": [{
+            "users": ["alice", "bob"],
+            "actions": ["create", "read", "update", "delete"]
+          },
+          {
+            "users": ["mallory"],
+            "groups": ["group1"],
+            "actions": ["create", "read"]
+          }
+        ],
+        "defaultPolicy": ["read"]
+      },
+      "repos2/repo": {
+        "policies": [{
+            "users": ["bob"],
+            "actions": ["read", "create"]
+          },
+          {
+            "users": ["mallory"],
+            "actions": ["create", "read"]
+          }
+        ],
+        "defaultPolicy": ["read"]
+      }
     },
     "adminPolicy": {
       "users": ["admin"],
@@ -249,7 +272,7 @@ Use the `accessControl` attribute in the configuration file to define a set of i
 
 In this example, five policies are defined:
 
--   The default policy (`**`) gives all authenticated users the ability to read or create content, while giving user "charlie" the additional ability to update content.
+-   The default policy (`**`) gives all authenticated users the ability to read or create content, while giving user "charlie" and those in "group2" the additional ability to update content.
 
 -   The policy for `tmp/**` matches all repositories under `tmp` recursively and allows all authenticated users to read, create, or update content in those repositories. Unauthenticated users have read-only access to these repositories.
 
@@ -258,3 +281,116 @@ In this example, five policies are defined:
 -   The policy for `repos2/repo` matches only that specific repository.
 
 -   An admin policy (`adminPolicy`) gives the user "admin" global authorization to read, create, update, or delete content in any repository, overriding all other policies.
+
+### Social login using OpenID/OAuth2 
+
+Social login is an authentication/authorization method in which your existing credentials for another site or service can be used to log in to a service such as zot. For example, you can log in to zot using your GitHub account credentials, and zot will contact GitHub to verify your identity using OAuth 2.0 and [OpenID Connect (OIDC)](https://openid.net/connect/) protocols. 
+
+Several social login providers are supported by zot:
+
+- github
+- google
+- gitlab
+- dex
+
+The following example shows the zot configuration for these providers:
+
+``` json
+{
+  "http": {
+    "auth": {
+      "openid": {
+        "providers": {
+          "github": {
+            "clientid": <client_id>,
+            "clientsecret": <client_secret>,
+            "scopes": ["read:org", "user", "repo"]
+          },
+          "google": {
+            "issuer": "https://accounts.google.com",
+            "clientid": <client_id>,
+            "clientsecret": <client_secret>,
+            "scopes": ["openid", "email"]
+          },
+          "gitlab": {
+            "issuer": "https://gitlab.com",
+            "clientid": <client_id>,
+            "clientsecret": <client_secret>,
+            "scopes": ["openid", "read_api", "read_user", "profile", "email"]
+          },
+          "dex": {
+            "issuer": "http://<zot-server>:5556/dex",
+            "clientid": <client_id>,
+            "clientsecret": <client_secret>,
+            "keypath": "",
+            "scopes": ["openid", "profile", "email", "groups"]
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+A client logging into zot by social login must specify a supported OpenID/OAuth2 provider as a URL query parameter.
+
+A client logging in using Google, GitHub, or GitLab must additionally specify a callback URL for redirection to a zot page after a successful authentication. 
+
+The login URL using Google, GitHub, or GitLab uses the following format:
+
+    http://<zot-server>/auth/login?provider=<provider>&callback_ui=<zot-server>/<page>
+
+For example, a user logging in to the zot home page using GitHub as the authentication provider sends this URL:
+
+    http://zot-example.com:8080/auth/login?provider=github&callback_ui=http://zot-example.com:8080/home
+
+Based on the specified provider, zot redirects the login to a provider service with the following URL:
+
+    http://<zot-server>/auth/callback/<provider>
+
+For the GitHub authentication example:
+
+    http://zot-example.com:8080/auth/callback/github
+
+:pencil2: If your network policy doesn't allow inbound connections, the callback will not work and this authentication method will fail.
+
+#### Using dex
+
+[dex](https://dexidp.io/) is an identity service that uses OpenID Connect to drive authentication for client apps, such as zot.
+
+Like zot, dex uses a configuration file for setup. To specify zot as a client in dex, configure a `staticClients` entry in the dex configuration file with a zot callback, such as the following example in the dex configuration file:
+
+```yaml
+staticClients:
+  - id: zot-client
+    redirectURIs:
+      - 'http://zot-example.com:8080/auth/callback/dex'
+    name: 'zot'
+    secret: ZXhhbXBsZS1hcHAtc2VjcmV0
+```
+
+In the zot configuration file, configure dex as an OpenID auth provider as in the following example:
+
+```json
+  "http": {
+    "auth": {
+      "openid": {
+        "providers": {
+          "dex": {
+            "issuer": "http://<zot-server>:5556/dex",
+            "clientid": "zot-client",
+            "clientsecret": "ZXhhbXBsZS1hcHAtc2VjcmV0",
+            "keypath": "",
+            "scopes": ["openid", "profile", "email", "groups"]
+          }
+        }
+      }
+    }
+  }
+```
+
+A user logging in to zot using dex OpenID authentication sends a URL such as the following example:
+
+`http://zot-example.com:8080/auth/login?provider=dex`
+
+For detailed information about configuring dex service, see the dex [Getting Started](https://dexidp.io/docs/getting-started/) documentation.
