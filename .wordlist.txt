@@ -103,6 +103,8 @@ mkdocs
 mTLS
 myfile
 natively
+ng
+nginx
 NodePort
 OAuth
 OCI
@@ -153,6 +155,7 @@ subdirectory
 sublicense
 subpath
 subpaths
+substring
 subtree
 subtrees
 systemd

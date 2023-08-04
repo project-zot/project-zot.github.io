@@ -27,6 +27,7 @@
 | OCI | The [Open Container Initiative (OCI)](https://opencontainers.org/) is an open governance structure for the express purpose of creating open industry standards around container formats and runtimes. |
 | ORAS | [OCI Registry as Storage (ORAS)](https://oras.land/) is a tool for distributing OCI artifacts across OCI registries. |
 | prometheus | [Prometheus](https://prometheus.io/docs/guides/node-exporter/) is a node exporter that exposes a wide variety of hardware- and kernel-related metrics. |
+| referrer | An image containing a non-nil subject field with a descriptor to the referred image. |
 | registry | A service that stores and distributes container images and artifacts. |
 | repository | A collection of images with the same name, differentiated by tags. |
 | skopeo | [`skopeo`](https://github.com/containers/skopeo) is a command line utility that performs various operations on container images and image repositories. |
