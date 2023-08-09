@@ -29,7 +29,7 @@ zot is a single binary image with all features included so that deployment is ex
 
 A clear separation exists between (1) the core OCI-compliant HTTP APIs and storage functionality, and (2) other add-on features modeled as **extensions**. The extension features can be selectively enabled both at build-time and run-time.
 
-For more information, see "Conditional Builds" in zot's [security posture](kb:security-posture.xml#_conditional_builds) document.
+For more information, see "Conditional Builds" in zot's [security posture](../articles/security-posture.md#_conditional_builds) document.
 
 ## Overall Architecture
 
@@ -72,7 +72,7 @@ The configuration file is divided into sections for `http`, `storage`, `log`, an
 
 A robust set of authentication and authorization options are supported natively in zot. These controls are enforced before access is allowed into the storage layer.
 
-For more information, see [User Authentication and Authorization with zot](kb:authn-authz.xml).
+For more information, see [User Authentication and Authorization with zot](../articles/authn-authz.md).
 
 ### Storage Driver Support
 
@@ -81,7 +81,7 @@ zot supports any modern local filesystem. Remote filesystems, such as AWS S3 or 
 > :pencil2:
 > Deduplication is supported for both local and remote filesystems, but deduplication requires a filesystem with hard-link support.
 
-For more information, see [Storage Planning with zot](kb:storage.xml).
+For more information, see [Storage Planning with zot](../articles/storage.md).
 
 ### Security Scanning
 
@@ -94,7 +94,7 @@ Additional registry features that are not a part of the Distribution Specificati
 > :pencil2:
 > Extension features of zot are available only with a full zot image. They are not supported in a minimal zot image.
 
-For more information about extensions, see [*Extensions*](extensions.md).
+For more information about zot's extensions, see [*Extensions*](extensions.md).
 
 ### Background Tasks
 

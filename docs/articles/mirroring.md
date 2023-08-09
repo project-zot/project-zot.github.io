@@ -31,7 +31,7 @@ Mirroring zot using the `sync` feature allows you to easily migrate a registry. 
 
 To ensure a complete migration of the registry contents, set a polling interval in the configuration of the new zot registry and set `prefix` to `**`, as shown in this example: 
 
-```
+```json
   {
   	"urls": [
   		"https://registry1:5000"
@@ -50,7 +50,7 @@ To ensure a complete migration of the registry contents, set a polling interval 
 
 The `sync` feature of zot is an [extension](https://github.com/opencontainers/distribution-spec/tree/main/extensions) of the OCI-compliant registry implementation. You can configure the `sync` feature under the `extensions` section of the zot configuration file, as shown in this example:
 
-```
+```json
   "extensions": {
     "sync": {
       "credentialsFile": "./examples/sync-auth-filepath.json",
@@ -195,7 +195,7 @@ error occurs during either an on-demand or periodic synchronization. If no value
 
 The following is an example of sync configuration for mirroring multiple repositories with polled mirroring.
 
-```
+```json
 "sync": {
   "enable": true,
   "credentialsFile": "./examples/sync-auth-filepath.json",
@@ -245,7 +245,7 @@ The configuration in this example will result in the following behavior:
 
 The following is an example of sync configuration for mirroring multiple registries with on-demand mirroring.
 
-```
+```json
 {
   "distSpecVersion": "1.0.1",
   "storage": {
@@ -301,7 +301,8 @@ With this zot configuration, the sync behavior is as follows:
 
 You can use this command:<br/>&nbsp;&nbsp;&nbsp;&nbsp;
 `curl http://localhost:8080/v2/_catalog`<br/>to display the local repositories:
-```
+
+```json
   {
     "repositories":[
       "docker-images/alpine",
@@ -314,7 +315,7 @@ You can use this command:<br/>&nbsp;&nbsp;&nbsp;&nbsp;
 
 The following is an example of a zot configuration file for mirroring multiple upstream registries.
 
-```
+```json
 {
   "distSpecVersion": "1.1.0-dev",
   "storage": {
@@ -398,7 +399,7 @@ The following is an example of a zot configuration file for mirroring multiple u
 
 ### Example: Support for subpaths in local storage
 
-```
+```json
 {
   "distSpecVersion": "1.0.1",
   "storage": {
@@ -448,7 +449,8 @@ With this zot configuration, the sync behavior is as follows:
 
 You can use this command:<br/>&nbsp;&nbsp;&nbsp;&nbsp;
 `curl http://localhost:8080/v2/_catalog`<br/>to display the local repositories:
-```
+
+```json
   {
     "repositories":[
       "docker-images/alpine",

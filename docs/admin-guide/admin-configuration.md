@@ -64,7 +64,9 @@ With a full (not minimal) zot image, the following extension features can be ena
     "sync": {},
     "search": {},
     "scrub": {},
-    "lint": {}
+    "lint": {},
+    "trust": {},
+    "ui": {}
   }
 }
 ```
@@ -80,10 +82,18 @@ The following features are configured under the `extensions` attribute.
 -   [Search](#search_config)
 -   [Scrub](#scrub_config)
 -   [Lint](#lint_config)
+-   [TrustImage](#trust_config)
+-   [UI](#ui_config)
   
 An extension feature is usually enabled by the presence of the feature’s attribute under `extensions`. An extension feature can then be disabled by either omitting the feature attribute or by including an `enable` attribute with a value of `false`.
 
-> :pencil2: An additional extension feature, [User Preferences](#userprefs_config), is enabled when the Search feature is enabled, and is not configured under the `extensions` section.
+> :pencil2: Two API-only extensions, [User Preferences](#userprefs_config) and [Mgmt](#mgmt_config), are not enabled or configured under the `extensions` section of the configuration file.  These API-only extensions are enabled as follows:
+>
+> - [Mgmt](#mgmt_config) is enabled when the `Search` extension is enabled.
+>
+> - [User Preferences](#userprefs_config) is enabled when both the `Search` and `UI` extensions are enabled. 
+
+#### Enabling and disabling extensions
 
 Following is an example of enabling or disabling a feature in the `extensions` section. The scrub feature is enabled in these two configurations:
 
@@ -116,8 +126,10 @@ The scrub feature is disabled in these two configurations:
 }
 ```
 
-> :pencil2:
-> New functionality can be added to the zot registry by developing custom extensions for integration into zot. For information about developing extensions, see [_Developing New Extensions_](../developer-guide/extensions-dev.md).
+#### Developing custom extensions
+
+New functionality can be added to the zot registry by developing custom extensions for integration into zot. For information about developing extensions, see [_Developing New Extensions_](../developer-guide/extensions-dev.md).
+
 
 <a name="network_config"></a>
 
@@ -327,7 +339,7 @@ For detailed information about clustering with zot, see [zot Clustering](../arti
 
 ## Syncing and mirroring registries
 
-A zot registry can mirror one or more upstream OCI registries, including popular cloud registries such as [Docker Hub](https://hub.docker.com/) and [Google Container Registry](gcr.io).  If an upstream registry is OCI distribution-spec conformant for pulling images, you can use zot's `sync` extension feature to implement a downstream mirror, synchronizing OCI images and corresponding artifacts. Synchronization between registries can be implemented by periodic polling of the upstream registry or synchronization can occur on demand, when a user pulls an image from the downstream registry.
+A zot registry can mirror one or more upstream OCI registries, including popular cloud registries such as [Docker Hub](https://hub.docker.com/) and [Google Container Registry](https://cloud.google.com/artifact-registry).  If an upstream registry is OCI distribution-spec conformant for pulling images, you can use zot's `sync` extension feature to implement a downstream mirror, synchronizing OCI images and corresponding artifacts. Synchronization between registries can be implemented by periodic polling of the upstream registry or synchronization can occur on demand, when a user pulls an image from the downstream registry.
 
 As with git, wherein every clone is a full repository, you can configure a local zot instance to be a full OCI mirror registry. This allows for a fully distributed disconnected container image build pipeline.
 
@@ -359,6 +371,52 @@ The following table lists the configurable attributes of the `lint` extension.
 | `mandatoryAnnotations` | A list of annotations that are required to be present in the image being pushed to the repository.  |
 
 If the mandatory annotations option is configured when you push an image, linter will verify that the mandatory annotations list present in the configuration is also found in the manifest's annotations list. If any annotations are missing, the push is denied.
+
+
+<a name="trust_config"></a>
+
+## Verifying the signatures of uploaded images
+
+The `trust` extension provides a mechanism to verify image signatures using certificates and public keys.
+
+To enable image signature verification, you must add the `trust` attribute under `extensions` in the zot configuration file and enable one or more verification tools, as shown in the following example:
+
+```json
+"extensions": {
+  "trust": {
+    "enable": true,
+    "cosign": true,
+    "notation": true
+  }
+}
+```
+
+You must also upload public keys (for `cosign`) or certificates (for `notation`) that can be used to verify the image signatures.  
+
+For detailed information about configuring image signature verification, see [Verifying image signatures](../articles/verifying-signatures.md).
+
+
+<a name="ui_config"></a>
+
+## Enabling the registry's graphical user interface
+
+Using the zot [graphical user interface (GUI)](../user-guides/user-guide-gui.md), a user can browse a zot registry for container images and artifacts.
+
+To configure zot's GUI, add the `ui` attribute under `extensions` in the configuration file, as shown in the following example:
+
+```json
+"extensions": {
+  "ui": {
+    "enable": true
+  }
+}
+```
+
+The following table lists the configurable attributes of the `ui` extension.
+
+| Attribute  |Description  |
+|------------|-------------|
+| `enable`   | If this attribute is missing, the zot GUI is disabled by default. The GUI can be enabled by including this attribute and setting it to `true`. |
 
 
 <a name="scrub_config"></a>
@@ -414,12 +472,12 @@ Add the `search` attribute under `extensions` in the configuration file to enabl
 
 ``` json
 "extensions": {
-    "search": {
-        "enable": true,
-        "cve": {
-            "updateInterval": "2h"
-        }
+  "search": {
+    "enable": true,
+    "cve": {
+      "updateInterval": "2h"
     }
+  }
 }
 ```
 
@@ -437,7 +495,7 @@ The following table lists the configurable attributes for enhanced search.
 
 The user preferences extension provides an API endpoint for adding configurable user preferences for a repository. This custom extension, not a part of the OCI distribution, is accessible only by authenticated users of the registry. Unauthenticated users are denied access.
 
-The user preferences extension is enabled by default when the `search` extension is enabled. There are no other configuration file fields for this extension.
+The user preferences extension is enabled by default when the `search` and `ui` extensions are enabled. There are no other configuration file fields for this extension.
 
 A `userprefs` API endpoint accepts as a query parameter an `action` to perform along with any other required parameters for the specified action. The actions currently implemented do not require an HTTP payload, nor do they return any related data other than an HTTP response code.
 

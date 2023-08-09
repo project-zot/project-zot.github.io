@@ -23,11 +23,11 @@ Supported platforms and architectures
 
 ### Prerequisites
 
-#### Install golang (1.19+)
+#### Install golang
 
-The zot project requires `golang 1.19` or newer. You can follow [these instructions](https://go.dev/learn/) to install the `golang` toolchain.
-After installation, make sure that the `path` environment variable or
-your IDE can find the toolchain.
+Follow the [golang instructions](https://go.dev/learn/) to install the `golang` toolchain. After installation, make sure that the `path` environment variable or your IDE can find the toolchain.
+
+> :pencil2: You must use a golang version of at least the minimum specified in [go.mod](https://github.com/project-zot/zot/go.mod) or the build will fail.
 
 ### Cloning zot
 
@@ -69,7 +69,7 @@ linux server, use the following command:
 The `make` command builds an executable image in the `zot/bin`
 directory. The original filename of the zot executable image will
 indicate the build options. For example, the filename of an Intel-based
-linux minimal image is `zot-linux-amd64-minimal`.
+linux minimal image is `zot-minimal-linux-amd64`.
 
 <details>
   <summary markdown="span">Click here to view an example of the getting started process.</summary>
@@ -86,7 +86,7 @@ linux minimal image is `zot-linux-amd64-minimal`.
 The behavior of zot is controlled via configuration only. To launch the
 zot server, execute the following command:
 
-    $  bin/zot-linux-amd64 serve examples/config-example.json
+    $  bin/zot-linux-amd64 serve examples/config-minimal.json
 
 ## Debugging zot
 
