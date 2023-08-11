@@ -25,7 +25,7 @@ Supported platforms and architectures
 
 #### Install golang (1.19+)
 
-The zot project requires `golang 1.19` or newer. You can follow [these instructions](https://go.dev/learn/) to install the `golang` toolchain.
+The zot project requires `golang 1.19` or newer. You can follow the [golang instructions](https://go.dev/learn/) to install the `golang` toolchain.
 After installation, make sure that the `path` environment variable or
 your IDE can find the toolchain.
 

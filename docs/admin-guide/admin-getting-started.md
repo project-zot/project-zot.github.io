@@ -91,7 +91,7 @@ install a zot binary image, as in the following examples.
 
 Each of these example commands pulls a zot binary image from
 the GitHub Container Registry (ghcr.io) and launches a zot
-image registry at <http://localhost:5000>.
+image registry at `http://localhost:5000`.
 
 <details>
   <summary markdown="span">Click here to view an example of deploying using docker.</summary>
@@ -106,10 +106,9 @@ image registry at <http://localhost:5000>.
 
 #### Prerequisites
 
-##### Install golang (1.17+)
+##### Install golang (1.19+)
 
-The zot project requires `golang 1.17` or newer. You can follow [these
-instructions](https://go.dev/learn/) to install the `golang` toolchain.
+The zot project requires `golang 1.19` or newer. You can follow the [golang instructions](https://go.dev/learn/) to install the `golang` toolchain.
 After installation, make sure that the `path` environment variable or
 your IDE can find the toolchain.
 
@@ -166,8 +165,8 @@ runs the latest zot by running the following command:
 
 **with Docker**
 
-A sample Dockerfile is provided on the [zot project
-page](https://github.com/project-zot/zot/tree/main/build/Dockerfile) in
+A [sample Dockerfile](https://github.com/project-zot/zot/tree/main/build/Dockerfile) 
+is provided on the zot project page in
 GitHub. You can edit the sample file with your specific values, such as
 the desired operating system, hardware architecture, and full or minimal
 build, as in this example:

@@ -93,7 +93,7 @@ The binary image is named using the target platform and architecture. For exampl
 
 
 > :bulb:
-> A sample Dockerfile for zxp is available at [Dockerfile-zxp](https://github.com/project-zot/zot/blob/main/Dockerfile-zxp).
+> A sample Dockerfile for zxp is available at [Dockerfile-zxp](https://github.com/project-zot/zot/blob/main/build/Dockerfile-zxp).
 
 
 The configuration file of zxp contains connection details for the zot server from which it will scrape metrics. The following JSON structure is an example of the `zxp-config-file` contents:

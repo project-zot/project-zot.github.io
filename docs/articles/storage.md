@@ -307,7 +307,7 @@ The following AWS policy is required by zot for push and pull.
 }
 ```
 
-For more details about configuring AWS policies, see the [AWS documentation](https://docs.aws.amazon.com/index.htmlhttps://docs.aws.amazon.com/index.html).
+For more details about configuring AWS policies, see the [AWS documentation](https://docs.aws.amazon.com/index.html).
 
 <a name="config-cache"></a>
 
