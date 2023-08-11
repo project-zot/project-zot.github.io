@@ -86,7 +86,7 @@ linux minimal image is `zot-linux-amd64-minimal`.
 The behavior of zot is controlled via configuration only. To launch the
 zot server, execute the following command:
 
-    $  bin/zot-linux-amd64 serve examples/config-example.json
+    $  bin/zot-linux-amd64 serve examples/config-minimal.json
 
 ## Debugging zot
 

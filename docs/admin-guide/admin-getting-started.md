@@ -74,7 +74,7 @@ install a zot binary image, as in the following examples.
 
     podman run -p 5000:5000 ghcr.io/project-zot/zot-linux-amd64:latest
 
-    podman run -p 5000:5000 ghcr.io/project-zot/zot-linux-amd64-minimal:latest
+    podman run -p 5000:5000 ghcr.io/project-zot/zot-minimal-linux-amd64:latest
 
 <details>
   <summary markdown="span">Click here to view an example of deploying using podman.</summary>
