@@ -130,3 +130,62 @@ The zot project codebase is organized as follows:
     - examples/         # Configuration examples
     - swagger/          # Swagger integration
     - docs/             # Documentation
+
+## Data storage locations in zot
+
+In addition to the storage of repository images, zot stores data for various processes in local and remote storage and databases.  The following table shows the storage locations for different processes and types of data.
+
+<table>
+	<tr>
+		<th>Data or Process</th>
+		<th>Storage Location</th>
+		<th>Description</th>
+	</tr>
+	<tr>
+		<td>images</td>
+		<td>local and<br/>AWS S3</td>
+		<td>Image blobs</td>
+	</tr>
+	<tr>
+		<td>repository synchronization</td>
+		<td>local</td>
+		<td>Intermediate destination for file copying</td>
+	</tr>
+	<tr>
+	<td rowspan="2">deduplication</td>
+		<td>local<br/>/cache.db</td>
+		<td>Cache for deduplication of files stored locally</td>
+	</tr>
+	<tr>
+		<td>AWS DynamoDB</td>
+		<td>Cache for deduplication of files stored in AWS</td>
+	</tr>
+	<tr>
+		<td>CVE</td>
+		<td>local<br/>/_trivy</td>
+		<td>Database of Common Vulnerabilities and Exposures (CVE) information and scan results</td>
+	</tr>
+	<tr>
+		<td>user sessions</td>
+		<td>local<br/>/_sessions</td>
+		<td>zot user session authentication (for zui)</td>
+	</tr>
+	<tr>
+		<td rowspan="2">PKI authentication documents</td>
+		<td>local<br/>/_cosign</td>
+		<td>Private keys for signature verification using cosign</td>
+	</tr>
+	<tr>
+		<td>local<br/>/_notation</td>
+		<td>Certificates for signature verification using notation</td>
+	</tr>
+	<tr>
+	<td rowspan="2">metadata</td>
+		<td>local<br/>/repo.db</td>
+		<td>Local storage of manifests, configurations, download counters, signature verification results</td>
+	</tr>
+	<tr>
+		<td>AWS DynamoDB</td>
+		<td>Cloud storage of manifests, configurations, download counters, signature verification results</td>
+	</tr>
+</table>
