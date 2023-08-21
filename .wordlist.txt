@@ -121,6 +121,7 @@ oras
 ORA
 OSSF
 permalink
+PKI
 plaintext
 png
 podman
@@ -171,6 +172,8 @@ toggleStar
 toolchain
 tooltips
 transactional
+trivy
+Trivy
 truststore
 tunable
 twemoji
