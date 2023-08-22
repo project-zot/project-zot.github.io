@@ -30,6 +30,7 @@ config
 ConfigMap
 conformant
 containerd
+CPUs
 credentialsFile
 cri
 CRI

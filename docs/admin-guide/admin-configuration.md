@@ -386,6 +386,24 @@ The following table lists the configurable attributes for scrubbing the registry
 | `interval` | The time interval between periodic scrub operations. This value must be at least two hours (`2h`).                                      |
 
 
+<a name="background_config"></a>
+
+## Scheduling background tasks
+
+Some zot functions, such as garbage collection and registry synchronization, run as background tasks. These tasks are queued and executed by the scheduler. 
+
+The scheduler is by default allowed to simultaneously run a maximum number of tasks equal to four times the number of CPUs available to the zot process. For most users, there should be no need to modify this maximum number. If such a need arises, you can configure a new maximum number of simultaneous tasks in the `numWorkers` property of the `scheduler` attribute in the configuration file, as shown in the following example.
+
+``` json
+{
+  "distSpecVersion": "1.1.0-dev",
+  "scheduler": {
+    "numWorkers": 3
+  },
+...
+}
+```
+
 <a name="search_config"></a>
 
 ## Enhanced searching and querying images
