@@ -131,7 +131,7 @@ The zot project codebase is organized as follows:
     - swagger/          # Swagger integration
     - docs/             # Documentation
 
-## Data storage locations in zot
+## Additional state in zot
 
 In addition to the storage of repository images, zot stores data for various processes in local and remote storage and databases.  The following table shows the storage locations for different processes and types of data.
 
@@ -148,8 +148,8 @@ In addition to the storage of repository images, zot stores data for various pro
 	</tr>
 	<tr>
 		<td>repository synchronization</td>
-		<td>local</td>
-		<td>Intermediate destination for file copying</td>
+		<td>local<br/>/&lt;repo_name&gt;/.sync</td>
+		<td>The sync operation temporarily copies the upstream blobs to:<br/> /&lt;repo_name&gt;/.sync/${UUID}/&lt;repo_name&gt;, then copies to /&lt;repo_name&gt; and deletes the temporary directory ${UUID}</td>
 	</tr>
 	<tr>
 	<td rowspan="2">deduplication</td>
