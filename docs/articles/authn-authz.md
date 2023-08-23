@@ -206,46 +206,44 @@ Use the `accessControl` attribute in the configuration file to define a set of i
 "http": {
 ...
   "accessControl": {
-    "repositories": {
-      "**": {
-        "policies": [{
-          "users": ["charlie"],
-          "actions": ["read", "create", "update"]
-        }],
-        "defaultPolicy": ["read", "create"]
-      },
-      "tmp/**": {
-        "anonymousPolicy": ["read"],
-        "defaultPolicy": ["read", "create", "update"]
-      },
-      "infra/*": {
-        "policies": [{
-            "users": ["alice", "bob"],
-            "actions": ["create", "read", "update", "delete"]
-          },
-          {
-            "users": ["mallory"],
-            "actions": ["create", "read"]
-          }
-        ],
-        "defaultPolicy": ["read"]
-      },
-      "repos2/repo": {
-        "policies": [{
-            "users": ["bob"],
-            "actions": ["read", "create"]
-          },
-          {
-            "users": ["mallory"],
-            "actions": ["create", "read"]
-          }
-        ],
-        "defaultPolicy": ["read"]
-      },
-      "adminPolicy": {
-        "users": ["admin"],
-        "actions": ["read", "create", "update", "delete"]
-      }
+    "**": {
+      "policies": [{
+        "users": ["charlie"],
+        "actions": ["read", "create", "update"]
+      }],
+      "defaultPolicy": ["read", "create"]
+    },
+    "tmp/**": {
+      "anonymousPolicy": ["read"],
+      "defaultPolicy": ["read", "create", "update"]
+    },
+    "infra/*": {
+      "policies": [{
+          "users": ["alice", "bob"],
+          "actions": ["create", "read", "update", "delete"]
+        },
+        {
+          "users": ["mallory"],
+          "actions": ["create", "read"]
+        }
+      ],
+      "defaultPolicy": ["read"]
+    },
+    "repos2/repo": {
+      "policies": [{
+          "users": ["bob"],
+          "actions": ["read", "create"]
+        },
+        {
+          "users": ["mallory"],
+          "actions": ["create", "read"]
+        }
+      ],
+      "defaultPolicy": ["read"]
+    },
+    "adminPolicy": {
+      "users": ["admin"],
+      "actions": ["read", "create", "update", "delete"]
     }
   }
 ```
