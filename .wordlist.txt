@@ -186,6 +186,7 @@ urls
 URL
 userprefs
 usr
+UUID
 VM
 VMs
 www
