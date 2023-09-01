@@ -19,7 +19,7 @@ image variations, image locations, and image naming formats.
 
 Using `wget,` download the appropriate zot binary image for your
 platform from the [zot GitHub
-project](https://github.com/project-zot/zot/releases). Download the
+project](https://github.com/project-zot/zot). Download the
 image to the\`/usr/bin/\` directory and rename it to `zot,` as in this
 example:
 

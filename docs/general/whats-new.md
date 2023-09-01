@@ -2,9 +2,9 @@
 
 ## [v1.4.3](https://github.com/project-zot/zot/releases/tag/v1.4.3)
 
-### Support for [OCI Artifacts and References](https://github.com/opencontainers/image-spec/blob/main/artifact.md)
+### Support for [OCI Artifacts and References](https://github.com/opencontainers/artifacts)
 
-- The OCI Image Spec v1.1.0 supports arbitrary artifact types and references so that software supply chain use cases can be supported (SBOMs, signatures, etc). Currently, [`oras`](https://github.com/oras-project/oras/releases/tag/v0.16.0) and [`regclient`](https://github.com/regclient/regclient/releases/tag/v0.4.5) support this spec.
+- The OCI Image Spec v1.1.0 supports arbitrary artifact types and references so that software supply chain use cases can be supported (SBOMs, signatures, etc). Currently, [`oras`](https://github.com/oras-project/oras) and [`regclient`](https://github.com/regclient/regclient) support this spec.
 
 ### Remote-only Storage Support
 
