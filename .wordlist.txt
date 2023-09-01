@@ -122,6 +122,7 @@ oras
 ORA
 OSSF
 permalink
+PKI
 plaintext
 png
 podman
@@ -172,6 +173,8 @@ toggleStar
 toolchain
 tooltips
 transactional
+trivy
+Trivy
 truststore
 tunable
 twemoji
@@ -184,6 +187,7 @@ urls
 URL
 userprefs
 usr
+UUID
 VM
 VMs
 www
