@@ -72,7 +72,7 @@ Use the [`zli config`](#_zli-config) command to list all configured URLs with th
 
 You can list all images hosted on a zot server using the [`zli images`](#_zli-images) command with the server’s alias:
 
-    $ bin/zli images remote-zot
+    $ bin/zli image list --config remote-zot
 
     IMAGE NAME        TAG               DIGEST    SIZE
     postgres          9.6.18-alpine     ef27f3e1  14.4MB
@@ -81,7 +81,7 @@ You can list all images hosted on a zot server using the [`zli images`](#_zli-im
 
 You can also filter the image list to view a specific image by specifying the image name:
 
-    $ bin/zli images remote-zot -n busybox
+    $ bin/zli image name busybox --config remote-zot
 
     IMAGE NAME        TAG               DIGEST    SIZE
     busybox           latest            414aeb86  707.8KB
@@ -90,14 +90,14 @@ You can also filter the image list to view a specific image by specifying the im
 
 Using the [`zli cve`](#_zli-cve) command, you can fetch the CVE (Common Vulnerabilities and Exposures) information for images hosted on the zot server. This example shows how to learn which images are affected by a specific CVE:
 
-    $ bin/zli cve remote-zot -i CVE-2017-9935
+    $ bin/zli cve affected CVE-2017-9935 --config remote-zot
 
     IMAGE NAME        TAG               DIGEST    SIZE
     c3/openjdk-dev    commit-5be4d92    ac3762e2  335MB
 
 This example displays a list all CVEs affecting a specific image:
 
-    $ bin/zli cve remote-zot -I c3/openjdk-dev:0.3.19
+    $ bin/zli cve list c3/openjdk-dev:0.3.19 --config remote-zot
 
     ID                SEVERITY  TITLE
     CVE-2015-8540     LOW       libpng: underflow read in png_check_keyword()
@@ -105,7 +105,7 @@ This example displays a list all CVEs affecting a specific image:
 
 This example displays the detailed CVEs in JSON format:
 
-    $ bin/zli cve remote-zot -I c3/openjdk-dev:0.3.19 -o json
+    $ bin/zli cve list c3/openjdk-dev:0.3.19 -f json --config remote-zot
     {
       "Tag": "0.3.19",
       "CVEList": [
@@ -135,7 +135,7 @@ This example displays the detailed CVEs in JSON format:
 
 This example lists all images on a specific zot server that are affected by a specific CVE:
 
-    $ bin/zli cve remote-zot -I c3/openjdk-dev -i CVE-2017-9935
+    $ bin/zli cve affected CVE-2017-9935 --repo c3/openjdk-dev --config remote-zot
 
     IMAGE NAME        TAG               DIGEST    SIZE
     c3/openjdk-dev    commit-2674e8a    71046748  338MB
@@ -143,7 +143,7 @@ This example lists all images on a specific zot server that are affected by a sp
 
 This example lists all images on a specific zot server where the CVE has been fixed:
 
-    $ bin/zli cve remote-zot -I c3/openjdk-dev -i CVE-2017-9935 --fixed
+    $ bin/zli cve fixed c3/openjdk-dev CVE-2017-9935 --config remote-zot
 
     IMAGE NAME        TAG                       DIGEST    SIZE
     c3/openjdk-dev    commit-2674e8a-squashfs   b545b8ba  321MB
@@ -168,7 +168,7 @@ You can locate repositories and images hosted on a zot server using the [`zli se
 
 This example searches the zot registry named 'local' for a repository whose name contains the substring 'ng':
 
-    $ bin/zli search --query ng local
+    $ bin/zli search query ng --config local
 
     NAME            SIZE        LAST UPDATED                             DOWNLOADS   STARS
     nginx           794MB       2023-03-01 18:44:17.707690369 +0000 UTC  0           0
@@ -177,7 +177,7 @@ This example searches the zot registry named 'local' for a repository whose name
 
 This example searches the zot registry named 'local' for a repository named 'nginx'. Because the repository name is followed by a colon, the search results must match the name exactly. 
 
-    $ bin/zli search --query nginx: local
+    $ bin/zli search query nginx: --config local
 
     REPOSITORY  TAG          OS/ARCH         DIGEST      SIGNED      SIZE
     nginx       1.23.1       linux/amd64     d2ad9089    true        57MB
