@@ -76,6 +76,7 @@ htpasswd
 html
 http
 https
+ImageTrust
 inlinehilite
 in-place
 io
@@ -180,7 +181,6 @@ tooltips
 transactional
 trivy
 Trivy
-TrustImage
 truststore
 tunable
 twemoji
