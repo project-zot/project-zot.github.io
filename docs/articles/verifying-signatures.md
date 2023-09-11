@@ -52,28 +52,24 @@ Upload these files using an extension of the zot API, as shown in the following 
     ```
     *Result*
 
-    The uploaded file is stored in the `_cosign` directory under the `rootDir` specified in the zot configuration file.
+    The uploaded file is stored in the `_cosign` directory under the `rootDir` specified in the zot configuration file or in the Secrets Manager.
 
 - **To upload a certificate for notation**:
 
     *API path*
     ```
-    /v2/_zot/ext/notation?truststoreType=ca&truststoreName=upload-cert
+    /v2/_zot/ext/notation?truststoreType=ca
     ```
 
-    When uploading a certificate, you should specify these additional attributes describing the truststore:
-
-   - `truststoreType`: If the truststore is a certificate authority, the values is `ca`. This is the default if this attribute is omitted.
-
-   - `truststoreName`: The name of the truststore.
+    When uploading a certificate, you should specify the `truststoreType`. If the truststore is a certificate authority, the values is `ca`. This is the default if this attribute is omitted.
 
     *Example request*
     ```
-    curl --data-binary @certificate.crt -X POST "http://localhost:8080/v2/_zot/ext/notation?truststoreType=ca&truststoreName=upload-cert"
+    curl --data-binary @certificate.crt -X POST "http://localhost:8080/v2/_zot/ext/notation?truststoreType=ca"
     ```
     *Result*
 
-    The uploaded file is stored in the  `_notation/truststore/x509/{truststoreType}/{truststoreName}` directory under the `rootDir` specified in the zot configuration file. The `truststores` field in the  `_notation/trustpolicy.json` file is updated automatically.
+    The uploaded file is stored in the  `_notation/truststore/x509/{truststoreType}/default` directory under the `rootDir` specified in the zot configuration file or in the Secrets Manager. The `truststores` field in the  `_notation/trustpolicy.json` file is updated automatically.
 
 ## Where needed files are stored
 
@@ -95,7 +91,7 @@ Upload these files using an extension of the zot API, as shown in the following 
 	└── truststore
 	    └── x509
 	        └── $truststoreType
-	            └── $truststoreName
+	            └── default
 	                └── $certificate
     ```
 
@@ -122,7 +118,7 @@ Upload these files using an extension of the zot API, as shown in the following 
 
     By default, the `trustpolicy.json` file sets the `signatureVerification.level` property to `strict`, which enforces all validations. For example, a signature is not trusted if its certificate has expired, even if the certificate verifies the signature.
 
-    The content of the `trustStores` field will match the content of the `_notation/truststore` directory, containing entries of this format: `$truststoreType:$truststoreName`.
+    The content of the `trustStores` field will match the content of the `_notation/truststore` directory.
 
 ## How signature verification works
 

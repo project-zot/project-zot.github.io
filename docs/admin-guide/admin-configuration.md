@@ -82,7 +82,7 @@ The following features are configured under the `extensions` attribute.
 -   [Search](#search_config)
 -   [Scrub](#scrub_config)
 -   [Lint](#lint_config)
--   [TrustImage](#trust_config)
+-   [ImageTrust](#trust_config)
 -   [UI](#ui_config)
   
 An extension feature is usually enabled by the presence of the feature’s attribute under `extensions`. An extension feature can then be disabled by either omitting the feature attribute or by including an `enable` attribute with a value of `false`.
