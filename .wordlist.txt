@@ -15,6 +15,7 @@ bcrypt
 benchmarking
 blackbox
 BoltDB
+busybox
 CD
 certDir
 checksum
@@ -37,6 +38,7 @@ cri
 CRI
 crt
 CSS
+cURL
 cve
 CVE
 CVEs
