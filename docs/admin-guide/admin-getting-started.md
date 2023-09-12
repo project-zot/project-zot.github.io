@@ -29,7 +29,7 @@ possible on any platform that supports the `golang` toolchain.
 | freebsd | amd64 | Intel-based FreeBSD<sup>*</sup>    |
 | freebsd | arm64 | ARM-based FreeBSD<sup>*</sup>      |
 
-<sup>*</sup> **NOTE:** While binary images are available for FreeBSD, building container images is not supported at this time.
+<sup>*</sup> NOTE: While binary images are available for FreeBSD, building container images is not supported at this time.
 
 #### About binary images
 
