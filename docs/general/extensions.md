@@ -8,7 +8,9 @@ The following extensions are currently available with zot:
 -  **Sync**
 -  **Lint**
 -  **Scrub**
+-  **Trust**
 -  **Metrics**
+-  **Graphical user interface**
 -  **User preferences**
 
 
@@ -27,7 +29,7 @@ Wherever applicable, extensions can be dynamically discovered using the extensio
 
 The extensions implemented in zot include administrator-configured functionality and end-user features. 
 
-> :pencil2: Currently, _search_ and _userprefs_ are the only zot extensions operable by end users. Only these extensions are accessible through HTTP APIs and are [discoverable](https://github.com/opencontainers/distribution-spec/blob/main/extensions/_oci.md#module-discover) using the OCI extensions mechanism.
+> :pencil2: Currently, _search_, _trust_, and _userprefs_ are the only zot extensions operable by end users. Only these extensions are accessible through HTTP APIs and are [discoverable](https://github.com/opencontainers/distribution-spec/blob/main/extensions/_oci.md#module-discover) using the OCI extensions mechanism.
 
 The following extensions are currently supported by zot:
 
@@ -57,17 +59,25 @@ The following extensions are currently supported by zot:
 
    Although container images are content-addressable with their SHA256 checksums, and validations are performed during storage and retrieval, it is possible that bit-rot sets in when not in use. The **scrub** extension actively scans container images in the background to proactively detect errors.
 
+### **Trust**
+
+   Images stored in zot can be signed with a digital signature to verify the source and integrity of the image. The digital signature can be verified by zot using public keys or certificates uploaded by the user through the zot API. The **trust** extension enables and configures this function.
+
 ### **Metrics**
   
    The **metrics** extension adds a node exporter, which is not present in the minimal build.
+
+### **Graphical user interface**
+
+   Using the zot [graphical user interface (GUI)](../user-guides/user-guide-gui.md), you can browse a zot registry for container images and artifacts. From the web interface, you can copy the shell commands for downloading an image using popular third-party tools such as docker, podman, and skopeo.
 
 ### **User preferences**
 
    The **userprefs** extension provides an API endpoint for adding configurable user preferences for a repository. This custom extension, not a part of the OCI distribution, is accessible only by authenticated users of the registry. Unauthenticated users are denied access.
 
-   The current functions implemented by this extension include:
+   The functions currently implemented by this extension include:
 
    - Toggling the star (favorites) icon for a repository.
    - Toggling the bookmark icon for a repository.
 
-For information about configuring zot extensions, see [*Configuring zot*](../admin-guide/admin-configuration.md).
+> :bulb: For information about configuring zot extensions, see [*Configuring zot*](../admin-guide/admin-configuration.md).

@@ -10,6 +10,7 @@ authz
 autocompletion
 backend
 backends
+balancer
 bcrypt
 benchmarking
 blackbox
@@ -57,6 +58,7 @@ freebsd
 FreeBSD
 fullname
 gc
+gcInterval
 gcr
 ghcr
 github
@@ -74,6 +76,7 @@ htpasswd
 html
 http
 https
+ImageTrust
 inlinehilite
 in-place
 io
@@ -85,6 +88,7 @@ kubectl
 kubelet
 kubernetes
 Kubernetes
+ldap
 LDAP
 licensable
 LICENSE
@@ -102,6 +106,7 @@ MacOS
 maxRetries
 md
 MERCHANTABILITY
+mgmt
 minify
 mkdocs
 mTLS
@@ -113,6 +118,7 @@ NodePort
 OAuth
 OCI
 OIDC
+oidc
 onboarding
 Onboarding
 onDemand
@@ -176,6 +182,9 @@ transactional
 trivy
 Trivy
 truststore
+truststores
+trustStore
+trustStores
 tunable
 twemoji
 UI

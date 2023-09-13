@@ -12,7 +12,7 @@ shows which content and client tools are demonstrated.
 | Content Type  | Client                                 |
 |---------------|----------------------------------------|
 | OCI images    | [skopeo](#using-skopeo)                |
-| OCI images    | [regclient](#using-regedit) (`regctl`) |
+| OCI images    | [regclient](#using-regclient) (`regctl`) |
 | OCI images    | [crane](#using-crane)                  |
 | OCI artifacts | [oras](#using-oras)                    |
 | Helm charts   | [helm](#using-helm)                    |
@@ -99,18 +99,18 @@ image repositories. The command line interface for regclient is
 
 ### Push an OCI image
 
-This example pushes version 1.18 of `golang` to a `tools` repository
+This example pushes version 1.20 of `golang` to a `tools` repository
 within the registry.
 
     $ regctl registry set --tls=disabled localhost:5000
-    $ regctl image copy ocidir://path/to/golang:1.18 localhost:5000/tools
+    $ regctl image copy ocidir://path/to/golang:1.20 localhost:5000/tools
 
 ### Pull an OCI image
 
-This example pulls version 1.18 of `golang` to a local OCI-layout
+This example pulls version 1.20 of `golang` to a local OCI-layout
 directory.
 
-    $ regctl image copy localhost:5000/tools ocidir://path/to/golang:1.18
+    $ regctl image copy localhost:5000/tools ocidir://path/to/golang:1.20
 
 ### List all repositories in registry
 
@@ -150,12 +150,12 @@ can omit this command from your `regctl` session.
 
 ## Common tasks using oras for OCI artifacts
 
-[ORAS](https://oras.land/cli/) (OCI Registry As Storage) is a command
+[ORAS](https://oras.land) (OCI Registry As Storage) is a command
 line client for storing OCI artifacts on OCI repositories.
 
 > :pencil2:
 > For detailed information about the `oras` commands in these examples,
-see the [ORAS CLI documentation](https://oras.land/cli/).
+see the [ORAS CLI documentation](https://oras.land/docs/commands/use_oras_cli).
 
 
 ### Push an artifact
@@ -206,7 +206,7 @@ example:
     $ oras pull -u myUsername -p myPassword localhost:5000/hello-artifact:v2 -d -v
 
 > :pencil2:
-> For additional authentication options, including interactive credential entry and disabling TLS, see the [ORAS login documentation](https://github.com/oras-project/oras/blob/main/cmd/oras/login.go).
+> For additional authentication options, including interactive credential entry and disabling TLS, see the [ORAS authentication documentation](https://oras.land/docs/how_to_guides/authentication).
 
 <a name="using-helm"></a>
 
@@ -250,7 +250,7 @@ You will be prompted to manually enter a password.
 [crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/README.md) is an open-source project that provides a command-line interface (CLI) for interacting with container registries, such as Docker Hub and Google Container Registry.
 
 > :pencil2:
-> For detailed information about `crane` commands, see the [crane Documentation](https://github.com/google/go-containerregistry/blob/main/cmd/crane/doc/crane.md).
+> For detailed information about `crane` commands, see the [crane Documentation](https://github.com/google/go-containerregistry/tree/main/cmd/crane/doc/crane.md).
 
 ### Push an OCI image
 

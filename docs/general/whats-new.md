@@ -6,7 +6,9 @@
 
 - Support is added for [OCI Distribution Spec v1.1.0-rc3](https://github.com/opencontainers/distribution-spec/releases/tag/v1.1.0-rc3) and [OCI Image Spec v1.1.0-rc4](https://github.com/opencontainers/image-spec/releases/tag/v1.1.0-rc4). The OCI changes are summarized [here](https://opencontainers.org/posts/blog/2023-07-07-summary-of-upcoming-changes-in-oci-image-and-distribution-specs-v-1-1/).
 
-    :warning:  Support is deprecated for earlier release candidates.
+    :warning:  Support is deprecated for earlier OCI release candidates.
+
+- Support is added for [OCI Artifacts and References](https://github.com/opencontainers/image-spec/blob/main/manifest.md#guidelines-for-artifact-usage). The OCI Image Spec v1.1.0 supports arbitrary artifact types and references so that software supply chain use cases can be supported (SBOMs, signatures, etc). Currently, [`oras`](https://github.com/oras-project/oras) and [`regclient`](https://github.com/regclient/regclient) support this spec.
 
 ### Built-in UI support
 
@@ -14,13 +16,13 @@
 
 ### Support for social logins
 
-- Support is added for OpenID authentication with GitHub, Google, and dex.
-
-[//]: # (add link to article when available)
+- Support is added for [OpenID authentication](../articles/authn-authz.md) with GitHub, Google, and dex.
 
 ### Group policies for authorization
 
 - When creating authorization policies, you can assign multiple users to a named group. A [group-specific authorization policy](../articles/authn-authz.md) can then be defined, specifying allowed access and actions for the group.
+
+    :pencil2:  &nbsp;**Configuration syntax change**: In the previous release, authorization policies were defined directly under the `accessControl` key in the zot configuration file.  With the new ability to create authorization groups, it becomes necessary to add a new `repositories` key below `accessControl`. Beginning with zot v2.0.0, the set of authorization policies are now defined under the `repositories` key.
 
 ### Signature verification
 
@@ -48,8 +50,6 @@
 
 - You can adjust the background scheduler based on your deployment requirements for tasks that are handled in the background, such as garbage collection.
 
-[//]: # (add to config guide when details are available)
-
 ### Binaries for FreeBSD
 
 - zot binary images are available for the [FreeBSD](https://www.freebsd.org/) operating system. Supported architectures are amd64 and arm64.
@@ -59,10 +59,6 @@
 ***
 
 ## [v1.4.3](https://github.com/project-zot/zot/releases/tag/v1.4.3)
-
-### Support for [OCI Artifacts and References](https://github.com/opencontainers/image-spec/blob/main/artifact.md)
-
-- The OCI Image Spec v1.1.0 supports arbitrary artifact types and references so that software supply chain use cases can be supported (SBOMs, signatures, etc). Currently, [`oras`](https://github.com/oras-project/oras/releases/tag/v0.16.0) and [`regclient`](https://github.com/regclient/regclient/releases/tag/v0.4.5) support this spec.
 
 ### Remote-only Storage Support
 

@@ -282,6 +282,10 @@ In this example, five policies are defined:
 
 -   An admin policy (`adminPolicy`) gives the user "admin" global authorization to read, create, update, or delete content in any repository, overriding all other policies.
 
+:pencil2:  In releases prior to zot v2.0.0, authorization policies were defined directly under the `accessControl` key in the zot configuration file.  Beginning with v2.0.0, the set of authorization policies are now defined under a new `repositories` key.
+
+<a name="_social-login"></a>
+
 ### Social login using OpenID/OAuth2 
 
 Social login is an authentication/authorization method in which your existing credentials for another site or service can be used to log in to a service such as zot. For example, you can log in to zot using your GitHub account credentials, and zot will contact GitHub to verify your identity using OAuth 2.0 and [OpenID Connect (OIDC)](https://openid.net/connect/) protocols. 
@@ -291,7 +295,7 @@ Several social login providers are supported by zot:
 - github
 - google
 - gitlab
-- dex
+- oidc (for example, dex)
 
 The following example shows the zot configuration for these providers:
 
@@ -318,7 +322,7 @@ The following example shows the zot configuration for these providers:
             "clientsecret": <client_secret>,
             "scopes": ["openid", "read_api", "read_user", "profile", "email"]
           },
-          "dex": {
+          "oidc": {
             "issuer": "http://<zot-server>:5556/dex",
             "clientid": <client_id>,
             "clientsecret": <client_secret>,
@@ -332,9 +336,9 @@ The following example shows the zot configuration for these providers:
 }
 ```
 
-A client logging into zot by social login must specify a supported OpenID/OAuth2 provider as a URL query parameter.
+#### Using Google, GitHub, or GitLab
 
-A client logging in using Google, GitHub, or GitLab must additionally specify a callback URL for redirection to a zot page after a successful authentication. 
+A client logging into zot by social login must specify a supported OpenID/OAuth2 provider as a URL query parameter.  A client logging in using Google, GitHub, or GitLab must additionally specify a callback URL for redirection to a zot page after a successful authentication. 
 
 The login URL using Google, GitHub, or GitLab uses the following format:
 
@@ -342,7 +346,7 @@ The login URL using Google, GitHub, or GitLab uses the following format:
 
 For example, a user logging in to the zot home page using GitHub as the authentication provider sends this URL:
 
-    http://zot-example.com:8080/auth/login?provider=github&callback_ui=http://zot-example.com:8080/home
+    http://zot.example.com:8080/auth/login?provider=github&callback_ui=http://zot.example.com:8080/home
 
 Based on the specified provider, zot redirects the login to a provider service with the following URL:
 
@@ -350,13 +354,13 @@ Based on the specified provider, zot redirects the login to a provider service w
 
 For the GitHub authentication example:
 
-    http://zot-example.com:8080/auth/callback/github
+    http://zot.example.com:8080/auth/callback/github
 
 :pencil2: If your network policy doesn't allow inbound connections, the callback will not work and this authentication method will fail.
 
 #### Using dex
 
-[dex](https://dexidp.io/) is an identity service that uses OpenID Connect to drive authentication for client apps, such as zot.
+[dex](https://dexidp.io/) is an identity service that uses OpenID Connect (OIDC) to drive authentication for client apps, such as zot. While this section shows how to use dex with zot, zot supports other OIDC services as well.
 
 Like zot, dex uses a configuration file for setup. To specify zot as a client in dex, configure a `staticClients` entry in the dex configuration file with a zot callback, such as the following example in the dex configuration file:
 
@@ -364,7 +368,7 @@ Like zot, dex uses a configuration file for setup. To specify zot as a client in
 staticClients:
   - id: zot-client
     redirectURIs:
-      - 'http://zot-example.com:8080/auth/callback/dex'
+      - 'http://zot.example.com:8080/auth/callback/oidc'
     name: 'zot'
     secret: ZXhhbXBsZS1hcHAtc2VjcmV0
 ```
@@ -376,7 +380,8 @@ In the zot configuration file, configure dex as an OpenID auth provider as in th
     "auth": {
       "openid": {
         "providers": {
-          "dex": {
+          "oidc": {
+            "name": "Corporate SSO",
             "issuer": "http://<zot-server>:5556/dex",
             "clientid": "zot-client",
             "clientsecret": "ZXhhbXBsZS1hcHAtc2VjcmV0",
@@ -389,8 +394,32 @@ In the zot configuration file, configure dex as an OpenID auth provider as in th
   }
 ```
 
-A user logging in to zot using dex OpenID authentication sends a URL such as the following example:
+A user logging in to zot using dex OpenID authentication sends a URL with dex as a URL query parameter, such as the following example:
 
-`http://zot-example.com:8080/auth/login?provider=dex`
+`http://zot.example.com:8080/auth/login?provider=oidc`
 
 For detailed information about configuring dex service, see the dex [Getting Started](https://dexidp.io/docs/getting-started/) documentation.
+
+
+#### Using OpenID/OAuth2 when zot is behind a proxy or load balancer
+
+When the zot registry is running behind a proxy or load balancer, you must provide an external URL for OpenID/OAuth2 clients to redirect back to zot. This `externalUrl` attribute is the URL of the registry, as shown in this example:
+
+```json
+  "http": {
+    "address": "0.0.0.0",
+    "port": "8080",
+    "externalUrl": "https://zot.example.com",
+    "auth": {
+      "openid": {
+        "providers": {
+          "github": {
+            "clientid": <client_id>,
+            "clientsecret": <client_secret>,
+            "scopes": ["read:org", "user", "repo"]
+          }
+        }
+      }
+    }
+  }
+```

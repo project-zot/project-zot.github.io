@@ -111,8 +111,9 @@ Use `skopeo` to copy (pull) a "hello" app from the Google Container Registry (gc
 
 ```shell
 # copy an image
-skopeo copy --format=oci --dest-tls-verify=false docker://gcr.io/ \
-google-samples/hello-app:1.0 docker://localhost:5001/hello-app:1.0
+skopeo copy --format=oci --dest-tls-verify=false \
+docker://gcr.io/google-samples/hello-app:1.0 \
+docker://localhost:5001/hello-app:1.0
 
 # deploy the image
 kubectl create deployment hello-server --image=localhost:5001/hello-app:1.0

@@ -44,14 +44,14 @@ You can examine the implementation of these extensions in the zot project [exten
     - The first two lines declare an "anti-tag" (for example, `!foo`). In the *foo* extension example, the "no-op" file will be included in binaries that don't implement the *foo* extension, but won't be included in binaries that implement the *foo* extension.  The *foo* example "no-op" file begins with the following lines:
 
   ```go
-    //go:build !foo
-    // +build !foo
+      //go:build !foo
+      // +build !foo
 
-    package foo
+      package foo
     
-    ...
+      ...
   ```
-    See [extension-lint-disabled.go](https://github.com/project-zot/zot/blob/main/pkg/extensions/lint/lint-disabled.go) in the zot project for an example of a "no-op" file.
+    See extension [lint-disabled.go](https://github.com/project-zot/zot/blob/main/pkg/extensions/lint/lint-disabled.go) in the zot project for an example of a "no-op" file.
 
 - When developing a new extension, you should create a blackbox test in which a binary containing the new extension can be tested in a usage scenario. See the [test/blackbox](https://github.com/project-zot/zot/tree/main/test/blackbox) folder in the zot project for examples of extension tests.
 

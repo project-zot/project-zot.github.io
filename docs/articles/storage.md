@@ -33,7 +33,7 @@ Upon startup, zot enforces the `dedupe` status on the existing storage. If the `
 
 #### Garbage collection
 
-After an image is deleted by deleting an image manifest, the corresponding blobs can be purged to free up space. However, since Distribution Specification APIs are not transactional between blob and manifest lifecycle, care must be taken so as not to put the storage in an inconsistent state. Garbage collection in zot is an inline feature meaning that it is **not** necessary to take the registry offline. The zot configuration model allows for enabling and disabling garbage collection (`gc`). The model also allows the configuration of a tunable delay (`gcDelay`), which can be set depending on client network speeds and the size of blobs.
+After an image is deleted by deleting an image manifest, the corresponding blobs can be purged to free up space. However, since Distribution Specification APIs are not transactional between blob and manifest lifecycle, care must be taken so as not to put the storage in an inconsistent state. Garbage collection in zot is an inline feature meaning that it is **not** necessary to take the registry offline. See <a href="#config-gc"><i>Configuring garbage collection</i></a> for details. 
 
 #### Scrub
 
@@ -111,7 +111,6 @@ Filesystem storage is configured with the `storage` attribute in the zot configu
 ```
 
 ### Configurable attributes
-
 
 The following table lists the attributes of the `storage` configuration.
 
@@ -204,6 +203,23 @@ class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="
 </tr>
 </tbody>
 </table>
+
+
+<a name="config-gc"></a>
+
+### Configuring garbage collection
+
+The zot configuration model allows for enabling and disabling garbage collection (`gc`) and specifying a periodic interval (`gcInterval`) for collection. 
+
+| `gc`      | `gcInterval` | Result  |
+| --------- | ------------ | ------ |
+| false     | n/a          | GC disabled |
+| omitted   | n/a          | GC enabled with 1 hour interval (default) |
+| true      | omitted      | GC enabled with 1 hour interval |
+| true      |  0           | GC runs only once |
+| true      |  >0          | GC enabled with specified interval |
+
+The configuration model also allows the configuration of a tunable delay (`gcDelay`), which can be set depending on client network speeds and the size of blobs. The `gcDelay` attribute causes collection to run once after the specified delay time.  This attribute has a default value of one hour (`1h`).
 
 
 <a name="config-s3"></a>
@@ -309,7 +325,7 @@ The following AWS policy is required by zot for push and pull.
 }
 ```
 
-For more details about configuring AWS policies, see the [AWS documentation](https://docs.aws.amazon.com/index.htmlhttps://docs.aws.amazon.com/index.html).
+For more details about configuring AWS policies, see the [AWS documentation](https://docs.aws.amazon.com/index.html).
 
 <a name="config-cache"></a>
 
