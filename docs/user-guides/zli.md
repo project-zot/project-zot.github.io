@@ -201,9 +201,29 @@ This example searches the zot registry named 'local' for a repository named 'ngi
                              linux/s390x     800fd86f    false       66MB
 
 
+## Sorting the output of a zli command
+
+For a zli command that can result in a lengthy output list, you can use the command flag `--sort-by <option>` to cause the output to be sorted by a specified property of the output data. The available sorting criteria vary for different commands, but examples of  sorting criteria options are described in the following table:
+
+| flag option | criteria |
+| -------- | ------ |
+| `alpha-asc` | alphabetical, ascending |
+| `alpha-dsc` | alphabetical, descending |
+| `relevance` | quality of match |
+| `severity` | severity of condition |
+| `update-time` | timestamp | 
+
+For a given command that results in an output list, you can see the available sorting criteria in the usage information returned by the `--help` flag.  For example, `bin/zli image name --help` returns usage information containing the following line under "Flags":
+
+`--sort-by string   Options for sorting the output: [update-time, alpha-asc, alpha-dsc] (default "alpha-asc")`
+
+According to this information, the list of image names returned by the `bin/zli image name` command can be sorted in order of alphabetical ascending, alphabetical descending, or the timestamp of the latest update of the image. The default sorting method for this command, if no `--sort-by` flag is present, is alphabetical ascending.
+
 <a name="_zli-command-reference"></a>
 
 ## Command reference
+
+This section provides detailed usage information for basic first-level zli commands.  Many zli commands also support subcommands, which are listed as "Available Commands" in each command description.  For example, `zli search` can be extended with either the `query` or `subject` subcommand.  To see the detailed usage for each subcommand, type the command with the subcommand and append `--help`, such as `zli search query --help`.  The `zli search` description below includes the subcommand help as an example.
 
 ### zli
 
@@ -232,7 +252,7 @@ This example searches the zot registry named 'local' for a repository named 'ngi
 
 ### zli completion
 
-This command generates the autocompletion script for `zli` for the specified shell. See each sub-command’s help for details on how to use the generated script.
+This command generates the autocompletion script for `zli` for the specified shell. See each subcommand’s help for details on how to use the generated script.
 
     $ bin/zli completion --help
 
@@ -408,10 +428,8 @@ The `search` command allows smart searching for a repository by its name or for 
 
     $ ./zli search query --help
 
-    Fuzzy search for repos and their tags.
-
     Usage:
-      zli search query [flags]
+      zli search query [repo]|[repo:tag] [flags]
 
     Examples:
     # For repo search specify a substring of the repo name without the tag
@@ -420,11 +438,9 @@ The `search` command allows smart searching for a repository by its name or for 
     # For image search specify the full repo name followed by the tag or a prefix of the tag.
       zli search query "test/repo:2.1."
 
-    # To search all tags in all repos.
-      zli search query ":"
-
     Flags:
-      -h, --help   help for query
+      -h, --help             help for query
+          --sort-by string   Options for sorting the output: [relevance, update-time, alpha-asc, alpha-dsc] (default "relevance")
 
     Global Flags:
           --config string   Specify the registry configuration to use for connection
@@ -440,19 +456,19 @@ The `search` command allows smart searching for a repository by its name or for 
 
     $ ./zli search subject --help
 
-    List all referrers for this subject. The subject can be specified by tag(repo:tag) or by digest" +
-          "(repo@digest)
+    List all referrers for this subject. The subject can be specified by tag(repo:tag) or by digest" or (repo@digest)
 
     Usage:
       zli search subject [repo:tag]|[repo@digest] [flags]
 
     Examples:
-    # For referrers search specify the referred subject using its full digest or tag:
+    # For referrers search specify the referred subject using it's full digest or tag:
       zli search subject "repo@sha256:f9a0981..."
       zli search subject "repo:tag"
 
     Flags:
-      -h, --help   help for subject
+      -h, --help             help for subject
+          --sort-by string   Options for sorting the output: [update-time, alpha-asc, alpha-dsc] (default "alpha-asc")
 
     Global Flags:
           --config string   Specify the registry configuration to use for connection
