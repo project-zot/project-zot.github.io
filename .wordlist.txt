@@ -153,6 +153,7 @@ roadmap
 runc
 runtime
 runtimes
+SBOM
 SBOMs
 SDK
 semver
