@@ -1,9 +1,10 @@
-# Software Provenance Workflow Using OCI Artifact
+# Software Provenance Workflow Using OCI Artifacts
 
-> :point_right: This article demonstrates an end-to-end workflow for installing a zot registry, pushing and signing an image and artifact, and verifying the results.
-
+> :point_right: This article demonstrates an end-to-end workflow for installing a zot registry, then pushing and signing an image and a related artifact, such as an SBOM.
 
 ## Workflow
+
+The following sections describe the step-by-step workflow. To view the steps combined into a single script, see [Reference: Full workflow script](#fullscript).
 
 ### Step 1: Set up the environment and tools
 
@@ -138,13 +139,6 @@ REF0="${REF0:1:-1}"
 {% endraw %}
 ```
 
-!!! note "Mike's Questions"
-
-    What is the purpose of creating and truncating REF0? 
-
-    How is REF0 used in the cosign commands in Step 6?
-
-    Should we show an example of the tree?
 
 ### Step 6: Sign the image and artifact
 
@@ -174,6 +168,7 @@ ${REGCLIENT} artifact tree localhost:8080/busybox:latest
 {% endraw %}
 ```
 
+<a name="fullscript"></a>
 
 ## Reference: Full workflow script
 
