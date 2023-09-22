@@ -163,6 +163,9 @@ SSL
 stacker
 stripPrefix
 stylesheets
+subcommand
+subcommands
+subcommand's
 subdirectory
 sublicense
 subpath

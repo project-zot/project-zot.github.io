@@ -70,34 +70,33 @@ Use the [`zli config`](#_zli-config) command to list all configured URLs with th
 
 ### Listing images
 
-You can list all images hosted on a zot server using the [`zli images`](#_zli-images) command with the server’s alias:
+You can list all images hosted on a zot server using the [`zli image list`](#_zli-image) command with the server’s alias:
 
-    $ bin/zli images remote-zot
+    $ bin/zli image list --config local
 
-    IMAGE NAME        TAG               DIGEST    SIZE
-    postgres          9.6.18-alpine     ef27f3e1  14.4MB
-    postgres          9.5-alpine        264450a7  14.4MB
-    busybox           latest            414aeb86  707.8KB
+    REPOSITORY        TAG       OS/ARCH         DIGEST      SIGNED      SIZE        
+    alpine            latest    linux/amd64     3fc10231    false       84MB        
+    busybox           latest    linux/amd64     9172c5f6    false       2.2MB 
 
 You can also filter the image list to view a specific image by specifying the image name:
 
-    $ bin/zli images remote-zot -n busybox
+    $ bin/zli image name busybox:latest --config local
 
-    IMAGE NAME        TAG               DIGEST    SIZE
-    busybox           latest            414aeb86  707.8KB
+    REPOSITORY        TAG       OS/ARCH         DIGEST      SIGNED      SIZE              
+    busybox           latest    linux/amd64     9172c5f6    false       2.2MB 
 
 ### Scanning images for known vulnerabilities
 
-Using the [`zli cve`](#_zli-cve) command, you can fetch the CVE (Common Vulnerabilities and Exposures) information for images hosted on the zot server. This example shows how to learn which images are affected by a specific CVE:
+Using the [`zli cve list`](#_zli-cve) command, you can fetch the CVE (Common Vulnerabilities and Exposures) information for images hosted on the zot server. This example shows how to learn which images are affected by a specific CVE:
 
-    $ bin/zli cve remote-zot -i CVE-2017-9935
+    $ bin/zli cve affected CVE-2017-9935 --config remote-zot
 
     IMAGE NAME        TAG               DIGEST    SIZE
     c3/openjdk-dev    commit-5be4d92    ac3762e2  335MB
 
-This example displays a list all CVEs affecting a specific image:
+This example displays a list of all CVEs affecting a specific image:
 
-    $ bin/zli cve remote-zot -I c3/openjdk-dev:0.3.19
+    $ bin/zli cve list c3/openjdk-dev:0.3.19 --config remote-zot
 
     ID                SEVERITY  TITLE
     CVE-2015-8540     LOW       libpng: underflow read in png_check_keyword()
@@ -105,7 +104,7 @@ This example displays a list all CVEs affecting a specific image:
 
 This example displays the detailed CVEs in JSON format:
 
-    $ bin/zli cve remote-zot -I c3/openjdk-dev:0.3.19 -o json
+    $ bin/zli cve list c3/openjdk-dev:0.3.19 --config remote-zot -f json
     {
       "Tag": "0.3.19",
       "CVEList": [
@@ -135,7 +134,7 @@ This example displays the detailed CVEs in JSON format:
 
 This example lists all images on a specific zot server that are affected by a specific CVE:
 
-    $ bin/zli cve remote-zot -I c3/openjdk-dev -i CVE-2017-9935
+    $ bin/zli cve affected --config remote-zot CVE-2017-9935 --repo c3/openjdk-dev
 
     IMAGE NAME        TAG               DIGEST    SIZE
     c3/openjdk-dev    commit-2674e8a    71046748  338MB
@@ -143,15 +142,16 @@ This example lists all images on a specific zot server that are affected by a sp
 
 This example lists all images on a specific zot server where the CVE has been fixed:
 
-    $ bin/zli cve remote-zot -I c3/openjdk-dev -i CVE-2017-9935 --fixed
+    $ bin/zli cve fixed c3/openjdk-dev CVE-2017-9935 --config remote-zot
 
     IMAGE NAME        TAG                       DIGEST    SIZE
     c3/openjdk-dev    commit-2674e8a-squashfs   b545b8ba  321MB
     c3/openjdk-dev    commit-d5024ec-squashfs   cd45f8cf  321MB
 
+
 ### Listing repositories
 
-You can list all repositories hosted on a zot server using the [`zli repos`](#_zli-repos) command with the server’s alias:
+You can list all repositories hosted on a zot server using the [`zli repo`](#_zli-repo) command with the server’s alias:
 
     Searching... 🌍
 
@@ -168,7 +168,7 @@ You can locate repositories and images hosted on a zot server using the [`zli se
 
 This example searches the zot registry named 'local' for a repository whose name contains the substring 'ng':
 
-    $ bin/zli search --query ng local
+    $ bin/zli search query ng --config local
 
     NAME            SIZE        LAST UPDATED                             DOWNLOADS   STARS
     nginx           794MB       2023-03-01 18:44:17.707690369 +0000 UTC  0           0
@@ -177,7 +177,7 @@ This example searches the zot registry named 'local' for a repository whose name
 
 This example searches the zot registry named 'local' for a repository named 'nginx'. Because the repository name is followed by a colon, the search results must match the name exactly. 
 
-    $ bin/zli search --query nginx: local
+    $ bin/zli search query nginx: --config local
 
     REPOSITORY  TAG          OS/ARCH         DIGEST      SIGNED      SIZE
     nginx       1.23.1       linux/amd64     d2ad9089    true        57MB
@@ -201,9 +201,29 @@ This example searches the zot registry named 'local' for a repository named 'ngi
                              linux/s390x     800fd86f    false       66MB
 
 
+## Sorting the output of a zli command
+
+For a zli command that can result in a lengthy output list, you can use the command flag `--sort-by <option>` to cause the output to be sorted by a specified property of the output data. The available sorting criteria vary for different commands, but examples of  sorting criteria options are described in the following table:
+
+| flag option | criteria |
+| -------- | ------ |
+| `alpha-asc` | alphabetical, ascending |
+| `alpha-dsc` | alphabetical, descending |
+| `relevance` | quality of match |
+| `severity` | severity of condition |
+| `update-time` | timestamp | 
+
+For a given command that results in an output list, you can see the available sorting criteria in the usage information returned by the `--help` flag.  For example, `bin/zli image name --help` returns usage information containing the following line under "Flags":
+
+`--sort-by string   Options for sorting the output: [update-time, alpha-asc, alpha-dsc] (default "alpha-asc")`
+
+According to this information, the list of image names returned by the `bin/zli image name` command can be sorted in order of alphabetical ascending, alphabetical descending, or the timestamp of the latest update of the image. The default sorting method for this command, if no `--sort-by` flag is present, is alphabetical ascending.
+
 <a name="_zli-command-reference"></a>
 
 ## Command reference
+
+This section provides detailed usage information for basic first-level zli commands.  Many zli commands also support subcommands, which are listed as "Available Commands" in each command description.  For example, `zli search` can be extended with either the `query` or `subject` subcommand.  To see the detailed usage for each subcommand, type the command with the subcommand and append `--help`, such as `zli search query --help`.  The `zli search` description below includes the subcommand help as an example.
 
 ### zli
 
@@ -218,8 +238,8 @@ This example searches the zot registry named 'local' for a repository named 'ngi
       config      Configure zot registry parameters for CLI
       cve         Lookup CVEs in images hosted on the zot registry
       help        Help about any command
-      images      List images hosted on the zot registry
-      repos       List all repositories
+      image       List images hosted on the zot registry
+      repo        List all repositories
       search      Search images and their tags
 
     Flags:
@@ -232,7 +252,7 @@ This example searches the zot registry named 'local' for a repository named 'ngi
 
 ### zli completion
 
-This command generates the autocompletion script for `zli` for the specified shell. See each sub-command’s help for details on how to use the generated script.
+This command generates the autocompletion script for `zli` for the specified shell. See each subcommand’s help for details on how to use the generated script.
 
     $ bin/zli completion --help
 
@@ -255,11 +275,9 @@ This command generates the autocompletion script for `zli` for the specified she
 
 ### zli config
 
-This command modifies and lists modified settings for a running zot registry.
+This command configures zot registry parameters for CLI.
 
     $ bin/zli config --help
-
-    Configure zot registry parameters for CLI
 
     Usage:
       zli config <config-name> [variable] [value] [flags]
@@ -284,9 +302,9 @@ This command modifies and lists modified settings for a running zot registry.
     Use "zli config [command] --help" for more information about a command.
 
     Useful variables:
-      url           zot server URL
-      showspinner   show spinner while loading data [true/false]
-      verify-tls    enable TLS certificate verification of the server [default: true]
+      url		zot server URL
+      showspinner	show spinner while loading data [true/false]
+      verify-tls	enable TLS certificate verification of the server [default: true]
 
 <a name="_zli-cve"></a>
 
@@ -297,60 +315,80 @@ This command lists CVEs (Common Vulnerabilities and Exposures) of images hosted 
     $ ./zli cve --help
 
     Usage:
-      zli cve [config-name] [flags]
+      zli cve [command]
+
+    Available Commands:
+      affected    List images affected by a CVE
+      fixed       List tags where a CVE is fixedRetryWithContext
+      list        List CVEs by REPO:TAG or REPO@DIGEST
 
     Flags:
-      -i, --cve-id string   List images affected by a CVE
+          --config string   Specify the registry configuration to use for connection
           --debug           Show debug output
-          --fixed           List tags which have fixed a CVE
+      -f, --format string   Specify output format [text/json/yaml]
       -h, --help            help for cve
-      -I, --image string    List CVEs by IMAGENAME[:TAG]
-      -o, --output string   Specify output format [text/json/yaml]. JSON and YAML format return all info for CVEs
-      -s, --search string   Search specific CVEs by name/id
-          --url string      Specify zot server URL if config-name is not mentioned
-      -u, --user string     User Credentials of zot server in USERNAME:PASSWORD format
-
-<a name="_zli-images"></a>
-
-### zli images
-
-This command lists images hosted on the zot registry.
-
-    $ ./zli images --help
-
-    Usage:
-      zli images [config-name] [flags]
-
-    Flags:
-      -b, --base-images string      List images that are base for the given image
-          --debug                   Show debug output
-      -D, --derived-images string   List images that are derived from given image
-      -d, --digest string   List images containing a specific manifest, config, or layer digest
-      -h, --help            help for images
-      -n, --name string     List image details by name
-      -o, --output string   Specify output format [text/json/yaml]
           --url string      Specify zot server URL if config-name is not mentioned
       -u, --user string     User Credentials of zot server in "username:password" format
           --verbose         Show verbose output
 
+    Use "zli cve [command] --help" for more information about a command.
+
     Run 'zli config -h' for details on [config-name] argument
 
-<a name="_zli-repos"></a>
+<a name="_zli-image"></a>
 
-### zli repos
+### zli image
+
+This command lists images hosted on the zot registry.
+
+    $ ./zli image --help
+
+    Usage:
+      zli image [command]
+
+    Available Commands:
+      base        List images that are base for the given image
+      cve         List all CVE's of the image
+      derived     List images that are derived from given image
+      digest      List images that contain a blob(manifest, config or layer) with the given digest
+      list        List all images
+      name        List image details by name
+
+    Flags:
+          --config string   Specify the registry configuration to use for connection
+          --debug           Show debug output
+      -f, --format string   Specify output format [text/json/yaml]
+      -h, --help            help for image
+          --url string      Specify zot server URL if config-name is not mentioned
+      -u, --user string     User Credentials of zot server in "username:password" format
+          --verbose         Show verbose output
+
+    Use "zli image [command] --help" for more information about a command.
+
+    Run 'zli config -h' for details on [config-name] argument
+
+<a name="_zli-repo"></a>
+
+### zli repo
 
 This command lists all repositories in the zot registry.
 
-    $ ./zli repos --help
+    $ ./zli repo --help
 
     Usage:
-      zli repos [config-name] [flags]
+      zli repo [command]
+
+    Available Commands:
+      list        List all repositories
 
     Flags:
-          --debug         Show debug output
-      -h, --help          help for repos
-          --url string    Specify zot server URL if config-name is not mentioned
-      -u, --user string   User Credentials of zot server in "username:password" format
+          --config string   Specify the registry configuration to use for connection
+          --debug           Show debug output
+      -h, --help            help for repo
+          --url string      Specify zot server URL if config-name is not mentioned
+      -u, --user string     User Credentials of zot server in "username:password" format
+
+    Use "zli repo [command] --help" for more information about a command.
 
     Run 'zli config -h' for details on [config-name] argument
 
@@ -365,28 +403,79 @@ The `search` command allows smart searching for a repository by its name or for 
     $ ./zli search --help
 
     Search repos or images
-    Example:
-      # For repo search specify a substring of the repo name without the tag
-      zli search --query test/repo
-
-      # For image search specify the full repo name followed by the tag or a prefix of the tag
-      zli search --query test/repo:2.1.
-
-      # For referrers search specify the referred subject using its full digest or tag
-      zli search --subject repo@sha256:f9a0981...
-      zli search --subject repo:tag
 
     Usage:
-      zli search [config-name] [flags]
+      zli search [command]
+
+    Available Commands:
+      query       Fuzzy search for repos and their tags.
+      subject     List all referrers for this subject.
 
     Flags:
-          --debug            Show debug output
-      -h, --help             help for search
-      -o, --output string    Specify output format [text/json/yaml]
-      -q, --query string     Specify what repo or image (repo:tag) to be searched
-      -s, --subject string   List all referrers for this subject. The subject can be specified by tag (repo:tag) or by digest (repo@digest)
-          --url string       Specify zot server URL if config-name is not mentioned
-      -u, --user string      User Credentials of zot server in "username:password" format
-          --verbose          Show verbose output
+          --config string   Specify the registry configuration to use for connection
+          --debug           Show debug output
+      -f, --format string   Specify output format [text/json/yaml]
+      -h, --help            help for search
+          --url string      Specify zot server URL if config-name is not mentioned
+      -u, --user string     User Credentials of zot server in "username:password" format
+          --verbose         Show verbose output
+
+    Use "zli search [command] --help" for more information about a command.
+
+    Run 'zli config -h' for details on [config-name] argument
+
+#### zli search query
+
+    $ ./zli search query --help
+
+    Usage:
+      zli search query [repo]|[repo:tag] [flags]
+
+    Examples:
+    # For repo search specify a substring of the repo name without the tag
+      zli search query "test/repo"
+        
+    # For image search specify the full repo name followed by the tag or a prefix of the tag.
+      zli search query "test/repo:2.1."
+
+    Flags:
+      -h, --help             help for query
+          --sort-by string   Options for sorting the output: [relevance, update-time, alpha-asc, alpha-dsc] (default "relevance")
+
+    Global Flags:
+          --config string   Specify the registry configuration to use for connection
+          --debug           Show debug output
+      -f, --format string   Specify output format [text/json/yaml]
+          --url string      Specify zot server URL if config-name is not mentioned
+      -u, --user string     User Credentials of zot server in "username:password" format
+          --verbose         Show verbose output
+
+    Run 'zli config -h' for details on [config-name] argument
+
+#### zli search subject
+
+    $ ./zli search subject --help
+
+    List all referrers for this subject. The subject can be specified by tag(repo:tag) or by digest" or (repo@digest)
+
+    Usage:
+      zli search subject [repo:tag]|[repo@digest] [flags]
+
+    Examples:
+    # For referrers search specify the referred subject using it's full digest or tag:
+      zli search subject "repo@sha256:f9a0981..."
+      zli search subject "repo:tag"
+
+    Flags:
+      -h, --help             help for subject
+          --sort-by string   Options for sorting the output: [update-time, alpha-asc, alpha-dsc] (default "alpha-asc")
+
+    Global Flags:
+          --config string   Specify the registry configuration to use for connection
+          --debug           Show debug output
+      -f, --format string   Specify output format [text/json/yaml]
+          --url string      Specify zot server URL if config-name is not mentioned
+      -u, --user string     User Credentials of zot server in "username:password" format
+          --verbose         Show verbose output
 
     Run 'zli config -h' for details on [config-name] argument
