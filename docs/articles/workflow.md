@@ -6,9 +6,10 @@
 
 The following sections describe the step-by-step workflow. To view the steps combined into a single script, see [Reference: Full workflow script](#fullscript).
 
-### Step 1: Set up the environment and tools
 
-As a first step, we define and create directories, then download binaries for zot, regctl, and cosign. 
+### Step 1: Download the client tools
+
+This workflow uses the `regctl` registry client and the `cosign` image signing tool. As a first step, we download binaries for these tools in a tools directory. 
 
 ```shell
 TEST_TMPDIR=$(mktemp -d "${PWD}/artifact-test-${1:+-$1}.XXXXXX")
@@ -25,25 +26,25 @@ COSIGN=${TOOLSDIR}/bin/cosign
 COSIGN_VERSION=2.1.1
 curl -Lo ${COSIGN} https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64 
 chmod +x ${COSIGN}
-
-# OCI registry
-ZOT=${TOOLSDIR}/bin/zot
-ZOT_VERSION=2.0.0-rc6
-curl -Lo ${ZOT} https://github.com/project-zot/zot/releases/download/v${ZOT_VERSION}/zot-linux-amd64-minimal
-chmod +x ${ZOT}
 ```
 
 
-### Step 2: Launch zot
+### Step 2: Deploy an OCI registry with referrers support (zot)
 
-In this step, we do the following:
+Next, we execute the following tasks to deploy an OCI registry:
 
+- Copy a zot executable binary to the server.
 - Create a basic configuration file for the zot server, specifying the local root directory, the network location, and the port number.
 - Launch zot with the newly-created configuration file.
 - Looping with a periodic cURL query, detect when zot is up and running.
 
 ```shell
 {% raw %}
+ZOT=${TOOLSDIR}/bin/zot
+ZOT_VERSION=2.0.0-rc6
+curl -Lo ${ZOT} https://github.com/project-zot/zot/releases/download/v${ZOT_VERSION}/zot-linux-amd64-minimal
+chmod +x ${ZOT}
+
 ZOT_HOST=localhost
 ZOT_PORT=8080
 
@@ -89,20 +90,15 @@ EOF
   ${REGCLIENT} registry set --tls=disabled $ZOT_HOST:$ZOT_PORT
 }
 
-# function for stopping zot after demonstration
-function zot_teardown() {
-  killall zot
-}
-
 # call the function to start zot
 zot_setup
 {% endraw %}
 ```
 
 
-### Step 3: Copy an image to the zot registry
+### Step 3: Copy an image to the OCI registry
 
-This step copies a busybox container image into the zot registry.
+This step copies a busybox container image into the registry.
 
 ```shell
 {% raw %}
@@ -111,9 +107,9 @@ skopeo copy --format=oci --dest-tls-verify=false docker://busybox:latest docker:
 ```
 
 
-### Step 4: Copy an artifact to the zot registry
+### Step 4: Copy a related artifact to the OCI registry
 
-This step creates a simple artifact file and associates it with the busybox image in the zot registry.
+This step creates a simple artifact file and associates it with the busybox image in the registry.
 
 ```shell
 {% raw %}
@@ -125,12 +121,12 @@ ${REGCLIENT} artifact put --artifact-type application/yaml -f ${TEST_TMPDIR}/art
 {% endraw %}
 ```
 
-> :pencil2: If no subject is specified in the command, the artifact is considered independent and not associated with any existing image.
+The `--subject` command flag associates the artifact file with the specified subject (in this case, the busybox image). If no subject is specified by the command, the artifact is considered independent and not associated with any existing image.
 
 
 ### Step 5: Display the artifact tree
 
-This step prints the artifact tree, including the yaml artifact. The tree shows the association of the artifact to the busybox image.
+This step prints the artifact tree of the busybox image.  The tree includes the artifact yaml file, showing the association of the artifact to the busybox image.
 
 ```shell
 {% raw %}
@@ -139,10 +135,21 @@ REF0="${REF0:1:-1}"
 {% endraw %}
 ```
 
+The following example shows the command and its output:
+
+    $ regctl artifact tree localhost:8080/busybox:latest
+
+    Ref: localhost:8080/busybox:latest  
+    Digest: sha256:9172c5f692f2c65e4f773448503b21dba2de6454bd159905c4bf6d83176e4ea3
+    Referrers:  
+       - sha256:9c0655368b10ca4b2ffe39e4dd261fb89df25a46ae92d6eb4e6e1792a451883e: application/yaml
+
+The displayed artifact tree shows that the original image (`localhost:8080/busybox:latest`) has one direct referrer (`sha256:9c06...883e: application/yaml`), the artifact yaml file.
+
 
 ### Step 6: Sign the image and artifact
 
-This step creates a key pair for cosign in a separate directory, then uses cosign to sign the image and artifact. Both signatures, like the artifact file itself, are associated with the busybox image. 
+This step creates a key pair for cosign in a separate directory, then uses cosign to sign both the image and the artifact file. Both signatures, like the artifact file itself, are associated with the busybox image. 
 
 ```shell
 {% raw %}
@@ -160,13 +167,45 @@ COSIGN_PASSWORD= COSIGN_OCI_EXPERIMENTAL=1 COSIGN_EXPERIMENTAL=1 ${COSIGN} sign 
 
 ### Step 7: Display the artifact tree
 
-This step again prints the artifact tree. The tree now shows the artifact and the two signatures, all associated to the busybox image.
+This step again prints the artifact tree, which should now show the artifact and the two signatures, all associated to the busybox image.
 
 ```shell
 {% raw %}
 ${REGCLIENT} artifact tree localhost:8080/busybox:latest
 {% endraw %}
 ```
+
+The following example shows the command and its output:
+
+    $ regctl artifact tree localhost:8080/busybox:latest
+
+    Ref: localhost:8080/busybox:latest
+    Digest: sha256:9172c5f692f2c65e4f773448503b21dba2de6454bd159905c4bf6d83176e4ea3
+    Referrers:
+      - sha256:9c0655368b10ca4b2ffe39e4dd261fb89df25a46ae92d6eb4e6e1792a451883e: application/yaml
+        Referrers:
+          - sha256:06792b209137486442a2b804b2225c0014e3e238d363cdbea088bbd73207fb34: application/vnd.dev.cosign.artifact.sig.v1+json
+      - sha256:995b6a78bf04a7a9676dac76b4598ccb645c17e30b02f294de9fdfa2f28eb7b2: application/vnd.dev.cosign.artifact.sig.v1+json
+
+The displayed artifact tree shows that the original image now has two direct referrers &mdash; the artifact and the cosign signature of the original image. In addition, there is a second-level referrer &mdash; the cosign signature of the artifact, which is a referrer of the artifact file.
+
+
+### Step 8: End of demonstration
+
+This step halts the zot registry server, ending the workflow demonstration.
+
+```shell
+{% raw %}
+# function for stopping zot after demonstration
+function zot_teardown() {
+  killall zot
+}
+
+# stop zot
+zot_teardown
+{% endraw %}
+```
+
 
 <a name="fullscript"></a>
 
