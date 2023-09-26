@@ -52,6 +52,10 @@
 
 - You can adjust the background scheduler based on your deployment requirements for tasks that are handled in the background, such as garbage collection.  See [Configuring zot](../admin-guide/admin-configuration.md).
 
+### Performance profiling for troubleshooting
+
+- You can use zot's [built-in profiling tools](../articles/pprofiling.md) to collect and analyze runtime performance data.
+
 ### Binaries for FreeBSD
 
 - zot binary images are available for the [FreeBSD](https://www.freebsd.org/) operating system. Supported architectures are amd64 and arm64.

@@ -2,7 +2,7 @@
 
 > :point_right: Use zot's built-in profiling tools to collect and analyze runtime performance.
 
-The profiling capabilites within zot allow a zot administrator to collect and export a range of diagnostic performance data such as CPU intensive function calls, memory allocations, and execution traces. The collected data can then be analyzed using go tools and a variety of available visualization tools.
+The profiling capabilities within zot allow a zot administrator to collect and export a range of diagnostic performance data such as CPU intensive function calls, memory allocations, and execution traces. The collected data can then be analyzed using go tools and a variety of available visualization tools.
 
 ## What data is available?
 
