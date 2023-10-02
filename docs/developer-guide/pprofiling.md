@@ -2,7 +2,7 @@
 
 > :point_right: Use zot's built-in profiling tools to collect and analyze runtime performance.
 
-The profiling capabilities within zot allow a zot administrator to collect and export a range of diagnostic performance data such as CPU intensive function calls, memory allocations, and execution traces. The collected data can then be analyzed using go tools and a variety of available visualization tools.
+The profiling capabilities within zot allow a zot [administrator](../articles/authn-authz.md) to collect and export a range of diagnostic performance data such as CPU intensive function calls, memory allocations, and execution traces. The collected data can then be analyzed using go tools and a variety of available visualization tools.
 
 ## What data is available?
 
@@ -24,7 +24,7 @@ To return an HTML-format profile list along with a count of currently available 
 
     /v2/_zot/pprof/
 
-> :pencil2: You must be authenticated to access `/v2/` API commands.
+> :pencil2: If authentication is enabled, only an admin user can access this API.
 
 ## How do I export profile data?
 
@@ -144,5 +144,3 @@ The `go tool trace` command installs and opens a local web server that provides 
 > :bulb: As an alternative, you can generate a pprof-like profile from the trace file using the following command:
 
     go tool trace -pprof=[net|sync|syscall|sched] trace10.prof
-
-
