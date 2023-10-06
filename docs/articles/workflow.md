@@ -6,6 +6,7 @@
 
 The following sections describe the step-by-step workflow. To view the steps combined into a single script, see [Reference: Full workflow script](#fullscript).
 
+For the workflow examples, the zot registry is assumed to be installed and running at `localhost:8080`.
 
 ### Step 1: Download the client tools
 
@@ -127,6 +128,8 @@ The `--subject` command flag associates the artifact file with the specified sub
 ### Step 5: Display the artifact tree
 
 This step prints the artifact tree of the busybox image.  The tree includes the artifact yaml file, showing the association of the artifact to the busybox image.
+
+These script commands define REF0 as the artifact that was uploaded referring to the first container image. 
 
 ```shell
 {% raw %}
