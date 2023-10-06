@@ -115,6 +115,7 @@ nav:
     - CI/CD Pipeline: articles/building-ci-cd-pipeline.md
     - Authentication and Authorization: articles/authn-authz.md
     - Verifying Image Signatures: articles/verifying-signatures.md
+    - Software Provenance Workflow Using OCI Artifacts: articles/workflow.md
     - Security Posture: articles/security-posture.md
     - Storage Planning: articles/storage.md
     - Mirroring: articles/mirroring.md

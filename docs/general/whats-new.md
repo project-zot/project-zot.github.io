@@ -10,6 +10,8 @@
 
 - Support is added for [OCI Artifacts and References](https://github.com/opencontainers/image-spec/blob/main/manifest.md#guidelines-for-artifact-usage). The OCI Image Spec v1.1.0 supports arbitrary artifact types and references so that software supply chain use cases can be supported (SBOMs, signatures, etc). Currently, [`oras`](https://github.com/oras-project/oras) and [`regclient`](https://github.com/regclient/regclient) support this spec.
 
+- For a demonstration of an end-to-end OCI artifacts workflow, see [Software Provenance Workflow Using OCI Artifacts](../articles/workflow.md).
+
 ### Built-in UI support
 
 - Using the new zot [GUI](../user-guides/user-guide-gui.md), you can browse a zot registry for container images and artifacts. The web interface provides the shell commands for downloading an image using popular third-party tools such as docker, podman, and skopeo.
@@ -28,7 +30,7 @@
 
 - The validity of an image's signature can be [verified](../articles/verifying-signatures.md) by zot. Users can upload public keys or certificates to zot.
 
-[//]: # (add when mgmt PR merges: ... using the new [`mgmt` extension](../general/extensions.md) of the zot API.)
+[//]: # (add instructions when available.)
 
 ### Storage deduplication on startup
 
@@ -48,7 +50,7 @@
 
 ### Scheduling of background tasks
 
-- You can adjust the background scheduler based on your deployment requirements for tasks that are handled in the background, such as garbage collection.
+- You can adjust the background scheduler based on your deployment requirements for tasks that are handled in the background, such as garbage collection.  See [Configuring zot](../admin-guide/admin-configuration.md).
 
 ### Binaries for FreeBSD
 
