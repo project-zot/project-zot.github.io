@@ -42,7 +42,6 @@ CRI
 crt
 CSS
 cURL
-curl
 cve
 CVE
 CVEs

@@ -110,7 +110,6 @@ nav:
   - Developer Guide: 
     - Onboarding: developer-guide/onboarding.md
     - Extensions: developer-guide/extensions-dev.md
-    - Performance Profiling: developer-guide/pprofiling.md
     - Contributing: developer-guide/contributing.md
   - Articles:
     - CI/CD Pipeline: articles/building-ci-cd-pipeline.md
@@ -123,6 +122,7 @@ nav:
     - Clustering: articles/clustering.md
     - Monitoring: articles/monitoring.md
     - Benchmarking with zb: articles/benchmarking-with-zb.md
+    - Performance Profiling: articles/pprofiling.md
     - Using kind for Deployment Testing: articles/kind-deploy.md
 extra_css:
   - stylesheets/custom.css

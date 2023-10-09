@@ -102,6 +102,12 @@ Delve is a powerful open-source debugger for the Go programming
 language. Downloads and documentation for Delve are available on GitHub
 at <https://github.com/go-delve/delve>.
 
+## Performance profiling
+
+Performance profiling capabilities within zot allow a zot [administrator](../articles/authn-authz.md) to collect and export a range of diagnostic performance data such as CPU intensive function calls, memory allocations, and execution traces. The collected data can then be analyzed using Go tools and a variety of available visualization tools.
+
+For detailed information about performance profiling, see [Performance Profiling in zot](../articles/pprofiling.md).
+
 ## Code Organization
 
 The zot project codebase is organized as follows:
