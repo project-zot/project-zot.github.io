@@ -71,6 +71,7 @@ GitHub
 gitlab
 GitLab
 golang
+golang's
 goroutine
 goroutines
 GPG
