@@ -6,6 +6,7 @@ api
 API
 APIs
 apikey
+APIKeyPayload
 artifacthub
 artifactType
 ASLR
@@ -153,6 +154,7 @@ ng
 nginx
 NodePort
 OAuth
+oci
 OCI
 OIDC
 oidc
