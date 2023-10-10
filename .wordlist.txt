@@ -3,7 +3,6 @@ alongside
 amd
 apache
 API
-apikey
 APIs
 artifacthub
 ASLR
@@ -88,7 +87,6 @@ goroutine
 goroutines
 GPG
 graphQL
-graphql
 gui
 haproxy
 hostname
@@ -133,7 +131,6 @@ MacOS
 maxRetries
 md
 MERCHANTABILITY
-Mgmt
 mgmt
 minify
 mkdocs
@@ -149,14 +146,12 @@ nginx
 NodePort
 OAuth
 OCI
-oci
 OIDC
 oidc
 onboarding
 Onboarding
 onDemand
 onlySigned
-OpenAPI
 OpenID
 oras
 ORA
