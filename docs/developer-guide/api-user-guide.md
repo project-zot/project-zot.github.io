@@ -27,7 +27,7 @@ For comprehensive details of these zot API endpoints, see [Viewing the complete 
 | /v2/_catalog| GET |  |
 | /v2/_oci/ext/discover| GET | Discover extensions per the OCI specification | Always available. |
 | /v2/_zot/ext/cosign| POST | Uploads keys for signature verification | Enabled by using the `imagetrust` build label and enabling the `trust` extension with the `cosign` option enabled. |
-| /v2/_zot/ext/mgmt| GET | Mgmt extension endpoints | Enabled by using the `mgmt` build label and enabling both the `search` and `ui` extensions in the configuration file. |
+| /v2/_zot/ext/mgmt| GET | Mgmt extension endpoints | Enabled by using the `mgmt` build label and enabling the `search` extension in the configuration file. |
 | /v2/_zot/ext/notation| POST | With query parameters, uploads certificates for signature verification | Enabled by using the `imagetrust` build label and enabling the `trust` extension with the `notation` option enabled. |
 | /v2/_zot/ext/search |  | Enhanced search | Enabled by using the `search` build label and enabling the `search` extension in the configuration file. |
 | /v2/_zot/ext/userprefs| PUT | User preferences endpoints | Enabled by using the `userprefs` build label and enabling both the `search` and the `ui` extensions in the configuration file. |
