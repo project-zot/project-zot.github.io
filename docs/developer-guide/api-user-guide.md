@@ -72,7 +72,7 @@ For comprehensive details of the API endpoints, see [Viewing the complete zot AP
 
 > :pencil2: This endpoint is accessed with a browser. 
 >
-> :pencil2: This endoint is enabled only in a `binary-debug` zot build or when the zot registry has been built with the `debug` extension label.
+> :pencil2: This endpoint is enabled only in a `binary-debug` zot build or when the zot registry has been built with the `debug` extension label.
 
 | Endpoint | Action | Description |   
 | -------- | ------ | ----------- |  
