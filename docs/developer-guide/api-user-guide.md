@@ -227,6 +227,16 @@ _Command output:_
 
 ```
 
+### Uploading a certificate for Notation
+
+To upload a certificate for notation, use the following endpoint:
+
+    POST /v2/_zot/ext/notation
+
+_cURL command example:_
+
+    curl --data-binary @certificate.crt -X POST "http://localhost:8080/v2/_zot/ext/notation?truststoreType=ca"
+
 
 <a name="_find_reference"></a>
 
