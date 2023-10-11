@@ -15,41 +15,68 @@ The following is a list of zot API endpoints along with the conditions under whi
 
 > :pencil2: Some API endpoints are available only when a specific extension is enabled in the zot configuration file, or when an extension build label is specified in the `make` command (for example, `make binary EXTENSIONS=ui`), or both.
 
-For comprehensive details of these zot API endpoints, see [Viewing the complete zot API reference](#_find_reference).
+For comprehensive details of the API endpoints, see [Viewing the complete zot API reference](#_find_reference).
+
+### OCI endpoints
+
+| Endpoint | Actions | Description | 
+| -------- | ------- | ----------- | 
+| /v2/| GET | [OCI specification endpoints](https://github.com/opencontainers/distribution-spec/blob/main/spec.md#endpoints) | 
+| /v2/_catalog| GET | Lists repositories in a registry. |
+| /v2/_oci/ext/discover| GET | Discover extensions per the OCI specification | 
+| /v2/{repo}/blobs/{digest}| DELETE, GET, HEAD | Lists or deletes an image's blob/layer given a digest | 
+| /v2/{repo}/blobs/uploads| POST | Creates an image blob/layer upload | 
+| /v2/{repo}/blobs/uploads/{session_id}| DELETE, GET, PATCH, PUT | Creates, lists, or deletes an image's blob/layer upload given a session_id | 
+| /v2/{repo}/manifests/{reference}| DELETE, GET, HEAD, PUT | Creates, lists, or deletes references for an image | 
+| /v2/{repo}/referrers/{digest}| GET | Lists referrers given a digest | 
+| /v2/{repo}/tags/list | GET | List all image tags in a repository | 
+
+### zot endpoints
 
 | Endpoint | Actions | Description | Availability |
-| --- | ------------ | -------- | --------|
-| / |  | Web interface | Enabled by using the `ui` build label and enabling the `ui` extension in the configuration file. |
-| /auth/apikey| DELETE, GET, POST | Creates, lists, or deletes API keys | Available when API key authentication is enabled in the configuration file ("apikey": true). |
-| /auth/logout| POST  | Ends an API session | Available when authentication is available. This includes not only OpenID, but all session-based authentication. |
-| /oras/artifacts/v1/_zot/ \ manifests/{digest}/referrers| GET | [OCI Registry As Storage (ORAS)](https://oras.land/) endpoints | Always enabled. |
-| /v2/| GET | [OCI specification endpoints](https://github.com/opencontainers/distribution-spec/blob/main/spec.md#endpoints) | Always available. |
-| /v2/_catalog| GET |  |
-| /v2/_oci/ext/discover| GET | Discover extensions per the OCI specification | Always available. |
-| /v2/_zot/ext/cosign| POST | Uploads keys for signature verification | Enabled by using the `imagetrust` build label and enabling the `trust` extension with the `cosign` option enabled. |
+| -------- | ------- | ----------- | -------------|
+| / | (browser) | Web interface | Enabled by using the `ui` build label and enabling the `ui` extension in the configuration file. |
+| /auth/apikey| DELETE, GET, POST | Creates, lists, or deletes API keys | Available when API key authentication is enabled in the configuration file (`"apikey": true`). |
+| /auth/logout| POST  | Ends an API session | Available when authentication is available. This includes not only OpenID, but all session-based authentication. 
+
+### zot OCI extension endpoints
+
+| Endpoint | Actions | Description | Availability |
+| -------- | ------- | ----------- | -------------|
 | /v2/_zot/ext/mgmt| GET | Mgmt extension endpoints | Enabled by using the `mgmt` build label and enabling the `search` extension in the configuration file. |
 | /v2/_zot/ext/notation| POST | With query parameters, uploads certificates for signature verification | Enabled by using the `imagetrust` build label and enabling the `trust` extension with the `notation` option enabled. |
 | /v2/_zot/ext/search |  | Enhanced search | Enabled by using the `search` build label and enabling the `search` extension in the configuration file. |
+| /v2/_zot/ext/cosign| POST | Uploads keys for signature verification | Enabled by using the `imagetrust` build label and enabling the `trust` extension with the `cosign` option enabled. |
 | /v2/_zot/ext/userprefs| PUT | User preferences endpoints | Enabled by using the `userprefs` build label and enabling both the `search` and the `ui` extensions in the configuration file. |
-| /v2/_zot/blobs/{digest}| DELETE, GET, HEAD |  |
-| /v2/_zot/blobs/uploads| POST |  |
-| /v2/_zot/blobs/uploads/{session_id}| DELETE, GET, PATCH, PUT |  |
-| /v2/_zot/manifests/{reference}| DELETE, GET, HEAD, PUT |  |
-| /v2/_zot/referrers/{digest}| GET |  |
 
+### zot internal endpoints
 
-    !!! REVIEW QUESTIONS:
+| Endpoint | Actions | Description | Availability |
+| -------- | ------- | ----------- | -------------|
+| /auth/login | POST  | Opens an API session | Available when authentication is available. This includes not only OpenID, but all session-based authentication. |
+| /auth/callback/\<provider\> | POST | Specifies a social authentication service provider for redirecting logins, such as Google or dex. | Enabled when an OpenID authentication service provider is specified in the configuration file. |
 
-    1. Are these deprecated?
-        /auth/login
-        /auth/callback
-        /metrics
-        /swagger/v2/
-        /v2/metrics
-        /v2/_zot/debug/graphql-playground 
-    
-    2. Can someone send me an API example (command and response) of uploading cosign OR notation credentials?
+### ORAS endpoints
 
+| Endpoint | Actions | Description | Availability |
+| -------- | ------- | ----------- | -------------|
+| /oras/artifacts/v1/_zot/ \ manifests/{digest}/referrers | GET | [OCI Registry As Storage (ORAS)](https://oras.land/) endpoints | Always enabled. |
+
+### prometheus endpoints
+
+| Endpoint | Actions | Description | Availability |
+| -------- | ------- | ----------- | -------------|
+| /metrics | GET | Returns extended metrics for monitoring by prometheus | Enabled when the `metrics` extension is enabled in the configuration file. | 
+
+### OpenAPI (swagger) endpoints
+
+> :pencil2: This endpoint is accessed with a browser. 
+>
+> :pencil2: This endoint is enabled only in a `binary-debug` zot build or when the zot registry has been built with the `debug` extension label.
+
+| Endpoint | Action | Description |   
+| -------- | ------ | ----------- |  
+| /swagger/v2/ | (browser) | Displays an interactive OpenAPI (swagger) API reference. | 
 
 ## API authentication
 
