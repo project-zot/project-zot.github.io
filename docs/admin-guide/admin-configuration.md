@@ -314,17 +314,23 @@ zot supports a range of monitoring tools including the following:
 
 *  Metrics
 
-   Metrics data is available in a Prometheus format. A full zot image with extensions includes a node exporter. A minimal zot image can use an external node exporter such as `zxp`.
+    Metrics data is available in a Prometheus format. A full zot image with extensions includes a node exporter. A minimal zot image can use an external node exporter such as `zxp`.
 
 * Benchmarking
 
-  The zot project includes the `zb` tool, which allows you to benchmark a zot registry or any other container image registry that conforms to the [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec).
+    The zot project includes the `zb` tool, which allows you to benchmark a zot registry or any other container image registry that conforms to the [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec).
+
+* Performance profiling
+
+    Performance profiling capabilities within zot allow a zot [administrator](../articles/authn-authz.md) to collect and export a range of diagnostic performance data such as CPU intensive function calls, memory allocations, and execution traces. The collected data can then be analyzed using Go tools and a variety of available visualization tools.
 
 When zot is deployed in a Kubernetes setup, a site reliability engineering (SRE) operator can monitor service level indicators (SLI) such as metrics and logs. Metrics will appear in [Prometheus](https://prometheus.io/docs/guides/query-log/) using the zot `metrics` extension, while logs will appear in the Elasticsearch stack ([ELK stack](https://www.elastic.co/what-is/elk-stack)) using [Filebeat](https://www.elastic.co/beats/filebeat).
 
 For detailed information about the monitoring tools, see [Monitoring the registry](../articles/monitoring.md).
 
 For detailed information about benchmarking, see [Benchmarking zot with zb](../articles/benchmarking-with-zb.md).
+
+For detailed information about performance profiling, see [Performance Profiling in zot](../articles/pprofiling.md).
 
 <a name="cluster_config"></a>
 

@@ -1,3 +1,4 @@
+allocs
 amd
 apache
 API
@@ -24,6 +25,7 @@ CI
 cli
 CLI
 ClusterIP
+cmdline
 CNAME
 CNCF
 codebase
@@ -33,6 +35,7 @@ ConfigMap
 conformant
 containerd
 CPUs
+cpu
 credentialsFile
 cri
 CRI
@@ -68,6 +71,9 @@ GitHub
 gitlab
 GitLab
 golang
+golang's
+goroutine
+goroutines
 GPG
 graphQL
 gui
@@ -112,6 +118,8 @@ mgmt
 minify
 mkdocs
 mTLS
+mutex
+mutexes
 myfile
 natively
 ng
@@ -135,6 +143,7 @@ plaintext
 png
 podman
 pollInterval
+pprof
 PR
 PRs
 prometheus
@@ -177,6 +186,7 @@ substring
 subtree
 subtrees
 systemd
+threadcreate
 TLS
 tlsVerify
 tmp
@@ -194,6 +204,7 @@ trustStores
 tunable
 twemoji
 UI
+unrecovered
 unreviewed
 uri
 URI
