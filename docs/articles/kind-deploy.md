@@ -78,13 +78,10 @@ EOF
 Connect the registry to the "kind" network so that it can communicate with other resources in the same network.
 
 ```shell
-{% raw %}
 # check whether already connected to the network
-if [ "$(docker inspect -f='{{json .NetworkSettings.Networks.kind}}' \
-"${reg_name}")" = 'null' ]; then
+if [ "$(docker inspect -f='{{json .NetworkSettings.Networks.kind}}' "${reg_name}")" = 'null' ]; then
   docker network connect "kind" "${reg_name}"
 fi
-{% endraw %}
 ```
 
 ### Step 5:  Document the local registry
