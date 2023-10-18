@@ -1068,7 +1068,7 @@ List all image tags in a repository
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|name|path|string|true|test|
+|name|path|string|true|repository name|
 |n|query|integer|true|limit entries for pagination|
 |last|query|string|true|last tag value for pagination|
 
