@@ -16,6 +16,7 @@ bcrypt
 benchmarking
 blackbox
 BoltDB
+boolean
 busybox
 CD
 certDir
@@ -50,11 +51,14 @@ datapath
 DCO
 deduplicates
 deduplication
+deleteReferrers
+deleteUntagged
 detectManifestCollision
 dex
 discoverable
 DN
 Dockerfile
+dryRun
 ExternalName
 Filebeat
 filesystem
@@ -90,6 +94,8 @@ in-place
 io
 IoT
 JSON
+json
+keepTags
 KEP
 kubeconfig
 kubectl
@@ -117,6 +123,8 @@ MERCHANTABILITY
 mgmt
 minify
 mkdocs
+mostRecentlyPulledCount
+mostRecentlyPushedCount
 mTLS
 mutex
 mutexes
@@ -147,7 +155,9 @@ pprof
 PR
 PRs
 prometheus
+pulledWithin
 pullPolicy
+pushedWithin
 Qualys
 rc
 regclient
@@ -206,6 +216,7 @@ twemoji
 UI
 unrecovered
 unreviewed
+untagged
 uri
 URI
 url
