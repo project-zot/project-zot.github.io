@@ -118,6 +118,7 @@ nav:
     - Software Provenance Workflow Using OCI Artifacts: articles/workflow.md
     - Security Posture: articles/security-posture.md
     - Storage Planning: articles/storage.md
+    - Retention Policies: articles/retention.md
     - Mirroring: articles/mirroring.md
     - Clustering: articles/clustering.md
     - Monitoring: articles/monitoring.md
