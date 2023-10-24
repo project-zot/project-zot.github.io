@@ -160,6 +160,7 @@ pullPolicy
 pushedWithin
 Qualys
 rc
+README
 regclient
 regctl
 replicaCount
