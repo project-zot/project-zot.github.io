@@ -19,7 +19,7 @@ Retention policies are configured in the `storage` section of the zot configurat
 
 By default, if no retention policies are defined, all tags are retained.
 
-> :warning: If at least one retention policy is defined, all tags not matching any policy are removed. We recommend defining a default policy to avoid unintended removals.
+> :warning: If at least one `keepTags` policy is defined for a repository, all tags not matching those policies are removed.  To avoid unintended removals, we recommend defining a default policy, as described in [Configuration notes](#configuration-notes).
 
 ### Configuration example
 
@@ -77,24 +77,19 @@ The following table lists the attributes available in the retention policy confi
 | pulledWithin | time | Retains the tags pulled during the last <time\> hours, such as 24h. |
 | patterns | regex | See Notes. |
 
-> Mike's questions:  
-> - Which is the correct attribute name: `repositories` (as in config-retention.json) or `repoNames` (as in README.md)? 
-> - Are these statements conflicting? 
->
->    - If at least one retention policy is defined, all tags not matching any policy are removed.
->    - If a repository matches no policy, the repository and all its tags are retained.
 
 ### Configuration notes
 
 - A repository will apply the first policy it matches.
 - If a repository matches no policy, the repository and all its tags are retained.  
+- If at least one `keepTags` policy is defined for a repository, all tags not matching those policies are removed. 
 - If `keepTags` is present but empty, all tags are retained.
 - When multiple rules are configured, a tag is retained if it meets at least one rule.
 - When you specify a regex pattern combined with one or more rules, the rules are applied only to those tags matching the regex.
 - When you specify a regex pattern with no rules other than the default, all tags matching the pattern are retained.
 - In the repositories list, a single asterisk (/\*) matches all first-level items in the repository. A double asterisk (/*\*) matches all recursively.
 
-:warning: If at least one retention policy is defined, all tags not matching any policy are removed. We recommend defining a default policy, such as the following example, as the last policy in the policy list. All tags that don't match the preceding policies will be retained by this default policy:
+:warning: We recommend defining a default `keepTags` policy, such as the following example, as the last policy in the policy list. All tags that don't match the preceding policies will be retained by this default policy:
 
 _default policy example_
 
