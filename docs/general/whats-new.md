@@ -30,11 +30,13 @@
 
 - The validity of an image's signature can be [verified](../articles/verifying-signatures.md) by zot. Users can upload public keys or certificates to zot.
 
-[//]: # (add instructions when available.)
-
 ### Storage deduplication on startup
 
 - [Deduplication](../articles/storage.md), a storage space saving feature, now runs or reverts at startup depending on whether the feature is enabled or disabled. You can trigger deduplication by enabling it and then restarting zot.
+
+### Retention policies
+
+- To optimize image storage, you can configure [tag retention policies](../articles/retention.md) to remove images that are no longer needed.
 
 ### CVE scanning support for image indexes
 
