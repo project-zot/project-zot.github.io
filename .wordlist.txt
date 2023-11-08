@@ -93,6 +93,7 @@ goroutine
 goroutines
 GPG
 graphQL
+graphql
 gui
 haproxy
 hostname
