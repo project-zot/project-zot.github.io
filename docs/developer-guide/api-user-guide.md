@@ -31,13 +31,6 @@ For comprehensive details of the API endpoints, see [Viewing the complete zot AP
 | /v2/{repo}/referrers/{digest}| GET | Lists referrers given a digest | 
 | /v2/{repo}/tags/list | GET | List all image tags in a repository | 
 
-### zot endpoints
-
-| Endpoint | Actions | Description | Availability |
-| -------- | ------- | ----------- | -------------|
-| / | (browser) | Web interface | Enabled by using the `ui` build label and enabling the `ui` extension in the configuration file. |
-| /auth/apikey| DELETE, GET, POST | Creates, lists, or deletes API keys | Available when API key authentication is enabled in the configuration file (`"apikey": true`). |
-| /auth/logout| POST  | Ends an API session | Available when authentication is available. This includes not only OpenID, but all session-based authentication. 
 
 ### zot OCI extension endpoints
 
@@ -49,12 +42,24 @@ For comprehensive details of the API endpoints, see [Viewing the complete zot AP
 | /v2/_zot/ext/cosign| POST | Uploads keys for signature verification | Enabled by using the `imagetrust` build label and enabling the `trust` extension with the `cosign` option enabled. |
 | /v2/_zot/ext/userprefs| PUT | User preferences endpoints | Enabled by using the `userprefs` build label and enabling both the `search` and the `ui` extensions in the configuration file. |
 
-### zot internal endpoints
+
+### zot auth endpoints
 
 | Endpoint | Actions | Description | Availability |
 | -------- | ------- | ----------- | -------------|
+| /auth/apikey| DELETE, GET, POST | Creates, lists, or deletes API keys | Available when API key authentication is enabled in the configuration file (`"apikey": true`). |
 | /auth/login | POST  | Opens an API session | Available when authentication is available. This includes not only OpenID, but all session-based authentication. |
+| /auth/logout| POST  | Ends an API session | Available when authentication is available. This includes not only OpenID, but all session-based authentication. 
 | /auth/callback/\<provider\> | POST | Specifies a social authentication service provider for redirecting logins, such as Google or dex. | Enabled when an OpenID authentication service provider is specified in the configuration file. |
+
+
+### other zot endpoints
+
+| Endpoint | Actions | Description | Availability |
+| -------- | ------- | ----------- | -------------|
+| /v2/_zot/pprof/ | GET | Returns a current HTML-format profile list along with a count of currently available records for each profile. See [Performance Profiling in zot](../articles/pprof.md) for usage details. | Always enabled. |
+| /v2/_zot/debug/graphql-playground# |  | See []() for details. | Enabled only in a `binary-debug` zot build or when the zot registry has been built with the `debug` extension label. |
+
 
 ### ORAS endpoints
 
@@ -62,7 +67,7 @@ For comprehensive details of the API endpoints, see [Viewing the complete zot AP
 | -------- | ------- | ----------- | -------------|
 | /oras/artifacts/v1/_zot/ \ manifests/{digest}/referrers | GET | [OCI Registry As Storage (ORAS)](https://oras.land/) endpoints | Always enabled. |
 
-### prometheus endpoints
+### prometheus endpoint
 
 | Endpoint | Actions | Description | Availability |
 | -------- | ------- | ----------- | -------------|
@@ -71,12 +76,11 @@ For comprehensive details of the API endpoints, see [Viewing the complete zot AP
 ### OpenAPI (swagger) endpoints
 
 > :pencil2: This endpoint is accessed with a browser. 
->
-> :pencil2: This endpoint is enabled only in a `binary-debug` zot build or when the zot registry has been built with the `debug` extension label.
 
-| Endpoint | Action | Description |   
-| -------- | ------ | ----------- |  
-| /swagger/v2/ | (browser) | Displays an interactive OpenAPI (swagger) API reference. | 
+| Endpoint | Action | Description | Availability |
+| -------- | ------ | ----------- | -------------|
+| /swagger/v2/ | (browser) | Displays an interactive OpenAPI (swagger) API reference. | Enabled only in a `binary-debug` zot build or when the zot registry has been built with the `debug` extension label. |
+
 
 ## API authentication
 
