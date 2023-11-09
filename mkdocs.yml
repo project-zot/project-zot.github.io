@@ -122,6 +122,7 @@ nav:
     - Mirroring: articles/mirroring.md
     - Clustering: articles/clustering.md
     - Monitoring: articles/monitoring.md
+    - Using GraphQL for Enhanced Searches: articles/graphql.md
     - Benchmarking with zb: articles/benchmarking-with-zb.md
     - Performance Profiling: articles/pprofiling.md
     - Using kind for Deployment Testing: articles/kind-deploy.md
