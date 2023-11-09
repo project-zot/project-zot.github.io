@@ -50,17 +50,17 @@ In the GraphQL Playground, you can construct and submit a query structure and yo
 <a name="queries"></a>
 ## What GraphQL queries are supported
 
-| Supported queries | graphQL query | Input | Ouput | Description |
+| Supported queries | graphQL query | Input | Output | Description |
 | --- | --- | --- | --- | --- |
 | [Search images by digest](#search-images-by-digest) | ImageListForDigest | digest | image list | Searches all repositories in the registry and returns list of images that matches given digest (manifest, config or layers) |
 | [Search images affected by a given CVE id](#search-images-affected-by-a-given-cve-id) | CVEListForImage | CVE id | image list | Searches the entire registry and returns list of images affected by given CVE | ImagesListForCVE |
 | [List CVEs for a given image](#list-cves-of-given-image) | CVEListForImage | image | CVE list | Scans given image and returns list of CVEs affecting the image |
 | [List images not affected by a given CVE id](#list-images-not-affected-by-a-given-cve-id) | ImagesListWithCVEFixed| repository, CVE id | image list | Scans all images in a given repository and returns list of latest (by date) images not affected by the given CVE |
 | [Latest image from all repos](#list-the-latest-image-across-every-repository) | RepoListWithNewestImage | none | repo summary list | Returns the latest image from all the repos in the registry |
-| [List all images with expanded information for a given repository](#list-all-images-with-expanded-information-for-a-given-repository) | ExpandedRepoInfo | repository | repo info | List expanded repo information for all images in repo, alongisde a repo summary |
+| [List all images with expanded information for a given repository](#list-all-images-with-expanded-information-for-a-given-repository) | ExpandedRepoInfo | repository | repo info | List expanded repo information for all images in repo, alongside a repo summary |
 | [All images in repo](#all-images-in-repo) | ImageList | repository | image list | Returns all images in the specified repo |
 | [Global search](#global-search) | GlobalSearch | query | image summary / repo summary / layer summary | Will return what's requested in the query argument |
-| [Derived image list](#search-derived-images) | DerivedImageList | image | image list | Returns a list of images that depend on the image specified in the arg |
+| [Derived image list](#search-derived-images) | DerivedImageList | image | image list | Returns a list of images that depend on the image specified in the argument |
 | [Base image list](#search-base-images) | BaseImageList | image | image list | Returns a list of images that the specified image depends on |
 | [Get details of a specific image](#get-details-of-a-specific-image) | Image | image | image summary | Returns details about a specific image |
 | [Get referrers of a specific image](#get-referrers-of-a-specific-image) | Referrers | repo, digest, type | artifact manifests | Returns a list of artifacts of given type referring to a specific repo and digests |
