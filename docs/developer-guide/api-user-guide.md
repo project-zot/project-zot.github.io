@@ -65,7 +65,7 @@ For comprehensive details of the API endpoints, see [Viewing the complete zot AP
 
 | Endpoint | Actions | Description | Availability |
 | -------- | ------- | ----------- | -------------|
-| /oras/artifacts/v1/_zot/ \ manifests/{digest}/referrers | GET | [OCI Registry As Storage (ORAS)](https://oras.land/) endpoints | Always enabled. |
+| /oras/artifacts/v1/{repo}/ \ manifests/{digest}/referrers | GET | [OCI Registry As Storage (ORAS)](https://oras.land/) endpoints | Always enabled. |
 
 ### prometheus endpoint
 
