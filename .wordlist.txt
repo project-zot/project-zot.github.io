@@ -1,4 +1,5 @@
 allocs
+alongside
 amd
 apache
 API
@@ -12,6 +13,7 @@ autocompletion
 backend
 backends
 balancer
+BaseImageList
 bcrypt
 benchmarking
 blackbox
@@ -45,6 +47,7 @@ CSS
 cURL
 cve
 CVE
+CVEListForImage
 CVEs
 darwin
 datapath
@@ -53,12 +56,14 @@ deduplicates
 deduplication
 deleteReferrers
 deleteUntagged
+DerivedImageList
 detectManifestCollision
 dex
 discoverable
 DN
 Dockerfile
 dryRun
+ExpandedRepoInfo
 ExternalName
 Filebeat
 filesystem
@@ -66,6 +71,7 @@ filesystems
 freebsd
 FreeBSD
 fullname
+Fullstack
 gc
 gcInterval
 gcr
@@ -74,6 +80,7 @@ github
 GitHub
 gitlab
 GitLab
+GlobalSearch
 golang
 golang's
 goroutine
@@ -88,6 +95,10 @@ htpasswd
 html
 http
 https
+ImageList
+ImageListForDigest
+ImagesListForCVE
+ImagesListWithCVEFixed
 ImageTrust
 inlinehilite
 in-place
@@ -165,6 +176,7 @@ regclient
 regctl
 replicaCount
 repo
+RepoListWithNewestImage
 repoName
 repos
 requestor
