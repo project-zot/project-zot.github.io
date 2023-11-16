@@ -47,10 +47,10 @@ For comprehensive details of the API endpoints, see [Viewing the complete zot AP
 
 | Endpoint | Actions | Description | Availability |
 | -------- | ------- | ----------- | -------------|
-| /auth/apikey| DELETE, GET, POST | Creates, lists, or deletes API keys | Available when API key authentication is enabled in the configuration file (`"apikey": true`). |
-| /auth/login | POST  | Opens an API session | Available when authentication is available. This includes not only OpenID, but all session-based authentication. |
-| /auth/logout| POST  | Ends an API session | Available when authentication is available. This includes not only OpenID, but all session-based authentication. 
-| /auth/callback/\<provider\> | POST | Specifies a social authentication service provider for redirecting logins, such as Google or dex. | Enabled when an OpenID authentication service provider is specified in the configuration file. |
+| /zot/auth/apikey| DELETE, GET, POST | Creates, lists, or deletes API keys | Available when API key authentication is enabled in the configuration file (`"apikey": true`). |
+| /zot/auth/login | POST  | Opens an API session | Available when authentication is available. This includes not only OpenID, but all session-based authentication. |
+| /zot/auth/logout| POST  | Ends an API session | Available when authentication is available. This includes not only OpenID, but all session-based authentication. 
+| /zot/auth/callback/\<provider\> | POST | Specifies a social authentication service provider for redirecting logins, such as Google or dex. | Enabled when an OpenID authentication service provider is specified in the configuration file. |
 
 
 ### other zot endpoints
@@ -113,11 +113,11 @@ To enable the use of API keys, you must set the `apikey` attribute to `true` in 
 
 Before you can create or revoke an API key, you must first log in using a different authentication mechanism, such as logging in through the zot GUI. When you are logged in, you can create an API key for your identity using the following API command:
 
-    POST /auth/apikey
+    POST /zot/auth/apikey
 
 _cURL command example:_
 
-    curl -u user:password -X POST http://localhost:8080/auth/apikey -d '{"label": "myAPIKEY", "scopes": ["repo1", "repo2"], "expirationDate": "2023-08-28T17:10:05+03:00"}'
+    curl -u user:password -X POST http://localhost:8080/zot/auth/apikey -d '{"label": "myAPIKEY", "scopes": ["repo1", "repo2"], "expirationDate": "2023-08-28T17:10:05+03:00"}'
 
 > :pencil2: The scopes and expiration date in this example are optional. By default, an API key has the same permissions as the user who created it.
 
@@ -155,22 +155,22 @@ The API key replaces a password in the API command, as shown in the following cU
 
 When logged in, you can revoke your own API key with the following API command:
 
-    DELETE /auth/apikey?id=$uuid
+    DELETE /zot/auth/apikey?id=$uuid
 
 _cURL command example:_
 
-    curl -u user:password -X DELETE http://localhost:8080/v2/auth/apikey?id=46a45ce7-5d92-498a-a9cb-9654b1da3da1
+    curl -u user:password -X DELETE http://localhost:8080/v2/zot/auth/apikey?id=46a45ce7-5d92-498a-a9cb-9654b1da3da1
 
 
 #### Listing your current API keys
 
 When logged in, you can display a list of your API keys with the following API command:
 
-    GET /auth/apikey
+    GET /zot/auth/apikey
 
 _cURL command example:_
 
-    curl -u user:password -X GET http://localhost:8080/auth/apikey 
+    curl -u user:password -X GET http://localhost:8080/zot/auth/apikey 
 
 _Command output:_
 

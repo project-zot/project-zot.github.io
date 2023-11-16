@@ -7,9 +7,9 @@ The information presented here is adapted from the interactive OpenAPI (formerly
 For instructions and examples of how to use the zot API, see [Using the zot API](../developer-guide/api-user-guide.md).
 
 
-## /auth/apikey
+## /zot/auth/apikey
 
-### DELETE `/auth/apikey`
+### DELETE `/zot/auth/apikey`
 
 Revokes one current user API key based on given key ID
 
@@ -38,7 +38,7 @@ Revokes one current user API key based on given key ID
 
 This operation does not require authentication
 
-### GET `/auth/apikey`
+### GET `/zot/auth/apikey`
 
 Get list of all API keys for a logged in user
 
@@ -61,7 +61,7 @@ Get list of all API keys for a logged in user
 This operation does not require authentication
 
 
-### POST `/auth/apikey`
+### POST `/zot/auth/apikey`
 
 Can create an api key for a logged in user, based on the provided label and scopes.
 
@@ -102,9 +102,9 @@ Can create an api key for a logged in user, based on the provided label and scop
 
 This operation does not require authentication
 
-## `/auth/logout`
+## `/zot/auth/logout`
 
-### POST `/auth/logout`
+### POST `/zot/auth/logout`
 
 Logout by removing current session
 

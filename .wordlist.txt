@@ -70,6 +70,7 @@ Dockerfile
 dryRun
 ExpandedRepoInfo
 ExtensionList
+ExpandedRepoInfo
 ExternalName
 Filebeat
 filesystem
@@ -107,6 +108,10 @@ ImageListForDigest
 ImagesListForCVE
 ImagesListWithCVEFixed
 ImageIndex
+ImageList
+ImageListForDigest
+ImagesListForCVE
+ImagesListWithCVEFixed
 ImageManifest
 ImageTags
 ImageTrust
