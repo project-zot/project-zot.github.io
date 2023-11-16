@@ -116,6 +116,7 @@ zot supports integration with an LDAP-based authentication service such as Micro
 ...
   "auth": {
     "ldap": {
+      "credentialsFile": "examples/config-ldap-credentials.json",
       "address": "ldap.example.org",
       "port": 389,
       "startTLS": false,
@@ -131,21 +132,37 @@ zot supports integration with an LDAP-based authentication service such as Micro
 }
 ```
 
-The following table lists the configurable attributes for LDAP
-authentication.
+The following table lists the configurable attributes for LDAP authentication.
 
 | Attribute       | Description                                                                      |
 |-----------------|----------------------------------------------------------------------------------|
+| `credentialsFile` | The path to a file containing the bind credentials for LDAP.                   |
 | `address`       | The IP address or hostname of the LDAP server.                                   |
 | `port`          | The port number used by the LDAP service.                                        |
 | `startTLS`      | Set to `true` to enable TLS communication with the LDAP server.                  |
 | `baseDN`        | Starting location within the LDAP directory for performing user searches.        |
-| `userAttribute` | Attribute name used to obtain the username.                                                  |
-| `userGroupAttribute` | Attribute name used to obtain groups to which a user belongs.                                            |
-| `bindDN`        | Base Distinguished Name for the LDAP search.                                     |
-| `bindPassword`  | Password of the bind LDAP user.                                                  |
+| `userAttribute` | Attribute name used to obtain the username.                                      |
+| `userGroupAttribute` | Attribute name used to obtain groups to which a user belongs.               |
 | `skipVerify`    | Skip TLS verification.                                                           |
 | `subtreeSearch` | Set to `true` to expand the scope for search to include subtrees of the base DN. |
+
+
+A local file contains the bind credentials for the LDAP server, as shown in the following example. 
+
+``` json
+{
+  "bindDN":"cn=ldap-searcher,ou=Users,dc=example,dc=org",
+  "bindPassword":"ldap-searcher-password"
+}
+```
+
+The following table lists the configurable attributes of the LDAP credentials file.
+
+| Attribute       | Description                                                                      |
+|-----------------|----------------------------------------------------------------------------------|
+| `bindDN`        | Base Distinguished Name for the LDAP search.                                     |
+| `bindPassword`  | Password of the bind LDAP user.                                                  |
+
 
 ### htpasswd
 
