@@ -147,7 +147,7 @@ The following table lists the configurable attributes for LDAP authentication.
 | `subtreeSearch` | Set to `true` to expand the scope for search to include subtrees of the base DN. |
 
 
-A local file contains the bind credentials for the LDAP server, as shown in the following example. 
+To allow for separation of configuration and credentials, the credentials for the LDAP server are specified in a separate file, as shown in the following example. 
 
 ``` json
 {
