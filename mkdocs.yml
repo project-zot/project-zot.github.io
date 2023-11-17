@@ -110,6 +110,8 @@ nav:
   - Developer Guide: 
     - Onboarding: developer-guide/onboarding.md
     - Extensions: developer-guide/extensions-dev.md
+    - Using the API: developer-guide/api-user-guide.md
+    - API Reference: developer-guide/api-reference.md
     - Contributing: developer-guide/contributing.md
   - Articles:
     - CI/CD Pipeline: articles/building-ci-cd-pipeline.md
