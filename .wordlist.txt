@@ -67,6 +67,7 @@ discoverable
 DistContentDigestKey
 DN
 Dockerfile
+dropdown
 dryRun
 ExpandedRepoInfo
 ExtensionList

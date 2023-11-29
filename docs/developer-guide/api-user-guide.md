@@ -57,7 +57,7 @@ For comprehensive details of the API endpoints, see [Viewing the complete zot AP
 
 | Endpoint | Actions | Description | Availability |
 | -------- | ------- | ----------- | -------------|
-| /v2/_zot/pprof/ | GET | Returns a current HTML-format profile list along with a count of currently available records for each profile. See [Performance Profiling in zot](../articles/pprof.md) for usage details. | Always enabled. |
+| /v2/_zot/pprof/ | GET | Returns a current HTML-format profile list along with a count of currently available records for each profile. See [Performance Profiling in zot](../articles/pprofiling.md) for usage details. | Always enabled. |
 | /v2/_zot/debug/graphql-playground# |  | See [Using GraphQL](../articles/graphql.md) for details. | Enabled only in a `binary-debug` zot build or when the zot registry has been built with the `debug` extension label. |
 
 
