@@ -56,6 +56,10 @@
 
 - The [`zli search`](../user-guides/zli.md#_zli-search) command allows smart searching for a repository by its name or for an image by its repo:tag.
 
+### Search by digest
+
+- You can perform a global search for a digest (SHA hash) using either the UI or the CLI. This function is useful when an issue is found in a layer that is used by multiple images. In the UI Search box, for example, begin typing `sha:` followed by a partial or complete digest value to see a dropdown list of images that contain the layer with the digest value.
+
 ### GraphQL support for search
 
 - A [GraphQL backend server](../articles/graphql.md) within zot's registry search engine provides efficient and enhanced search capabilities. In addition to supporting direct GraphQL queries through the API, zot hosts the GraphQL Playground, which provides an interactive graphical environment for GraphQL queries. 
