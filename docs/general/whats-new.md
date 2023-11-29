@@ -56,7 +56,7 @@
 
 ### Search by digest
 
-- You can perform a global search for a digest (SHA hash) using either the UI or the CLI. This function is useful when an issue is found in a layer that is used by multiple images. In the UI Search box, for example, begin typing `sha:` followed by a partial or complete digest value to see a dropdown list of images that contain the layer with the digest value.
+- You can perform a global search for a digest (SHA hash) using either the UI or the CLI. This function is useful when an issue is found in a layer that is used by multiple images. In the UI Search box, for example, begin typing `sha256:` followed by a partial or complete digest value to see a dropdown list of images that contain the layer with the digest value.
 
 ### GraphQL support for search
 
