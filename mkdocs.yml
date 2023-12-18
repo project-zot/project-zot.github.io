@@ -88,6 +88,7 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - What's New: general/whats-new.md
   - General: 
     - Concepts: general/concepts.md
     - Key Features: general/features.md
@@ -96,7 +97,6 @@ nav:
     - Released Images: general/releases.md
     - Glossary: general/glossary.md
     - About: general/project.md
-  - What's New: general/whats-new.md
   - User Guides:
     - Push and Pull Image Content: user-guides/user-guide-datapath.md
     - Use the Web Interface to Find Images: user-guides/user-guide-gui.md
