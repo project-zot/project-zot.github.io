@@ -50,3 +50,19 @@ jobs:
           git config --global user.name "${{ github.actor }}"
           mike deploy --push --template go-import/redirect.html --update-aliases ${{ github.event.release.tag_name }} latest zot
           mike set-default --push latest
+
+      - if: github.event_name == 'release' && github.event.action == 'published'
+        name: Build PDF document
+        run: |
+          mkdocs --version
+          mkdocs build
+
+      - if: github.event_name == 'release' && github.event.action == 'published'
+        name: Publish artifacts on releases
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: site/pdf/document.pdf
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
