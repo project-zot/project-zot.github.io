@@ -52,7 +52,7 @@ No software is perfect, and we expect users to find issues with the zot code bas
 
 ### Filing a Security Issue
 
-Security issues are best filed by sending an email to `security@zotregistry.io.` After 45 days, we will make the issue public and give credit to the original filer of the issue.
+Security issues are best filed by sending an email to `security@zotregistry.dev.` After 45 days, we will make the issue public and give credit to the original filer of the issue.
 
 ## Code of Conduct
 
@@ -60,4 +60,4 @@ The zot project follows the [CNCF Code of Conduct](https://github.com/cncf/found
 
 ### Reporting Conduct Incidents
 
-To report a conduct-related incident occurring on the zot project, contact the zot project conduct committee by sending an email to `conduct@zotregistry.io.` You can expect a response within three business days.
+To report a conduct-related incident occurring on the zot project, contact the zot project conduct committee by sending an email to `conduct@zotregistry.dev.` You can expect a response within three business days.

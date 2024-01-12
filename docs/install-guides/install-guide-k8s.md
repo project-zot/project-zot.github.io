@@ -36,14 +36,14 @@ image variations, image locations, and image naming formats.
     Give the repo a local name, such as **project-zot**, as in this
     example:
 
-    `helm repo add project-zot http://zotregistry.io/helm-charts`
+    `helm repo add project-zot http://zotregistry.dev/helm-charts`
 
         "project-zot" has been added to your repositories
 
     > :pencil2:
     >
     >The Helm charts for zot are currently hosted in these publicly-accessible repositories:  
-    > - zotregistry.io  
+    > - zotregistry.dev  
     > - artifacthub.io
     >
 

@@ -52,7 +52,7 @@ Create a `/etc/systemd/system/zot.service` file to define the zot service in sys
 
     [Unit]
     Description=OCI Distribution Registry
-    Documentation=https://zotregistry.io/
+    Documentation=https://zotregistry.dev/
     After=network.target auditd.service local-fs.target
 
     [Service]
