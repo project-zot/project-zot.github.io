@@ -1,5 +1,5 @@
-site_name: zotregistry.io
-site_url: https://zotregistry.io
+site_name: zotregistry.dev
+site_url: https://zotregistry.dev
 site_description: Zot Registry
 repo_url: https://github.com/project-zot/zot
 repo_name: project-zot/zot
@@ -32,7 +32,7 @@ theme:
     text: Roboto
     code: Roboto Mono
 extra:
-  homepage: https://zotregistry.io
+  homepage: https://zotregistry.dev
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/project-zot/zot.git
