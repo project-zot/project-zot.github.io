@@ -62,6 +62,7 @@ deleteReferrers
 deleteUntagged
 DerivedImageList
 detectManifestCollision
+dev
 dex
 discoverable
 DistContentDigestKey
