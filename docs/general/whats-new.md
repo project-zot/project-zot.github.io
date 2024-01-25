@@ -1,5 +1,15 @@
 # What's New
 
+## [v2.0.1](https://github.com/project-zot/zot/releases/tag/v2.0.1)
+
+### Support for hot reloading of LDAP credentials file
+
+Since v2.0.0, LDAP credentials have been specified in a separate file. Starting with this version, the file is watched and changes applied without restarting zot.
+
+### Bugfixes and performance improvements
+
+Under some configurations, zot consumes significant CPU and memory resources. This has been fixed in this release.
+
 ## [v2.0.0](https://github.com/project-zot/zot/releases/tag/v2.0.0)
 
 ### Updated OCI support
