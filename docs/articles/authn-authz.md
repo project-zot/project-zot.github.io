@@ -367,11 +367,11 @@ For example, a user logging in to the zot home page using GitHub as the authenti
 
 Based on the specified provider, zot redirects the login to a provider service with the following URL:
 
-    http://<zot-server>/auth/callback/<provider>
+    http://<zot-server>/zot/auth/callback/<provider>
 
 For the GitHub authentication example:
 
-    http://zot.example.com:8080/auth/callback/github
+    http://zot.example.com:8080/zot/auth/callback/github
 
 :pencil2: If your network policy doesn't allow inbound connections, the callback will not work and this authentication method will fail.
 
@@ -385,7 +385,7 @@ Like zot, dex uses a configuration file for setup. To specify zot as a client in
 staticClients:
   - id: zot-client
     redirectURIs:
-      - 'http://zot.example.com:8080/auth/callback/oidc'
+      - 'http://zot.example.com:8080/zot/auth/callback/oidc'
     name: 'zot'
     secret: ZXhhbXBsZS1hcHAtc2VjcmV0
 ```
