@@ -200,6 +200,10 @@ LoadBalancer, ExternalName, or Headless</p></td>
 <td style="text-align: left;"><p>Port number for calling the
 service</p></td>
 </tr>
+<tr class="even">
+<td style="text-align: left;"><p>strategy.type</p></td>
+<td style="text-align: left;"><p>Kubernetes deployment strategy type. [More Info](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy) </p></td>
+</tr>
 </tbody>
 </table>
 
