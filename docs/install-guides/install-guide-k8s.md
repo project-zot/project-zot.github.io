@@ -1,14 +1,15 @@
 # Installing zot with Kubernetes and Helm
 
-> :point_right: Using Kubernetes with Helm charts for zot, you can easily deploy zot as an application in a Kubernetes cluster.
+> :point_right: Using Kubernetes with Helm charts for zot, you can easily deploy
+> zot as an application in a Kubernetes cluster.
 
 ## Before you begin
 
 ### Prerequisites
 
--   kubectl must be installed and a Kubernetes cluster must be ready.
+- kubectl must be installed and a Kubernetes cluster must be ready.
 
--   [Helm](https://helm.sh/) must be installed.
+- [Helm](https://helm.sh/) must be installed.
 
 ### Supported platforms
 
@@ -359,7 +360,8 @@ below:
 
 The zot configuration file is located at `/etc/zot/config.json`.
 
-Refer to [*Configuring zot*](../admin-guide/admin-configuration.md) for complete information on configuring the zot server with the zot configuration file.
+Refer to [*Configuring zot*](../admin-guide/admin-configuration.md) for complete
+information on configuring the zot server with the zot configuration file.
 
 ### Uninstalling zot
 
