@@ -1,6 +1,7 @@
 # Installing zot on Bare Metal Linux
 
-> :point_right: Using an available executable zot image, you can easily deploy zot on a Linux server.
+> :point_right: Using an available executable zot image, you can easily deploy
+> zot on a Linux server.
 
 ## Before you begin
 
@@ -18,12 +19,16 @@ image variations, image locations, and image naming formats.
 ### Step 1: Get zot
 
 Using `wget,` download the appropriate zot binary image for your
-platform from the [zot GitHub
-project](https://github.com/project-zot/zot). Download the
-image to the\`/usr/bin/\` directory and rename it to `zot,` as in this
+platform from the [zot GitHub project](https://github.com/project-zot/zot).
+Download the image to the\`/usr/bin/\` directory and rename it to `zot,` as in this
 example:
 
-    wget -O /usr/bin/zot  https://github.com/project-zot/zot/releases/download/{{ git.tag }}/zot-linux-amd64
+    sudo wget -O /usr/bin/zot https://github.com/project-zot/zot/releases/download/{{ git.tag }}/zot-linux-amd64
+
+Then fix permissions to it:
+
+    sudo chmod +x /usr/bin/zot
+    sudo chown root:root /usr/bin/zot
 
 ### Step 2: Create a zot configuration file
 
@@ -48,7 +53,8 @@ To add additional local users, use the `>>` redirect as in this example:
 
 ### Step 4: Define the zot service
 
-Create a `/etc/systemd/system/zot.service` file to define the zot service in systemd. The following is an example service file for zot:
+Create a `/etc/systemd/system/zot.service` file to define the zot service in systemd.
+The following is an example service file for zot:
 
     [Unit]
     Description=OCI Distribution Registry
@@ -69,7 +75,9 @@ Create a `/etc/systemd/system/zot.service` file to define the zot service in sys
     WantedBy=multi-user.target
 
 > :pencil2:
-> Be sure to configure a dedicated non-root user ID as the User and Group in the zot service definition. The 'zot' user ID in this example is created in the next step.
+> Be sure to configure a dedicated non-root user ID as the User and Group in
+> the zot service definition. The 'zot' user ID in this example is created in
+> the next step.
 
 
 ### Step 5: Create a user ID to own the zot service
@@ -86,8 +94,7 @@ In this example, the user ID 'zot' is created with the `adduser` command, and re
     sudo mkdir -p /var/log/zot
     sudo chown -R zot:zot /var/log/zot
 
-    sudo chown root:root /usr/bin/zot
-    sudo chown root:root config.json
+    sudo chown -R root:root /etc/zot/
 
 With the `adduser` options shown, the 'zot' user ID has no local
 directory. There is no ability to log into the zot user account, and the
@@ -95,10 +102,18 @@ account has no finger information.
 
 ### Step 6: Start zot
 
+Reload systemd config:
+
+    sudo systemctl daemon-reload
+
 Enable and start the zot service with these commands:
 
     sudo systemctl enable zot
     sudo systemctl start zot
+
+Check if zot config is valid:
+
+    sudo -u zot zot verify /etc/zot/config.json
 
 When the zot service has started, you can check its status with this
 command:
@@ -108,10 +123,10 @@ command:
 ## After the installation
 
 If your zot registry server is public facing, we recommend that you test
-your TLS configuration using a service such as the [Qualys SSL Server
-Test](https://www.ssllabs.com/ssltest/).
+your TLS configuration using a service such as the [Qualys SSL Server Test](https://www.ssllabs.com/ssltest/).
 
-Refer to [*Configuring zot*](../admin-guide/admin-configuration.md) for further information about maintaining your zot registry server.
+Refer to [*Configuring zot*](../admin-guide/admin-configuration.md) for further
+information about maintaining your zot registry server.
 
 <a name="config-file-options"></a>
 
@@ -188,7 +203,8 @@ your own environment.
 
 </details>
 
-Refer to [*Configuring zot*](../admin-guide/admin-configuration.md) for more details about configuration file options.
+Refer to [*Configuring zot*](../admin-guide/admin-configuration.md) for more
+details about configuration file options.
 
 ### TLS encryption
 
