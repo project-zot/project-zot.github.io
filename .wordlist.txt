@@ -172,6 +172,7 @@ onboarding
 Onboarding
 onDemand
 onlySigned
+openjdk
 OpenAPI
 OpenID
 oras
