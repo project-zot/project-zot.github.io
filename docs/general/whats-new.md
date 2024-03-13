@@ -1,5 +1,31 @@
 # What's New
 
+## [v2.0.2](https://github.com/project-zot/zot/releases/tag/v2.0.2)
+
+### CVE Query Enhancements
+
+It is now possible to bisect CVEs (`zli cve diff`) between two image
+tags/versions in the same repository. Furthermore, a CVE query for a particular
+image tag can return a detailed description of CVEs.
+
+### Documentation for "Immutable Image Tags"
+
+A new article has been added to document how image tags can be made
+[immutable](../articles/immutable-tags.md).
+
+### Cross-repo tag search in UI
+
+You can now search for a tag across all repos by starting your query as
+':<tag>' in the UI, which will return all images that have that tag.
+
+### Support for [ORAS Artifacts](https://github.com/oras-project/artifacts-spec) removed
+
+[OCI distribution spec](https://github.com/opencontainers/distribution-spec)
+1.1.0 has added support "artifacts" which is likely to gain wider adoption.
+ORAS artifacts are not widely used or supported.
+
+    :warning:  Support is removed starting from this version.
+
 ## [v2.0.1](https://github.com/project-zot/zot/releases/tag/v2.0.1)
 
 ### Support for hot reloading of LDAP credentials file

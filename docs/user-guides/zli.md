@@ -102,6 +102,16 @@ This example displays a list of all CVEs affecting a specific image:
     CVE-2015-8540     LOW       libpng: underflow read in png_check_keyword()
     CVE-2017-16826    LOW       binutils: Invalid memory access in the coff_s...
 
+This example (--verbose) displays a list of all CVEs affecting a specific image with details:
+
+    $ bin/zli cve list c3/openjdk-dev:0.3.19 --config remote-zot --verbose
+    LOW 2, UNKNOWN 1, TOTAL 3
+
+    CVE-2015-8540
+    ...
+
+  Note that the details may display the package path in the image when the information is available.
+
 This example displays the detailed CVEs in JSON format:
 
     $ bin/zli cve list c3/openjdk-dev:0.3.19 --config remote-zot -f json
@@ -148,6 +158,16 @@ This example lists all images on a specific zot server where the CVE has been fi
     c3/openjdk-dev    commit-2674e8a-squashfs   b545b8ba  321MB
     c3/openjdk-dev    commit-d5024ec-squashfs   cd45f8cf  321MB
 
+This example lists all CVEs that have been found in one image and not the other:
+
+    $ bin/zli cve diff c3/openjdk-dev:1.0.0 c3/openjdk-dev:2.0.0 --config remote-zot
+
+    ID                SEVERITY  TITLE
+    CVE-2015-8540     LOW       libpng: underflow read in png_check_keyword()
+    CVE-2017-16826    LOW       binutils: Invalid memory access in the coff_s...
+
+  For example, the above query lists all CVEs that have been found in
+  c3/openjdk-dev:1.0.0 but not in c3/openjdk-dev:2.0.0
 
 ### Listing repositories
 
