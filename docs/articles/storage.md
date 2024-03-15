@@ -243,8 +243,35 @@ To configure an Amazon Simple Storage Service (s3) bucket for zot, use the `stor
     }
 ```
 
-For descriptions of the configurable attributes for `storageDriver`, see the [s3 storage driver](https://github.com/docker/docker.github.io/blob/master/registry/storage-drivers/s3.md) project in GitHub.
+The following table lists the attributes of `storageDriver` when configuring s3 for remote storage:
 
+| Attribute                   | Required | Description                                                                                                                        |
+|-----------------------------|----------|------------------------------------------------------------------------------------------------------------------------------------|
+| name                        | yes      | Name of storage driver. Only `s3` is supported for now.                                                                            |
+| accesskey                   | no       | Your AWS Access Key. If you use IAM roles, omit to fetch temporary credentials from IAM.                                           |
+| secretkey                   | no       | Your AWS Secret Key. If you use IAM roles, omit to fetch temporary credentials from IAM.                                           |
+| region                      | yes      | The AWS region in which your bucket exists.                                                                                        |
+| regionendpoint              | no       | Endpoint for S3 compatible storage services (Minio, etc).                                                                          |
+| forcepathstyle              | no       | To enable path-style addressing when the value is set to true. The default is true.                                                |
+| bucket                      | yes      | The bucket name in which you want to store the registry’s data.                                                                    |
+| encrypt                     | no       | Specifies whether the registry stores the image in encrypted format or not. A boolean value. The default is false.                 |
+| keyid                       | no       | Optional KMS key ID to use for encryption (encrypt must be true, or this parameter is ignored). The default is none.               |
+| secure                      | no       | Indicates whether to use HTTPS instead of HTTP. A boolean value. The default is true.                                              |
+| skipverify                  | no       | Skips TLS verification when the value is set to true. The default is false.                                                        |
+| v4auth                      | no       | Indicates whether the registry uses Version 4 of AWS’s authentication. The default is true.                                        |
+| chunksize                   | no       | The S3 API requires multipart upload chunks to be at least 5MB. This value should be a number that is larger than 5 * 1024 * 1024. |
+| multipartcopychunksize      | no       | Default chunk size for all but the last S3 Multipart Upload part when copying stored objects.                                      |
+| multipartcopymaxconcurrency | no       | Max number of concurrent S3 Multipart Upload operations when copying stored objects.                                               |
+| multipartcopythresholdsize  | no       | Default object size above which S3 Multipart Upload will be used when copying stored objects.                                      |
+| rootdirectory               | no       | This is a prefix that is applied to all S3 keys to allow you to segment data in your bucket if necessary.                          |
+| storageclass                | no       | The S3 storage class applied to each registry file. The default is STANDARD.                                                       |
+| useragent                   | no       | The User-Agent header value for S3 API operations.                                                                                 |
+| usedualstack                | no       | Use AWS dual-stack API endpoints.                                                                                                  |
+| accelerate                  | no       | Enable S3 Transfer Acceleration.                                                                                                   |
+| objectacl                   | no       | The S3 Canned ACL for objects. The default value is “private”.                                                                     |
+| loglevel                    | no       | The log level for the S3 client. The default value is off.                                                                         |
+
+For more information, see the [s3 storage driver docs](https://distribution.github.io/distribution/storage-drivers/s3/).
 
 ### s3 Credentials
 
