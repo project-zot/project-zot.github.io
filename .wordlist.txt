@@ -27,6 +27,7 @@ BoltDB
 boolean
 Bugfixes
 busybox
+caching
 CD
 certDir
 checksum

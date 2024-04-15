@@ -176,7 +176,7 @@ An existing zot cluster (see [Figure 1](#figure1)) can easily be expanded with n
 
 For easy scaling, the following conditions must be met:
 
-- All zot servers in the cluster use remote storage at a single shared S3 backend. There is no local cacheing in the zot servers.
+- All zot servers in the cluster use remote storage at a single shared S3 backend. There is no local caching in the zot servers.
 - Each repo is served by one zot server, and that server is solely responsible for serving all images of that repo. 
 - A repo in storage can be written to only by the zot server associated with that repo.
 - The URI format sent to the load balancer must be /v2/<repo\>/<manifest\>:<tag\>
