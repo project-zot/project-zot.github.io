@@ -13,7 +13,8 @@ service to remain available even if a few replicas fail or become
 unavailable. Loadbalancing across many zot replicas can also increase
 aggregate network throughput.
 
-![504569](../assets/images/504569.jpg){width="400"}
+![504569](../assets/images/504569.jpg){width="500"}<figcaption><a name="figure1"></a>Figure 1:  a zot cluster with load balancing</figcaption>
+
 
 Clustering is supported in both bare-metal and Kubernetes environments.
 > :pencil2:
@@ -168,3 +169,17 @@ backend zot-cluster
 
 ```
 </details>
+
+## Scaling the cluster
+
+An existing zot cluster (see [Figure 1](#figure1)) can easily be expanded with no programming of the load balancer other than adding the IP addresses of the new zot servers.
+
+For easy scaling, the following conditions must be met:
+
+- All zot servers in the cluster use remote storage at a single shared S3 backend. There is no local cacheing in the zot servers.
+- Each repo is served by one zot server, and that server is solely responsible for serving all images of that repo. 
+- A repo in storage can be written to only by the zot server associated with that repo.
+- The URI format sent to the load balancer must be /v2/<repo\>/<manifest\>:<tag\>
+
+The load balancer does not need to know which zot server serves which repo. When the load balancer receives an image request, it sends the request to any zot server in the cluster. The receiving server hashes the repo path and consults a hash table in storage to determine which server is responsible for the repo. The receiving server then proxies for the responsible server, obtaining the requested image and returning it to the requestor.
+
