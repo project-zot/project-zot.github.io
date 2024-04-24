@@ -1,5 +1,9 @@
 # What's New
 
+## [v2.0.4](https://github.com/project-zot/zot/releases/tag/v2.0.4)
+
+This is a maintenance release with minor bug fixes.
+
 ## [v2.0.3](https://github.com/project-zot/zot/releases/tag/v2.0.3)
 
 This is a maintenance release with minor bug fixes.
