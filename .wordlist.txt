@@ -9,6 +9,7 @@ api
 apikey
 APIKeyPayload
 APIs
+architected
 artifacthub
 artifactType
 ASLR
@@ -105,6 +106,7 @@ graphQL
 graphql
 gui
 haproxy
+HAProxy
 hostname
 href
 html
@@ -228,11 +230,13 @@ Satisfiable
 satisfiable
 SBOM
 SBOMs
+scalable
 SDK
 secretkey
 semver
 serviceAccount
 SHA
+sharding
 skipverify
 skopeo
 SLI
