@@ -3,18 +3,18 @@
 > :point_right: High availability of the zot registry is supported by the following features:
 >
 > -   Stateless zot instances to simplify scale out
+> -   Shared remote storage
 > -   Bare-metal and Kubernetes deployments
 
 
-To ensure high-availability of the registry, zot supports a clustering
-scheme with stateless zot instances/replicas fronted by a loadbalancer
+To ensure high availability of the registry, zot supports a clustering
+scheme with stateless zot instances/replicas fronted by a load balancer
 and a shared remote backend storage. This scheme allows the registry
 service to remain available even if a few replicas fail or become
-unavailable. Loadbalancing across many zot replicas can also increase
+unavailable. Load balancing across many zot replicas can also increase
 aggregate network throughput.
 
 ![504569](../assets/images/504569.jpg){width="500"}<figcaption><a name="figure1"></a>Figure 1:  a zot cluster with load balancing</figcaption>
-
 
 Clustering is supported in both bare-metal and Kubernetes environments.
 > :pencil2:
@@ -25,7 +25,7 @@ Clustering is supported in both bare-metal and Kubernetes environments.
 
 ### Prerequisites
 
--   A highly-available loadbalancer such as `HAProxy` configured to direct traffic to zot replicas.
+-   A highly-available load balancer such as HAProxy configured to direct traffic to zot replicas.
 
 -   Multiple zot replicas as `systemd` services hosted on multiple hosts or VMs.
 
@@ -66,16 +66,16 @@ The [OCI Distribution
 Specification](https://github.com/opencontainers/distribution-spec)
 imposes certain rules about the HTTP URI paths to which various
 ecosystem tools must conform. Consider these rules when setting the HTTP
-prefixes during loadbalancing and ingress gateway configuration.
+prefixes during load balancing and ingress gateway configuration.
 
 ## Examples
 
-zot supports clustering by using multiple stateless zot replicas with shared S3 storage and an `HAProxy` (with sticky session) load-balancing traffic to the replicas.
+Clustering is supported by using multiple stateless zot replicas with shared S3 storage and an HAProxy (with sticky session) load balancing traffic to the replicas.
 
-### YAML configuration
+### HAProxy YAML configuration
 
 <details>
-  <summary markdown="span">Click here to view a sample haproxy configuration.</summary>
+  <summary markdown="span">Click here to view a sample HAProxy configuration.</summary>
 
 ```yaml
 
@@ -123,9 +123,10 @@ frontend zot
 backend zot-cluster
     mode http
     balance roundrobin
-    server zot1 127.0.0.1:8081 check
-    server zot2 127.0.0.1:8082 check
-    server zot3 127.0.0.1:8083 check
+    cookie SERVER insert indirect nocache
+    server zot0 127.0.0.1:9000 check cookie zot0
+    server zot1 127.0.0.2:9000 check cookie zot1
+    server zot2 127.0.0.3:9000 check cookie zot2
 
 ```
 
@@ -170,16 +171,43 @@ backend zot-cluster
 ```
 </details>
 
-## Scaling the cluster
 
-An existing zot cluster (see [Figure 1](#figure1)) can easily be expanded with no programming of the load balancer other than adding the IP addresses of the new zot servers.
+## Easy scaling of the cluster
 
-For easy scaling, the following conditions must be met:
+You can design a cluster (see [Figure 1](#figure1)) in which the number of replicas can easily be expanded (or reduced) with no programming of the load balancer other than adding the IP addresses of the new replicas. The shared storage can also be easily increased or decreased.
 
-- All zot servers in the cluster use remote storage at a single shared S3 backend. There is no local caching in the zot servers.
-- Each repo is served by one zot server, and that server is solely responsible for serving all images of that repo. 
-- A repo in storage can be written to only by the zot server associated with that repo.
+### Prerequisites
+
+For easy scaling of replicas, the following conditions must be met:
+
+- All zot replicas must be running zot release v2.0.4 (or later) with identical configurations.
+- All zot replicas in the cluster use remote storage at a single shared S3 backend. There is no local caching in the zot replicas.
+- Each repo is served by one zot replica, and that replica is solely responsible for serving all images of that repo. 
+- A repo in storage can be written to only by the zot replica associated with that repo.
+- Each zot replica in the cluster has its own IP address, but all replicas use the port number.
 - The URI format sent to the load balancer must be /v2/<repo\>/<manifest\>:<tag\>
 
-The load balancer does not need to know which zot server serves which repo. When the load balancer receives an image request, it sends the request to any zot server in the cluster. The receiving server hashes the repo path and consults a hash table in storage to determine which server is responsible for the repo. The receiving server then proxies for the responsible server, obtaining the requested image and returning it to the requestor.
+### How it works
 
+A highly available and scalable cluster can be architected by sharding on the repository name. In the cluster, each replica is the owner of a small subset of the repository. The load balancer does not need to know which replica owns which repo. The replicas themselves can determine this.  
+
+When the load balancer receives an image request, it sends the request to any replica in the cluster. The receiving replica hashes the repo path and consults a hash table in shared storage to determine which replica is responsible for the repo. The receiving replica forwards the request to the responsible replica and then acts as a proxy, returning the requested image to the requestor.
+
+### Cluster member configuration
+
+Each replica must have a list of its peers and must have a hash key for hashing the repo path of the image request.  The following is an example of the cluster configuration in each replica:
+
+```json
+  "cluster": {
+    "members": [
+      "127.0.0.1:9000",
+      "127.0.0.2:9000",
+      "127.0.0.3:9000"
+    ],
+    "hashKey": "loremipsumdolors"
+  }
+
+```
+## CVE repository in a zot cluster environment
+
+In the clustering scheme described in this article, CVE scanning is disabled. In this case, we recommend implementing a CVE repository with a zot instance outside of the cluster using a local disk for storage and Trivy as the detection engine.
