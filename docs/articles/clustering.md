@@ -16,7 +16,7 @@ aggregate network throughput.
 
 ![504569](../assets/images/504569.jpg){width="500"}
 
-> :pencil2: Beginning with zot release v2.1.0, you can design a highly scalable cluster that does not require configuring the load balancer to direct repository queries to specific zot instances within the cluster. See [Easy scaling of a zot cluster](scaleout.md). This is the preferred method if you are running v2.1.0 or later.
+> :pencil2: Beginning with zot release v2.1.0, you can design a highly scalable cluster that does not require configuring the load balancer to direct repository queries to specific zot instances within the cluster. See [Scale-out clustering](scaleout.md). Scale-out clustering is the preferred method if you are running v2.1.0 or later.
 
 Clustering is supported in both bare-metal and Kubernetes environments.
 > :pencil2:
@@ -59,8 +59,8 @@ zot maintains two types of durable state:
 -   the image metadata in the registry’s cache
 
 In a stateless clustering scheme, the image data is stored in the remote
-storage backend and the registry cache is disabled by turning off both
-deduplication and garbage collection.
+storage backend and the registry cache is disabled by turning off
+deduplication.
 
 ## Ecosystem tools
 
@@ -72,7 +72,7 @@ prefixes during load balancing and ingress gateway configuration.
 
 ## Examples
 
-Clustering is supported by using multiple stateless zot replicas with shared S3 storage and an HAProxy (with sticky session) load balancing traffic to the replicas.
+Clustering is supported by using multiple stateless zot replicas with shared S3 storage and an HAProxy (with sticky session) load balancing traffic to the replicas. Each replica is responsible for one or more repositories.
 
 ### HAProxy YAML configuration
 
@@ -120,16 +120,27 @@ defaults
 frontend zot
     bind *:8080
     mode http
+    use_backend zot-instance1 if { path_beg /v2/repo1/ }
+    use_backend zot-instance2 if { path_beg /v2/repo2/ }
+    use_backend zot-instance3 if { path_beg /v2/repo3/ }
     default_backend zot-cluster
 
 backend zot-cluster
     mode http
     balance roundrobin
     cookie SERVER insert indirect nocache
-    server zot0 127.0.0.1:9000 check cookie zot0
-    server zot1 127.0.0.2:9000 check cookie zot1
-    server zot2 127.0.0.3:9000 check cookie zot2
+    server zot-server1 127.0.0.1:9000 check cookie zot-server1
+    server zot-server2 127.0.0.2:9000 check cookie zot-server2
+    server zot-server3 127.0.0.3:9000 check cookie zot-server3
 
+backend zot-instance1
+    server zot-server1 127.0.0.1:9000 check maxconn 30
+
+backend zot-instance2
+    server zot-server2 127.0.0.2:9000 check maxconn 30
+
+backend zot-instance3
+    server zot-server3 127.0.0.3:9000 check maxconn 30
 ```
 
 </details>
@@ -145,7 +156,7 @@ backend zot-cluster
     "distSpecVersion": "1.0.1-dev",
     "storage": {
         "rootDirectory": "/tmp/zot",
-        "dedupe": true,
+        "dedupe": false,
         "storageDriver": {
             "name": "s3",
             "rootdirectory": "/zot",
