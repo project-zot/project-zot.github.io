@@ -240,6 +240,7 @@ semver
 serviceAccount
 SHA
 sharding
+SipHash
 skipverify
 skopeo
 SLI
