@@ -1,16 +1,12 @@
 # Scale-out clustering
 
-> :point_right: A cluster of zot instances can easily be scaled with no repo-specific programming of the load balancer using:
+> :point_right: A cluster of zot instances can be easily scaled with no repo-specific intelligence in the load balancing scheme, using:
 >
 > -   Stateless zot instances to simplify scale out
 > -   Shared remote storage
 > -   zot release v2.1.0 or later
 
-Beginning with zot release v2.1.0, a new "scale-out" architecture greatly reduces the configuration required when deploying large numbers of zot instances. As before, multiple identical zot instances run simultaneously using the same shared reliable storage, but with improved scale and performance in large deployments. Scale-out is achieved by automatically sharding based on repository name so that each zot instance is responsible for a subset of repositories.
-
-![504569](../assets/images/504569.jpg){width="500"}
-
-The number of instances can easily be expanded by simply adding the IP addresses of the new instances in the load balancer configuration. No repo-specific programming of the load balancer is needed. 
+Beginning with zot release v2.1.0, a new "scale-out" architecture greatly reduces the configuration required when deploying large numbers of zot instances. As before, multiple identical zot instances run simultaneously using the same shared reliable storage, but with improved scale and performance in large deployments. A highly scalable cluster can be architected by automatically sharding based on repository name so that each zot instance is responsible for a subset of repositories.
 
 In a cloud deployment, the shared backend storage (such as AWS S3) and metadata storage (such as DynamoDB) can also be easily scaled along with the zot instances.
 
@@ -22,25 +18,38 @@ For easy scaling of instances (replicas), the following conditions must be met:
 
 - All zot replicas must be running zot release v2.1.0 (or later) with identical configurations.
 - All zot replicas in the cluster use remote storage at a single shared S3 backend. There is no local caching in the zot replicas.
-- Each repo is served by one zot replica, and that replica is solely responsible for serving all images of that repo. 
-- A repo in storage can be written to only by the zot replica associated with that repo.
-- Each zot replica in the cluster has its own IP address, but all replicas use the port number.
-- The URI format sent to the load balancer must be /v2/<repo\>/<manifest\>:<tag\>
-
+- Each zot replica in the cluster has its own IP address, but all replicas use the same port number.
+- The URI format sent to the cluster must be /v2/<repo\>/<manifest\>:<tag\>
 
 ## How it works
 
-A highly scalable cluster can be architected by sharding on the repository name. In the cluster, each replica is the owner of a small subset of the repository. The load balancer does not need to know which replica owns which repo. The replicas themselves can determine this.  
+Each repo is served by one zot replica, and that replica is solely responsible for serving all images of that repo. A repo in storage can be written to only by the zot replica responsible for that repo.
 
-When the load balancer receives an image push or pull request, it forwards the request to any replica in the cluster. The receiving replica hashes the repo path and consults a hash table to determine whether the request can be handled locally or must be forwarded to another replica that is responsible for the repo. If the latter, the receiving replica forwards the request to the responsible replica and then acts as a proxy, returning the requested image to the requestor.
+When a zot replica in the cluster receives an image push or pull request for a repo, the receiving replica hashes the repo path and consults a hash table to determine which replica is responsible for the repo. 
+
+- If the hash indicates that another replica is responsible, the receiving replica forwards the request to the responsible replica and then acts as a proxy, returning the response to the requestor. 
+- If the hash indicates that the current (receiving) replica is responsible, the request is handled locally.
+- If the hash indicates that no replica is responsible, the receiving replica becomes the responsible replica for that repo, and the request is handled locally.
 
 > :pencil2: For better resistance to collisions and preimage attacks, zot uses SipHash as the hashing algorithm.
 
-> :bulb: Because this scale-out scheme greatly simplifies the role of the load balancer, it may be possible to eliminate the load balancer entirely by using a scheme such as DNS-based routing, exposing the zot replicas directly to the clients.
+Either of the following two schemes can be used to reach the cluster.
+
+### Using a single entry point load balancer
+
+![504569](../assets/images/504569.jpg){width="500"}
+
+When a single entry point load balancer such as [HAProxy](https://www.haproxy.com/) is deployed, the number of zot replicas can easily be expanded by simply adding the IP addresses of the new replicas in the load balancer configuration. 
+
+When the load balancer receives an image push or pull request for a repo, it forwards the request to any replica in the cluster.  No repo-specific programming of the load balancer is needed because the load balancer does not need to know which replica owns which repo. The replicas themselves can determine this.  
+
+### Using DNS-based load balancing
+
+Because the scale-out architecture greatly simplifies the role of the load balancer, it may be possible to eliminate the load balancer entirely. A scheme such as [DNS-based routing](https://coredns.io/plugins/loadbalance/) can be implemented, exposing the zot replicas directly to the clients.
 
 ## Configuration examples
 
-Clustering is supported by using multiple stateless zot replicas with shared S3 storage and an HAProxy (with sticky session) load balancing traffic to the replicas.
+In these examples, clustering is supported by using multiple stateless zot replicas with shared S3 storage and an HAProxy (with sticky session) load balancer forwarding traffic to the replicas.
 
 ### Cluster member configuration
 
@@ -150,9 +159,9 @@ backend zot-cluster
 
 ## When a replica fails
 
-The scale-out scheme described in this article is not self-healing when a replica fails. In case of a replica failure, only those repositories that are mapped to the failed replica are affected. If the error is not transient, the cluster must be resized and restarted to exclude that replica.
+The scale-out clustering scheme described in this article is not self-healing when a replica fails. In case of a replica failure, only those repositories that are mapped to the failed replica are affected. If the error is not transient, the cluster must be resized and restarted to exclude that replica.
 
-> :pencil2: With an HAProxy load balancer, we recommend implementing an [HAProxy circuit breaker](https://www.haproxy.com/blog/circuit-breaking-haproxy) to monitor and protect the cluster.
+> :bulb: With an HAProxy load balancer, we recommend implementing an [HAProxy circuit breaker](https://www.haproxy.com/blog/circuit-breaking-haproxy) to monitor and protect the cluster.
 
 ## CVE repository in a zot cluster environment
 
