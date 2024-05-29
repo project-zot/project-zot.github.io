@@ -74,7 +74,7 @@ prefixes during load balancing and ingress gateway configuration.
 
 Clustering is supported by using multiple stateless zot replicas with shared S3 storage and an HAProxy (with sticky session) load balancing traffic to the replicas. Each replica is responsible for one or more repositories.
 
-### HAProxy YAML configuration
+### HAProxy configuration
 
 <details>
   <summary markdown="span">Click here to view a sample HAProxy configuration.</summary>

@@ -19,7 +19,7 @@ For easy scaling of instances (replicas), the following conditions must be met:
 - All zot replicas must be running zot release v2.1.0 (or later) with identical configurations.
 - All zot replicas in the cluster use remote storage at a single shared S3 backend. There is no local caching in the zot replicas.
 - Each zot replica in the cluster has its own IP address, but all replicas use the same port number.
-- The URI format sent to the cluster must be /v2/<repo\>/<manifest\>:<tag\>
+
 
 ## How it works
 
@@ -29,7 +29,7 @@ When a zot replica in the cluster receives an image push or pull request for a r
 
 - If the hash indicates that another replica is responsible, the receiving replica forwards the request to the responsible replica and then acts as a proxy, returning the response to the requestor. 
 - If the hash indicates that the current (receiving) replica is responsible, the request is handled locally.
-- If the hash indicates that no replica is responsible, the receiving replica becomes the responsible replica for that repo, and the request is handled locally.
+
 
 > :pencil2: For better resistance to collisions and preimage attacks, zot uses SipHash as the hashing algorithm.
 
@@ -116,7 +116,7 @@ The replica must also have a hash key for hashing the repo path of the image req
 
 </details>
 
-### HAProxy YAML configuration
+### HAProxy configuration
 
 The HAProxy load balancer uses a simple round-robin balancing scheme and delivers a cookie to the requestor to maintain a sticky session connection to the assigned replica.
 
