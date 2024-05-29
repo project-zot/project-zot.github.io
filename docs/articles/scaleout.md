@@ -166,3 +166,7 @@ The scale-out clustering scheme described in this article is not self-healing wh
 ## CVE repository in a zot cluster environment
 
 CVE scanning is not supported for cloud deployments. In the scale-out clustering scheme described in this article, CVE scanning is disabled. In this case, we recommend implementing a CVE repository with a zot instance outside of the cluster using a local disk for storage and [Trivy](https://trivy.dev/) as the detection engine.
+
+## Registry sync
+
+The [sync](../articles/mirroring.md) feature of zot, either on demand or periodic, is compatible with scale-out clustering. In this case, the repo names are hashed to a particular replica and only that replica will perform the sync.
