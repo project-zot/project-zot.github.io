@@ -3,17 +3,20 @@
 > :point_right: High availability of the zot registry is supported by the following features:
 >
 > -   Stateless zot instances to simplify scale out
+> -   Shared remote storage
 > -   Bare-metal and Kubernetes deployments
 
 
-To ensure high-availability of the registry, zot supports a clustering
-scheme with stateless zot instances/replicas fronted by a loadbalancer
+To ensure high availability of the registry, zot supports a clustering
+scheme with stateless zot instances/replicas fronted by a load balancer
 and a shared remote backend storage. This scheme allows the registry
 service to remain available even if a few replicas fail or become
-unavailable. Loadbalancing across many zot replicas can also increase
+unavailable. Load balancing across many zot replicas can also increase
 aggregate network throughput.
 
-![504569](../assets/images/504569.jpg){width="400"}
+![504569](../assets/images/504569.jpg){width="500"}
+
+> :pencil2: Beginning with zot release v2.1.0, you can design a highly scalable cluster that does not require configuring the load balancer to direct repository queries to specific zot instances within the cluster. See [Scale-out clustering](scaleout.md). Scale-out clustering is the preferred method if you are running v2.1.0 or later.
 
 Clustering is supported in both bare-metal and Kubernetes environments.
 > :pencil2:
@@ -24,11 +27,11 @@ Clustering is supported in both bare-metal and Kubernetes environments.
 
 ### Prerequisites
 
--   A highly-available loadbalancer such as `HAProxy` configured to direct traffic to zot replicas.
+-   A highly-available load balancer such as HAProxy configured to direct traffic to zot replicas
 
--   Multiple zot replicas as `systemd` services hosted on multiple hosts or VMs.
+-   Multiple zot replicas as `systemd` services hosted on multiple hosts or VMs
 
--   AWS S3 API-compatible remote backend storage.
+-   AWS S3 API-compatible remote backend storage
 
 ## Kubernetes deployment
 
@@ -36,16 +39,16 @@ Clustering is supported in both bare-metal and Kubernetes environments.
 
 -   A zot Kubernetes
     [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
-    with required number of replicas.
+    with required number of replicas
 
 -   AWS S3 API-compatible remote backend storage.
 
 -   A zot Kubernetes
-    [Service](https://kubernetes.io/docs/concepts/services-networking/service/).
+    [Service](https://kubernetes.io/docs/concepts/services-networking/service/)
 
 -   A zot Kubernetes [Ingress
     Gateway](https://kubernetes.io/docs/concepts/services-networking/ingress/)
-    if the service needs to be exposed outside.
+    if the service needs to be exposed outside
 
 ## Implementing stateless zot
 
@@ -56,8 +59,8 @@ zot maintains two types of durable state:
 -   the image metadata in the registry’s cache
 
 In a stateless clustering scheme, the image data is stored in the remote
-storage backend and the registry cache is disabled by turning off both
-deduplication and garbage collection.
+storage backend and the registry cache is disabled by turning off
+deduplication.
 
 ## Ecosystem tools
 
@@ -65,16 +68,16 @@ The [OCI Distribution
 Specification](https://github.com/opencontainers/distribution-spec)
 imposes certain rules about the HTTP URI paths to which various
 ecosystem tools must conform. Consider these rules when setting the HTTP
-prefixes during loadbalancing and ingress gateway configuration.
+prefixes during load balancing and ingress gateway configuration.
 
 ## Examples
 
-zot supports clustering by using multiple stateless zot replicas with shared S3 storage and an `HAProxy` (with sticky session) load-balancing traffic to the replicas.
+Clustering is supported by using multiple stateless zot replicas with shared S3 storage and an HAProxy (with sticky session) load balancing traffic to the replicas. Each replica is responsible for one or more repositories.
 
-### YAML configuration
+### HAProxy configuration
 
 <details>
-  <summary markdown="span">Click here to view a sample haproxy configuration.</summary>
+  <summary markdown="span">Click here to view a sample HAProxy configuration.</summary>
 
 ```yaml
 
@@ -117,15 +120,27 @@ defaults
 frontend zot
     bind *:8080
     mode http
+    use_backend zot-instance1 if { path_beg /v2/repo1/ }
+    use_backend zot-instance2 if { path_beg /v2/repo2/ }
+    use_backend zot-instance3 if { path_beg /v2/repo3/ }
     default_backend zot-cluster
 
 backend zot-cluster
     mode http
     balance roundrobin
-    server zot1 127.0.0.1:8081 check
-    server zot2 127.0.0.1:8082 check
-    server zot3 127.0.0.1:8083 check
+    cookie SERVER insert indirect nocache
+    server zot-server1 127.0.0.1:9000 check cookie zot-server1
+    server zot-server2 127.0.0.2:9000 check cookie zot-server2
+    server zot-server3 127.0.0.3:9000 check cookie zot-server3
 
+backend zot-instance1
+    server zot-server1 127.0.0.1:9000 check maxconn 30
+
+backend zot-instance2
+    server zot-server2 127.0.0.2:9000 check maxconn 30
+
+backend zot-instance3
+    server zot-server3 127.0.0.3:9000 check maxconn 30
 ```
 
 </details>
@@ -141,7 +156,7 @@ backend zot-cluster
     "distSpecVersion": "1.0.1-dev",
     "storage": {
         "rootDirectory": "/tmp/zot",
-        "dedupe": true,
+        "dedupe": false,
         "storageDriver": {
             "name": "s3",
             "rootdirectory": "/zot",

@@ -9,6 +9,7 @@ api
 apikey
 APIKeyPayload
 APIs
+architected
 artifacthub
 artifactType
 ASLR
@@ -27,6 +28,7 @@ BoltDB
 boolean
 Bugfixes
 busybox
+caching
 CD
 certDir
 checksum
@@ -71,6 +73,7 @@ dex
 discoverable
 DistContentDigestKey
 DN
+DNS
 Dockerfile
 dropdown
 dryRun
@@ -104,7 +107,9 @@ graphQL
 graphql
 gui
 haproxy
+HAProxy
 hostname
+hostnames
 href
 html
 htpasswd
@@ -199,6 +204,7 @@ podman
 pollInterval
 pprof
 PR
+preimage
 prometheus
 PRs
 pulledWithin
@@ -227,11 +233,14 @@ Satisfiable
 satisfiable
 SBOM
 SBOMs
+scalable
 SDK
 secretkey
 semver
 serviceAccount
 SHA
+sharding
+SipHash
 skipverify
 skopeo
 SLI
