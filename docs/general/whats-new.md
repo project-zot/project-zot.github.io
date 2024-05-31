@@ -1,5 +1,13 @@
 # What's New
 
+## [v2.1.0-rc1](https://github.com/project-zot/zot/releases/tag/v2.1.0-rc1)
+(release candidate window)
+
+### Scale-out cluster
+
+You can build a [scale-out cluster](../articles/scaleout.md) (proxy/shard based
+on repository name). Scale-out cluster is compatible with "sync" feature.
+
 ## [v2.0.4](https://github.com/project-zot/zot/releases/tag/v2.0.4)
 
 This is a maintenance release with minor bug fixes.
