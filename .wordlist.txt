@@ -81,6 +81,7 @@ ExpandedRepoInfo
 ExpandedRepoInfo
 ExtensionList
 ExternalName
+failover
 Filebeat
 filesystem
 filesystems
