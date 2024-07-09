@@ -1,12 +1,19 @@
 # What's New
 
-## [v2.1.0-rc1](https://github.com/project-zot/zot/releases/tag/v2.1.0-rc1)
+## [v2.1.0](https://github.com/project-zot/zot/releases/tag/v2.1.0)
 (release candidate window)
 
 ### Scale-out cluster
 
 You can build a [scale-out cluster](../articles/scaleout.md) (proxy/shard based
 on repository name). Scale-out cluster is compatible with "sync" feature.
+
+### Bug fixes
+
+The following security issue has been fixed in this release.
+
+[<code>GHSA-55r9-5mx9-qq7r/CVE-2024-39897</code>](https://github.com/project-zot/zot/security/advisories/GHSA-55r9-5mx9-qq7r)
+
 
 ## [v2.0.4](https://github.com/project-zot/zot/releases/tag/v2.0.4)
 
