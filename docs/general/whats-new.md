@@ -1,7 +1,6 @@
 # What's New
 
 ## [v2.1.0](https://github.com/project-zot/zot/releases/tag/v2.1.0)
-(release candidate window)
 
 ### Scale-out cluster
 
