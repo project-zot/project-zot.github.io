@@ -185,9 +185,9 @@ from a zot registry.
 
     $ echo '{"artifact": "localhost:5000/hello-artifact:v2", "signature": "pat hancock"}' > signature.json
 
-    $ oras push localhost:5000/hello-artifact \
+    $ oras attach \
       --artifact-type 'signature/example' \
-      --subject localhost:5000/hello-artifact:v2 \
+      localhost:5000/hello-artifact:v2 \
       ./signature.json:application/json
 
     $ oras discover -o tree localhost:5000/hello-artifact:v2
