@@ -8,3 +8,6 @@ mkdocs-git-revision-date-localized-plugin==1.1.0
 mkdocs-macros-plugin==0.7.0
 mkdocs-with-pdf==0.9.3
 zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
+jinja2>=3.1.4 # not directly required, pinned by Snyk to avoid a vulnerability
+setuptools>=70.0.0 # not directly required, pinned by Snyk to avoid a vulnerability
+tornado>=6.4.1 # not directly required, pinned by Snyk to avoid a vulnerability
