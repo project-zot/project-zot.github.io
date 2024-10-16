@@ -4,7 +4,7 @@
 
 A key use case for zot is to act as a mirror for upstream registries. If an upstream registry is OCI distribution-spec conformant for pulling images, you can use zot's `sync` feature to implement a downstream mirror, synchronizing OCI images and corresponding artifacts. Because synchronized images are stored in zot's local storage, registry mirroring allows for a fully distributed disconnected container image build pipeline. Container image operations terminate in local zot storage, which may reduce network latency and costs.
 
-> :warning: Because zot is a OCI-only registry, any upstream image stored in the Docker image format is converted to OCI format when downloading to zot. In the conversion, some non-OCI attributes may be lost. Signatures, for example, are removed due to the incompatibility between formats. Due to the OCI conversion, the image digest may change, and pulling with <tag>@<digest> will not work as expected.
+> :warning: Because zot is a OCI-only registry, any upstream image stored in the Docker image format is converted to OCI format when downloading to zot. In the conversion, some non-OCI attributes may be lost and the image digest will change. Pulling with <tag>@<digest> will not work as expected. Signatures, for example, are removed due to the mismatch between the old and the new digests. 
 
 ## Mirroring modes
 
