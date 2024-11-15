@@ -18,6 +18,7 @@ The configuration file is a JSON or YAML file that contains all configuration se
 -   logging
 -   metrics
 -   synchronization with other registries
+-   
 -   clustering
 
 The zot service is initiated with the `zot serve` command followed by the name of a configuration file, as in this example:
@@ -377,6 +378,23 @@ The following table lists the configurable attributes of the `lint` extension.
 | `mandatoryAnnotations` | A list of annotations that are required to be present in the image being pushed to the repository.  |
 
 If the mandatory annotations option is configured when you push an image, linter will verify that the mandatory annotations list present in the configuration is also found in the manifest's annotations list. If any annotations are missing, the push is denied.
+
+
+<a name="compat_config"></a>
+
+## Compatibility with other image schema types
+
+As an option, zot can be configured to store images using the schema [Docker Manifest v2 Schema v2](https://distribution.github.io/distribution/spec/manifest-v2-2/). In this case, a Docker image can be copied to zot without modifications to the image's manifest or digest. Such modifications would otherwise break the image's signature and attestations.
+
+To enable this compatibility, configure the `compat` attribute under `http` in the zot configuration file. Set the `compat` value to `docker2s2` as shown in the following example:
+
+```json
+"http": {
+    "address": "127.0.0.1",
+    "port": "8080",
+    "compat": ["docker2s2"]
+}
+```
 
 
 <a name="trust_config"></a>
