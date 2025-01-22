@@ -4,7 +4,13 @@
 
 ### Compatibility with other image schema types
 
-A new configuration setting allows you to store images using the schema [Docker Manifest v2 Schema v2](https://distribution.github.io/distribution/spec/manifest-v2-2/). With this setting enabled, zot makes no modifications to the image's manifest or digest. Such modifications would otherwise break the image's signature and attestations.
+A [new configuration setting](../admin-guide/admin-configuration.md#compatibility-with-other-image-schema-types) allows you to store images using the schema [Docker Manifest v2 Schema v2](https://distribution.github.io/distribution/spec/manifest-v2-2/). With this setting enabled, zot makes no modifications to the image's manifest or digest. Such modifications would otherwise break the image's signature and attestations.
+
+### Bug fixes
+
+The following security issue has been fixed in this release.
+
+[<code>GHSA-c9p4-xwr9-rfhxi/CVE-2025-23208</code>](https://github.com/project-zot/zot/security/advisories/GHSA-c9p4-xwr9-rfhx)
 
 ## [v2.1.0](https://github.com/project-zot/zot/releases/tag/v2.1.0)
 
