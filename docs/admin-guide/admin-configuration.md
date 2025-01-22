@@ -274,26 +274,26 @@ who has been denied access.
 ### Rate limiting
 
 You can limit the rate of API calls from users by configuring the
-`Ratelimit` attribute in the configuration file, as shown in the
+`ratelimit` attribute in the configuration file, as shown in the
 following example:
 
 ``` json
 "http": {
     "address": "127.0.0.1",
     "port": "8080",
-    "Ratelimit": {
-        "Rate": 10,
-        "Methods": [
+    "ratelimit": {
+        "rate": 10,
+        "methods": [
             {
-                "Method": "GET",
-                "Rate": 5
+                "method": "GET",
+                "rate": 5
             }
         ]
     }
 }
 ```
 
-In this example, the `Rate` attribute directly under `Ratelimit` sets a
+In this example, the `rate` attribute directly under `ratelimit` sets a
 global rate limit of ten API calls per second. You can optionally
 override the global limit for specific API `Methods`. In this example,
 API `GET` calls are limited to five per second.
