@@ -196,6 +196,7 @@ OpenID
 openjdk
 ORA
 oras
+osscluster
 OSSF
 permalink
 PKI
@@ -206,6 +207,7 @@ pollInterval
 pprof
 PR
 preimage
+prepended
 prometheus
 PRs
 pulledWithin
@@ -214,6 +216,7 @@ pushedWithin
 Qualys
 rc
 README
+redis
 regclient
 regctl
 regionendpoint

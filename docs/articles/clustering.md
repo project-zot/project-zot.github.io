@@ -145,10 +145,10 @@ backend zot-instance3
 
 </details>
 
-### zot S3 configuration
+### zot S3 configuration with DynamoDB
 
 <details>
-  <summary markdown="span">Click here to view a sample zot configuration for S3.</summary>
+  <summary markdown="span">Click here to view a sample zot configuration for S3 and DynamoDB.</summary>
 
 ```json
 
@@ -157,6 +157,7 @@ backend zot-instance3
     "storage": {
         "rootDirectory": "/tmp/zot",
         "dedupe": false,
+        "remoteCache": true,
         "storageDriver": {
             "name": "s3",
             "rootdirectory": "/zot",
@@ -170,6 +171,50 @@ backend zot-instance3
             "endpoint": "http://localhost:4566",
             "region": "us-east-2",
             "tableName": "MainTable"
+        }
+    },
+    "http": {
+        "address": "127.0.0.1",
+        "port": "8080"
+    },
+    "log": {
+        "level": "debug"
+    }
+}
+
+```
+</details>
+
+### zot S3 configuration with Redis
+
+Multiple zot instances can share the same S3 `storageDriver` and Redis `cacheDriver` configurations.
+The Redis server, DB, and `keyprefix` must match for all zot instances.
+
+While the Redis `cacheDriver` implementation does support local storage, zot clustering with Redis is only supported for S3.
+
+<details>
+  <summary markdown="span">Click here to view a sample zot configuration for S3 and Redis.</summary>
+
+```json
+
+{
+    "distSpecVersion": "1.0.1-dev",
+    "storage": {
+        "rootDirectory": "/tmp/zot",
+        "dedupe": false,
+        "remoteCache": true,
+        "storageDriver": {
+            "name": "s3",
+            "rootdirectory": "/zot",
+            "region": "us-east-2",
+            "bucket": "zot-storage",
+            "secure": true,
+            "skipverify": false
+        },
+        "cacheDriver": {
+            "name": "redis",
+            "url": "redis://host:6379",
+            "keyprefix": "zot"
         }
     },
     "http": {

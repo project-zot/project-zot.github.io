@@ -389,7 +389,7 @@ To use [DynamoDB](https://aws.amazon.com/dynamodb/) as the cache driver, the fol
         "cacheDriver": {
             "name": "dynamodb",                  // driver name
             "endpoint": "http://localhost:4566", // aws endpoint
-            "region": "us-east-2"                // aws region
+            "region": "us-east-2",               // aws region
             "cacheTablename": "ZotBlobTable"     // table to store deduped blobs
         }
     },
@@ -440,6 +440,109 @@ The following AWS policy is required by zot for caching blobs.
 ```
 
 For more details about configuring AWS DynamoDB, see the [AWS documentation](https://docs.aws.amazon.com/dynamodb/).
+
+### Redis
+
+[Redis](https://redis.io/) is an alternative to BoltDB (which cannot be shared by multiple zot instances) and DynamoDB (which requires access to AWS).
+
+To use Redis as the cache driver, the following storage configuration must be present:
+
+- `remoteCache` is enabled
+- `cacheDriver` attribute is configured as in the following example:
+
+```json
+    "storage": {
+        "rootDirectory": "/tmp/zot",
+        "remoteCache": true,
+        "cacheDriver": {
+            "name": "redis",
+            "url": "redis://localhost:6379",
+            "keyprefix": "zot"
+        }
+    },
+```
+
+The cache driver name `redis` selects the Redis driver implementation.
+
+The key `keyprefix` is a string prepended to all Redis keys created by this zot instance. If no string is specified, the default value is `zot`.
+If multiple zot instances share the same Redis database and storage, `keyprefix` should be the same in all their configurations.
+If multiple zot instances share the same Redis database, but have different storage locations containing different images, `keyprefix` should be different in all their configurations.
+
+The `url` string can contain query parameters for various settings, and it can be used for both Redis single instance and cluster configurations.
+More details on how `url` is parsed are available at:
+- https://github.com/redis/go-redis/blob/v9.7.0/options.go#L247
+- https://github.com/redis/go-redis/blob/v9.7.0/osscluster.go#L144
+
+At this time the library we import for `url` parsing does not support Redis sentry. For this reason we also support passing the parameters individually as keys in the same `cacheDriver` map.
+If and only if the `url` setting is missing, the other parameters are read from `cacheDriver`.
+The keys are the same as the attributes that would otherwise be included in the `url`.
+
+In the case of a Redis Sentinel setup, you would need to add each key manually in the `cacheDriver` map and make sure to specify
+a `master_name` key, see https://github.com/redis/go-redis/blob/v9.7.0/universal.go#L240
+
+#### Redis cluster configuration
+
+The following storage configuration is for a Redis cluster:
+
+```json
+    "storage": {
+        "rootDirectory": "/tmp/zot",
+        "remoteCache": true,
+        "cacheDriver": {
+            "name": "redis",
+            "url": "redis://user:password@host1:6379?addr=host2:6379&addr=host3:6379",
+            "keyprefix": "zot"
+        }
+    }
+```
+
+#### Add Redis configuration parameters
+
+The following storage configuration contains all Redis parameters:
+
+```json
+    "storage": {
+        "rootDirectory": "/tmp/zot",
+        "remoteCache": true,
+        "cacheDriver": {
+            "name": "redis",
+            "keyprefix": "zot",
+            "addr": ["host1:6379", "host2:6379", "host3:6379"],
+            "client_name": "client",
+            "db": 1,
+            "protocol": 3,
+            "username": "user1",
+            "password": "pass1",
+            "sentinel_username": "user2",
+            "sentinel_password": "pass2",
+            "max_retries": 3,
+            "min_retry_backoff": "5s",
+            "max_retry_backoff": "5s",
+            "dial_timeout": "5s",
+            "read_timeout": "5s",
+            "write_timeout": "5s",
+            "context_timeout_enabled": false,
+            "pool_fifo": false,
+            "pool_size": 3,
+            "pool_timeout": "5s",
+            "min_idle_conns": 1,
+            "max_idle_conns": 3,
+            "max_active_conns": 3,
+            "conn_max_idle_time": "5s",
+            "conn_max_lifetime": "5s",
+            "max_redirects": 3,
+            "read_only": false,
+            "route_by_latency": false,
+            "route_randomly": false,
+            "master_name": "zotmeta",
+            "disable_identity": false,
+            "identity_suffix": "zotmeta",
+            "unstable_resp3": false
+        },
+    }
+```
+
+> :warning: setting all of the parameters above for the same use case does not make sense, as some parameters for single instance, cluster and sentry configurations exclude one another.
 
 ## Remote storage subpaths
 
