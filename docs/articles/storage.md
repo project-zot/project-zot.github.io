@@ -50,9 +50,6 @@ zot can store and serve files from one or more local directories. A minimum of o
 > :pencil2:
 > Remote filesystems that are mounted and accessible locally such as `NFS` or `fuse` are treated as local filesystems.
 
-> :warning:
-> Because Boltdb does not provide concurrent access for writes, multiple instances/replicas of zot are not supported against the same boltdb file when local filesystem is configured.
-
 
 ### Remote filesystem
 
@@ -375,6 +372,9 @@ If you don't specify a cache driver, zot defaults to [BoltDB](https://dbdb.io/db
 ```
 
 In this example, BoltDB can be found at /tmp/zot/cache.db.
+
+> :warning:
+> Because BoltDB does not provide concurrent access for writes, multiple instances/replicas of zot are not supported with a BoltDB configuration.
 
 ### DynamoDB
 
