@@ -373,6 +373,9 @@ If you don't specify a cache driver, zot defaults to [BoltDB](https://dbdb.io/db
 
 In this example, BoltDB can be found at /tmp/zot/cache.db.
 
+> :warning:
+> Because BoltDB does not provide concurrent access for writes, multiple instances/replicas of zot are not supported with a BoltDB configuration.
+
 ### DynamoDB
 
 To use [DynamoDB](https://aws.amazon.com/dynamodb/) as the cache driver, the following storage configuration must be present:
