@@ -40,7 +40,7 @@ _simple policy example_
           "repoNames": ["infra/*", "tmp/**"],
           "deleteReferrers": false,
           "deleteUntagged": true,
-          "KeepTags": [{
+          "keepTags": [{
             "patterns": ["v2.*", ".*-prod"],
             "mostRecentlyPushedCount": 10,
             "mostRecentlyPulledCount": 10,
@@ -80,12 +80,14 @@ The following table lists the attributes available in the retention policy confi
 
 ### Configuration notes
 
+- All image retention and garbage collection processing is made per repository, not per groups of repositories. The count of retained images in one repository doesn't impact retention for another repository.
 - A repository will apply the first policy it matches.
 - If a repository matches no policy, the repository and all its tags are retained.  
 - If at least one `keepTags` policy is defined for a repository, all tags not matching those policies are removed. 
 - If `keepTags` is present but empty, all tags are retained.
-- When multiple rules are configured, a tag is retained if it meets at least one rule.
-- When you specify a regex pattern combined with one or more rules, the rules are applied only to those tags matching the regex.
+- In general, when multiple rules are configured, a tag is retained if it meets at least one rule.
+- When multiple entries are configured under the same `keepTags` list, there is a logical OR applied between them.
+- When a regex pattern is combined with one or more other rules inside a single `keepTags` entry, the rules apply only to those tags matching the regex. Given a `keepTags` entry, the retained tags are: `patterns` AND (`pulledWithin` OR `pushedWithin` OR `mostRecentlyPushedCount` OR `mostRecentlyPulledCount`).
 - When you specify a regex pattern with no rules other than the default, all tags matching the pattern are retained.
 - In the repositories list, a single asterisk (/\*) matches all first-level items in the repository. A double asterisk (/*\*) matches all recursively.
 
@@ -159,7 +161,7 @@ The following example shows the configuration of multiple retention policies in 
         "retention": {
           "policies": [
             {
-              "repositories": ["infra/*", "prod/*"],
+              "repositories": ["a/infra/*", "a/prod/*"],
               "deleteReferrers": false
             }
           ]
@@ -176,3 +178,32 @@ The following example shows the configuration of multiple retention policies in 
   }
 }
 ```
+
+Given the configuration example above, we can make the following observations.
+
+For repositories having names starting with `infra/` and `prod/`:
+- Artifacts referring to missing images will be retained.
+- Untagged images pushed more than 24h ago (`delay`) will be deleted by default, as `deleteUntagged` is not specified.
+- All tags matching regex pattern `v2.*` will be retained.
+- All tags matching regex pattern `.*-prod` will be retained, as they match the first `keepTags` entry, so their presence in the second entry is not necessary.
+- Tags matching regex pattern `v3.*` will not be deleted if they were pulled within `168h`.
+- All other tags will be deleted.
+
+For repositories having names starting with `tmp/`:
+- Artifacts pushed more than 24h ago (`delay`) referring to missing images will be deleted.
+- Untagged images pushed more than 24h ago (`delay`) will be deleted.
+- Tags matching regex pattern `v1.*` will not be deleted if they were pulled within `168h` or pushed within `168h`.
+- All other tags will be deleted.
+
+For repositories having names starting with `a/infra/` and `a/prod/`:
+- These repositories are under a separate subpath, with an entirely different retention configuration.
+- Artifacts referring to missing images will be retained.
+- Untagged images pushed more than 24h ago will be deleted by default, as `deleteUntagged` is not specified and the default value for `delay` is 24h.
+
+For the rest of repositories, all of them matching `**`:
+- Artifacts pushed more than 24h ago (`delay`) referring to missing images will be deleted.
+- Untagged images pushed more than 24h ago (`delay`) will be deleted.
+- Tags will be retained if they were pulled within `720h` or pushed within `720h` or among the 10 most recently pushed images or among the 10 most recently pulled images.
+- All other tags will be deleted.
+
+:warning: `subPaths` are a separate feature with use cases outside the scope of this article. Do NOT use `subPaths` just for the purpose of configuring retention.
