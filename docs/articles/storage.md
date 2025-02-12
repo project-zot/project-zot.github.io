@@ -408,9 +408,13 @@ If the search extension is enabled, additional parameters are required:
             "endpoint": "http://localhost:4566",
             "region": "us-east-2",
             "cacheTablename": "ZotBlobTable",
-            // used by search extensions
+            // used by auth
+            "userDataTablename": "ZotUserDataTable",
+            "apiKeyTablename": "ZotApiKeyDataTable",
+            // used by search extension
             "repoMetaTablename": "ZotRepoMetadataTable",
-            "manifestDataTablename": "ZotManifestDataTable",
+            "imageMetaTablename": "ZotImageMetaTable",
+            "repoBlobsInfoTablename": "ZotRepoBlobsInfoTable",
             "versionTablename": "ZotVersion"
         }
 ```
@@ -432,6 +436,10 @@ The following AWS policy is required by zot for caching blobs.
       "Effect": "Allow",
       "Action": [
         "dynamodb:CreateTable",
+        "dynamodb:DescribeTable",
+        "dynamodb:DeleteTable",
+        "dynamodb:Scan",
+        "dynamodb:BatchGetItem",
         "dynamodb:GetItem",
         "dynamodb:UpdateItem",
         "dynamodb:DeleteItem"
@@ -441,6 +449,8 @@ The following AWS policy is required by zot for caching blobs.
   ]
 }
 ```
+
+Note `dynamodb:DeleteTable` is used only in running the zot tests, should not be needed in production.
 
 For more details about configuring AWS DynamoDB, see the [AWS documentation](https://docs.aws.amazon.com/dynamodb/).
 
