@@ -37,7 +37,7 @@ _simple policy example_
       "delay": "24h",
       "policies": [
         {
-          "repoNames": ["infra/*", "tmp/**"],
+          "repositories": ["infra/*", "tmp/**"],
           "deleteReferrers": false,
           "deleteUntagged": true,
           "keepTags": [{
