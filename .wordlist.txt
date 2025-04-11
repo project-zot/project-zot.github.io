@@ -77,6 +77,8 @@ DNS
 Dockerfile
 dropdown
 dryRun
+DynamoDB
+ECR
 ExpandedRepoInfo
 ExpandedRepoInfo
 ExtensionList

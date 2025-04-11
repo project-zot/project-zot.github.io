@@ -1,5 +1,36 @@
 # What's New
 
+## [v2.1.3]
+
+## What's Changed
+
+### Better docker Support in UI
+
+Native docker images are now correctly displayed in the Web UI.
+
+### Redis driver Support
+
+Previous releases supported a local BoltDB or a remote DynamoDB database in
+order to store image and blob metadata. This release now includes support for
+_redis_.
+
+### AWS ECR Sync Support With Temporary Token Authentication
+
+AWS ECR can now be used as the upstream registry to mirror from and the
+configuration allows for an authentication helper.
+
+### Sync Exclude Regex
+
+While mirroring from an upstream registry, it is now possible to exclude images with a regex pattern.
+
+### Windows Binaries
+
+Native Windows binaries (both amd64 and arm64) are now distributed with the release.
+
+### Bug fixes
+
+Various bug fixes and performance improvements.
+
 ## [v2.1.2](https://github.com/project-zot/zot/releases/tag/v2.1.2)
 
 ### Compatibility with other image schema types
