@@ -4,7 +4,7 @@ site_description: Zot Registry
 repo_url: https://github.com/project-zot/zot
 repo_name: project-zot/zot
 edit_uri: ""
-copyright: Copyright &copy; 2019 - 2024 The zot project authors, All Rights Reserved. | The Linux Foundation® (TLF) has registered trademarks and uses trademarks. For a list of TLF trademarks, see <a href="https://www.linuxfoundation.org/trademark-usage/">Trademark Usage</a>
+copyright: Copyright &copy; 2019 - 2025 The zot project authors, All Rights Reserved. | The Linux Foundation® (TLF) has registered trademarks and uses trademarks. For a list of TLF trademarks, see <a href="https://www.linuxfoundation.org/trademark-usage/">Trademark Usage</a>
 theme:
   name: material
   custom_dir: material
