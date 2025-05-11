@@ -307,6 +307,8 @@ In this example, five policies are defined:
 
 -   A metrics policy (`metrics`) gives the user "john" permissions to read data from the metrics endpoint for monitoring purposes.
 
+:pencil2:  In case of LDAP groups, the group FQDN must be used in the zot configuration. For example ` "groups": ["cn=ldap-group,ou=Groups,dc=example,dc=org"],`.
+
 :pencil2:  In releases prior to zot v2.0.0, authorization policies were defined directly under the `accessControl` key in the zot configuration file.  Beginning with v2.0.0, the set of authorization policies are now defined under a new `repositories` key.
 
 <a name="_social-login"></a>
