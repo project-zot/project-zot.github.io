@@ -122,6 +122,7 @@ zot supports integration with an LDAP-based authentication service such as Micro
       "startTLS": false,
       "baseDN": "ou=Users,dc=example,dc=org",
       "userAttribute": "uid",
+      "userFilter": "(!(nsaccountlock=TRUE))",
       "userGroupAttribute": "memberOf",
       "bindDN": "cn=ldap-searcher,ou=Users,dc=example,dc=org",
       "bindPassword": "ldap-searcher-password",
@@ -142,6 +143,7 @@ The following table lists the configurable attributes for LDAP authentication.
 | `startTLS`      | Set to `true` to enable TLS communication with the LDAP server.                  |
 | `baseDN`        | Starting location within the LDAP directory for performing user searches.        |
 | `userAttribute` | Attribute name used to obtain the username.                                      |
+| `userFilter`    | Optional user filter, which would be used in addition to `userAttribute`         |
 | `userGroupAttribute` | Attribute name used to obtain groups to which a user belongs.               |
 | `skipVerify`    | Skip TLS verification.                                                           |
 | `subtreeSearch` | Set to `true` to expand the scope for search to include subtrees of the base DN. |
