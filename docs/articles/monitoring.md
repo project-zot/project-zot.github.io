@@ -118,3 +118,8 @@ The configuration file of zxp contains connection details for the zot server fro
 > The zxp module does not have Prometheus integration.
 >
 > The zxp module is not needed with a full zot image.
+
+### Authorization
+
+The server supports configuring authorization for the endpoint used for metrics, in both the zot minimal image, and the image including the metrics extension.
+For more details see the authentication and authorization article.
