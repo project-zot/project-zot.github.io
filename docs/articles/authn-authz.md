@@ -122,6 +122,7 @@ zot supports integration with an LDAP-based authentication service such as Micro
       "startTLS": false,
       "baseDN": "ou=Users,dc=example,dc=org",
       "userAttribute": "uid",
+      "userFilter": "(!(nsaccountlock=TRUE))",
       "userGroupAttribute": "memberOf",
       "bindDN": "cn=ldap-searcher,ou=Users,dc=example,dc=org",
       "bindPassword": "ldap-searcher-password",
@@ -142,6 +143,7 @@ The following table lists the configurable attributes for LDAP authentication.
 | `startTLS`      | Set to `true` to enable TLS communication with the LDAP server.                  |
 | `baseDN`        | Starting location within the LDAP directory for performing user searches.        |
 | `userAttribute` | Attribute name used to obtain the username.                                      |
+| `userFilter`    | Optional user filter, which would be used in addition to `userAttribute`         |
 | `userGroupAttribute` | Attribute name used to obtain groups to which a user belongs.               |
 | `skipVerify`    | Skip TLS verification.                                                           |
 | `subtreeSearch` | Set to `true` to expand the scope for search to include subtrees of the base DN. |
@@ -203,6 +205,7 @@ Five identity-based types of access control policies are supported:
 | User-specific | `users`, `actions` | A user-specific policy specifies access and actions for explicitly named users. |
 | Group-specific | `groups`, `actions` | A group-specific policy specifies access and actions for explicitly named groups. |
 | Anonymous     | `anonymousPolicy` | An anonymous policy specifies what an unauthenticated user is allowed to do. This is an appropriate policy when you want to grant open read-only access to one or more repositories. |
+| Metrics       | `metrics` | The metrics policy is a access control policy which grants the privilege to read data from the metrics endpoint. |
 | Admin         | `adminPolicy` | The admin policy is a global access control policy that grants privileges to perform actions on any repository.  |
 
 Access control is organized by repositories, users, and their actions. Most users of a particular repository will have similar access control requirements and can be served by a repository-specific `defaultPolicy`. Should a user require an exception to the default policy, a user-specific or group-specific override policy can be configured. 
@@ -240,6 +243,9 @@ Use the `accessControl` attribute in the configuration file to define a set of i
       "group2": {
         "users": ["alice", "mallory", "jim"]
       }
+    },
+    "metrics":{
+        "users": ["john"]
     },
     "repositories": {
       "**": {
@@ -298,6 +304,10 @@ In this example, five policies are defined:
 -   The policy for `repos2/repo` matches only that specific repository.
 
 -   An admin policy (`adminPolicy`) gives the user "admin" global authorization to read, create, update, or delete content in any repository, overriding all other policies.
+
+-   A metrics policy (`metrics`) gives the user "john" permissions to read data from the metrics endpoint for monitoring purposes.
+
+:pencil2:  In case of LDAP groups, the group FQDN must be used in the zot configuration. For example ` "groups": ["cn=ldap-group,ou=Groups,dc=example,dc=org"],`.
 
 :pencil2:  In releases prior to zot v2.0.0, authorization policies were defined directly under the `accessControl` key in the zot configuration file.  Beginning with v2.0.0, the set of authorization policies are now defined under a new `repositories` key.
 
