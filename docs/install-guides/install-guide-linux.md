@@ -163,8 +163,7 @@ your own environment.
         "path": "/etc/zot/htpasswd"
       },
       "failDelay": 5
-    },
-    "allowReadAccess": true
+    }
   },
   "log":{
     "level":"debug",
