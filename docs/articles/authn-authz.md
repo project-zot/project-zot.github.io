@@ -124,8 +124,6 @@ zot supports integration with an LDAP-based authentication service such as Micro
       "userAttribute": "uid",
       "userFilter": "(!(nsaccountlock=TRUE))",
       "userGroupAttribute": "memberOf",
-      "bindDN": "cn=ldap-searcher,ou=Users,dc=example,dc=org",
-      "bindPassword": "ldap-searcher-password",
       "skipVerify": false,
       "subtreeSearch": true
     }
