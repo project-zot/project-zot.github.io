@@ -7,12 +7,11 @@ This example demonstrates how to enable and configure the **events** extension i
 The events extension allows zot to emit registry events to external systems, such as message brokers or monitoring platforms.
 Currently, http and nats endpoints are supported.
 
----
 
 ## Example: NATS endpoint
 
 
-```json
+``` json
 {
   "distSpecVersion": "1.1.1",
   "storage": {
@@ -38,3 +37,4 @@ Currently, http and nats endpoints are supported.
   }
 }
 
+```

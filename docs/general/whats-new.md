@@ -14,7 +14,7 @@ Native docker images are now correctly displayed in the Web UI.
 
 Previous releases supported a local BoltDB or a remote DynamoDB database in
 order to store image and blob metadata. This release now includes support for
-[_Redis_](../articles/storage/#redis).
+[_Redis_](../articles/storage.md/#redis).
 
 ### AWS ECR Sync Support With Temporary Token Authentication
 
