@@ -358,7 +358,7 @@ For more details about configuring AWS policies, see the [AWS documentation](htt
 
 ## Cache drivers
 
-A cache driver is used to store duplicate blobs when `dedupe` is enabled.  zot supports database caching using BoltDB as the cache driver for local filesystems and DynamoDB for remote filesystems.
+A cache driver is used to store duplicate blobs when `dedupe` is enabled.  zot supports database caching using BoltDB as the cache driver for local filesystems and DynamoDB and Redis for remote filesystems.
 
 ### BoltDB
 

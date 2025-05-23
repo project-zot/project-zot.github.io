@@ -17,6 +17,7 @@ auth
 authn
 authz
 autocompletion
+aws
 backend
 backends
 balancer
@@ -72,12 +73,14 @@ dev
 dex
 discoverable
 DistContentDigestKey
+distSpecVersion
 DN
 DNS
 Dockerfile
 dropdown
 dryRun
 DynamoDB
+ecr
 ECR
 ExpandedRepoInfo
 ExpandedRepoInfo
@@ -180,6 +183,8 @@ mutex
 mutexes
 myfile
 natively
+nats
+NATS
 ng
 nginx
 NodePort
@@ -233,6 +238,7 @@ requestor
 retryDelay
 roadmap
 rootdirectory
+rootDirectory
 runc
 runtime
 runtimes
