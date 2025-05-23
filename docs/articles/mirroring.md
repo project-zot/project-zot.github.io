@@ -209,12 +209,16 @@ The following is an example of sync configuration for mirroring multiple reposit
       "maxRetries": 3,
       "retryDelay": "5m",
       "onlySigned": true,
+      "preserveDigest": true,
       "content": [
         {
           "prefix": "/repo1/repo",
           "tags": {
             "regex": "4.*",
-            "semver": true
+            "semver": true,
+            "tags": {
+								"excludeRegex": ".*-(amd64|arm64)$"
+						}
           }
         },
         {
@@ -235,9 +239,10 @@ The configuration in this example will result in the following behavior:
 - Only signed images (notation and cosign) are synchronized.  
 - The sync communication is secured using certificates in `certDir`.
 - This registry synchronizes with upstream registry every 6 hours. 
+- This registry preserves upstream digests instead of converting them to OCI images.
 - On-demand mirroring is disabled.
 - Based on the content filtering options, this registry synchronizes these images:
-    - From /repo1/repo, images with tags that begin with "4." and are semver compliant. <br/>Files are stored locally in /repo1/repo on localhost.
+    - From /repo1/repo, images with tags that begin with "4." and are semver compliant but excluding some tag patterns <br/>Files are stored locally in /repo1/repo on localhost.
     - From /repo2/repo, images with all tags. <br/>Because `stripPrefix` is enabled, files are stored locally in /repo2. For example, docker://upstream/repo2/repo:v1 is stored as docker://local/repo2:v1.
     - From /repo3/repo, images with all tags. <br/>Files are stored locally in /repo3/repo.
 
@@ -466,3 +471,27 @@ In zot storage, the requested content is located here:<br/>&nbsp;&nbsp;&nbsp;&nb
 - `kube-proxy` is the `rootDirectory` of the storage subpath
 - `kube-proxy` is the sync `destination` parameter
 - `kube-proxy` is the repository name
+
+### Example: Support for AWS ECR
+
+This is an example configuration demonstrating how to use the sync extension with Amazon ECR (Elastic Container Registry) credential helper. The configuration enables zot to synchronize container images from an ECR registry.
+
+```json
+"extensions": {
+        "sync": {
+            "credentialsFile": "",
+            "DownloadDir": "/tmp/zot",
+            "registries": [
+                {
+                    "urls": [
+                        "https://ACCOUNTID.dkr.ecr.REGION.amazonaws.com"
+                    ],
+                    "onDemand": true,
+                    "maxRetries": 5,
+                    "retryDelay": "2m",
+                    "credentialHelper": "ecr"
+                }
+            ]
+        }
+    }
+```

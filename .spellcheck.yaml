@@ -15,6 +15,7 @@ matrix:
       ignores:
       - code
       - pre
+      - json
   sources:
   - 'docs/**/*.md'
   default_encoding: utf-8

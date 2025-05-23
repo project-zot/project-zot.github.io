@@ -1,10 +1,12 @@
 # What's New
 
-## [v2.1.3]
+## [v2.1.3](https://github.com/project-zot/zot/releases/tag/v2.1.3)
 
-## What's Changed
+### Event generation
 
-### Better docker Support in UI
+zot can now generate [registry-significant events](../articles/events.md) that can be published to http or nats endpoints.
+
+### Improved `docker` Support in UI
 
 Native docker images are now correctly displayed in the Web UI.
 
@@ -12,11 +14,11 @@ Native docker images are now correctly displayed in the Web UI.
 
 Previous releases supported a local BoltDB or a remote DynamoDB database in
 order to store image and blob metadata. This release now includes support for
-_redis_.
+[_Redis_](../articles/storage/#redis).
 
 ### AWS ECR Sync Support With Temporary Token Authentication
 
-AWS ECR can now be used as the upstream registry to mirror from and the
+(AWS ECR)[../articles/mirroring/#example-support-for-aws-ecr] can now be used as the upstream registry to mirror from and the
 configuration allows for an authentication helper.
 
 ### Sync Exclude Regex
@@ -29,7 +31,9 @@ Native Windows binaries (both amd64 and arm64) are now distributed with the rele
 
 ### Bug fixes
 
-Various bug fixes and performance improvements.
+The following security issue has been fixed in this release.
+
+[<code>GHSA-c37v-3c8w-crq8/CVE-2025-48374</code>](https://github.com/project-zot/zot/security/advisories/GHSA-c37v-3c8w-crq8)
 
 ## [v2.1.2](https://github.com/project-zot/zot/releases/tag/v2.1.2)
 
