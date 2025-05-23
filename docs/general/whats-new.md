@@ -18,7 +18,7 @@ order to store image and blob metadata. This release now includes support for
 
 ### AWS ECR Sync Support With Temporary Token Authentication
 
-(AWS ECR)[../articles/mirroring.md/#example-support-for-aws-ecr] can now be used as the upstream registry to mirror from and the
+[AWS ECR](../articles/mirroring.md/#example-support-for-aws-ecr) can now be used as the upstream registry to mirror from and the
 configuration allows for an authentication helper.
 
 ### Sync Exclude Regex
