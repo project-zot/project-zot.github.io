@@ -50,8 +50,8 @@ Configure bearer authentication in the zot configuration file as shown in this e
       "auth": {
         "bearer": {
           "realm": "https://auth.myreg.io/auth/token",
-            "service": "myauth",
-            "cert": "/etc/zot/auth.crt"
+          "service": "myauth",
+          "cert": "/etc/zot/auth.crt"
         }
       }
 
