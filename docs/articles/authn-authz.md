@@ -50,18 +50,18 @@ Configure bearer authentication in the zot configuration file as shown in this e
       "auth": {
         "bearer": {
           "realm": "https://auth.myreg.io/auth/token",
-            "service": "myauth",
-            "cert": "/etc/zot/auth.crt"
+          "service": "myauth",
+          "cert": "/etc/zot/auth.crt"
         }
       }
 
 The following table lists the configurable attributes.
 
-| Attribute | Description                                                                     |
-|-----------|---------------------------------------------------------------------------------|
-| `realm`   | A string typically related to the authentication scheme (*BASIC* and *BEARER*). |
-| `service` | The name of the authentication service.                                         |
-| `cert`    | The path and filename of the server’s SSL/TLS certificate.                      |
+| Attribute | Description                                                                                                                                                                                    |
+|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `realm`   | A string typically related to the authentication scheme (*BASIC* and *BEARER*).                                                                                                                |
+| `service` | The name of the authentication service.                                                                                                                                                        |
+| `cert`    | The path and filename containing the public key to use to verify tokens. This file can either contain the public key directly, or an SSL/TLS certificate from which the key will be extracted. |
 
 <a name="mtls-authentication"></a>
 ## Mutual TLS authentication
