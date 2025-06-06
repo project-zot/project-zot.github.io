@@ -1,5 +1,11 @@
 # What's New
 
+## [v2.1.4](https://github.com/project-zot/zot/releases/tag/v2.1.4)
+
+### Bug fixes
+
+Some bug fixes around authentication and authorization.
+
 ## [v2.1.3](https://github.com/project-zot/zot/releases/tag/v2.1.3)
 
 ### Event generation
