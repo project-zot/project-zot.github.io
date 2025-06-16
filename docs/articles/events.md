@@ -27,12 +27,27 @@ Currently, http and nats endpoints are supported.
   "extensions": {
     "events": {
       "enable": true,
-      "sinks": [{
-        "type": "nats",
-        "address": "nats://127.0.0.1:4222",
-        "timeout": "10s",
-        "channel": "alerts"
-      }]
+      "sinks": [
+          {
+              "type": "http",
+              "address": <sink-endpoint>,
+              "timeout": "1s",
+              "credentials": {
+                  "username": <username>,
+                  "password": <password>,
+                  "token": <token>
+              },
+              "headers": {
+                  "X-Custom-Header": "my-value"
+              }
+          },
+          {
+              "type": "nats",
+              "address": "nats://127.0.0.1:4222",
+              "timeout": "10s",
+              "channel": "alerts"
+          }
+      ],
     }
   }
 }

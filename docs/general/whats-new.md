@@ -1,5 +1,16 @@
 # What's New
 
+## [v2.1.5](https://github.com/project-zot/zot/releases/tag/v2.1.5)
+
+### Gitlab Social Login
+
+Gitlab login is now supported in zot UI.
+
+### Events Extension Token and Customer Header Support
+
+Earlier, events extension for HTTP sink supported only basic authentication. Now token authentication is supported.
+Furthermore, you can also include customer HTTP headers to enable sink side routing, etc.
+
 ## [v2.1.4](https://github.com/project-zot/zot/releases/tag/v2.1.4)
 
 ### Bug fixes
