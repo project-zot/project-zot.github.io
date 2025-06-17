@@ -6,10 +6,11 @@
 
 Gitlab login is now supported in zot UI.
 
-### Events Extension Token and Customer Header Support
+### Events Extension Token and Custom HTTP Header Support
 
-Earlier, events extension for HTTP sink supported only basic authentication. Now token authentication is supported.
-Furthermore, you can also include customer HTTP headers to enable sink side routing, etc.
+Earlier, [events extension](../articles/events.md) for HTTP sink supported only
+basic authentication. Now token authentication is supported. Furthermore, you
+can also include customer HTTP headers to enable sink side routing, etc.
 
 ## [v2.1.4](https://github.com/project-zot/zot/releases/tag/v2.1.4)
 
