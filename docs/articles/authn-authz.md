@@ -331,26 +331,22 @@ The following example shows the zot configuration for these providers:
       "openid": {
         "providers": {
           "github": {
-            "clientid": <client_id>,
-            "clientsecret": <client_secret>,
+            "credentialsFile": "examples/github-oidc-credentials.json",
             "scopes": ["read:org", "user", "repo"]
           },
           "google": {
+            "credentialsFile": "examples/google-oidc-credentials.json",
             "issuer": "https://accounts.google.com",
-            "clientid": <client_id>,
-            "clientsecret": <client_secret>,
             "scopes": ["openid", "email"]
           },
           "gitlab": {
+            "credentialsFile": "examples/gitlab-oidc-credentials.json",
             "issuer": "https://gitlab.com",
-            "clientid": <client_id>,
-            "clientsecret": <client_secret>,
             "scopes": ["openid", "read_api", "read_user", "profile", "email"]
           },
           "oidc": {
+            "credentialsFile": "examples/oidc-credentials.json",
             "issuer": "http://<zot-server>:5556/dex",
-            "clientid": <client_id>,
-            "clientsecret": <client_secret>,
             "keypath": "",
             "scopes": ["openid", "profile", "email", "groups"]
           }
@@ -360,6 +356,23 @@ The following example shows the zot configuration for these providers:
   }
 }
 ```
+
+To allow for separation of configuration and credentials, the credentials for oidc are specified in a separate file, as shown in the following example.
+
+``` json
+{
+    "clientid": <client_id>,
+    "clientsecret": <client_secret>
+}
+```
+
+The following table lists the configurable attributes of the oidc credentials file.
+
+| Attribute       | Description   |
+|-----------------|---------------|
+| `clientid`      | Client ID     |
+| `clientsecret`  | Client Secret |
+
 
 #### Using Google, GitHub, or GitLab
 
@@ -406,10 +419,9 @@ In the zot configuration file, configure dex as an OpenID auth provider as in th
       "openid": {
         "providers": {
           "oidc": {
+            "credentialsFile": "examples/sso-oidc-credentials.json",
             "name": "Corporate SSO",
             "issuer": "http://<zot-server>:5556/dex",
-            "clientid": "zot-client",
-            "clientsecret": "ZXhhbXBsZS1hcHAtc2VjcmV0",
             "keypath": "",
             "scopes": ["openid", "profile", "email", "groups"]
           }
@@ -417,6 +429,15 @@ In the zot configuration file, configure dex as an OpenID auth provider as in th
       }
     }
   }
+```
+
+where `examples/sso-oidc-credentials.json` contains
+
+```json
+{
+  "clientid": "zot-client",
+  "clientsecret": "ZXhhbXBsZS1hcHAtc2VjcmV0"
+}
 ```
 
 A user logging in to zot using dex OpenID authentication sends a URL with dex as a URL query parameter, such as the following example:
