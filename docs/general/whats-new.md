@@ -5,7 +5,7 @@
 ### Liveness and Readiness Endpoints for Kubernetes Deployments
 
 New HTTP endpoints are added for improved Kubernetes deployments - `/livez`,
-`/readyz` and `/startupz`. Helm chart have been updated.
+`/readyz` and `/startupz`. Helm chart has been updated.
 
 ### OpenID Credentials Stored in Files
 
