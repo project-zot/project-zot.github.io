@@ -1,5 +1,22 @@
 # What's New
 
+## [v2.1.6](https://github.com/project-zot/zot/releases/tag/v2.1.6)
+
+### Liveness and Readiness Endpoints for Kubernetes Deployments
+
+New HTTP endpoints are added for improved Kubernetes deployments - `/livez`,
+`/readyz` and `/startupz`. Helm chart have been updated.
+
+### OpenID Credentials Stored in Files
+
+Previously OpenID credentials were specified inline in zot configuration. Now,
+they can be loaded from a separate file and the file can be constructed as a
+Kubernetes `Secret`.
+
+### Bug fixes
+
+Some bug fixes around FreeBSD builds.
+
 ## [v2.1.5](https://github.com/project-zot/zot/releases/tag/v2.1.5)
 
 ### Gitlab Social Login
