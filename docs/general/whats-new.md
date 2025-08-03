@@ -4,7 +4,8 @@
 
 ### zot OCI Container Images for FreeBSD
 
-FreeBSD community has been releasing [OCI images]{https://download.freebsd.org/releases/OCI-IMAGES/} to enable their container ecosystem.
+FreeBSD community has been releasing [OCI images](https://download.freebsd.org/releases/OCI-IMAGES/) to enable their container ecosystem.
+
 zot is now releasing OCI images to deploy and run as native FreeBSD containers.
 For example, `ghcr.io/project-zot/zot-freebsd-amd64:latest`.
 
