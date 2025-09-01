@@ -1,5 +1,11 @@
 # What's New
 
+## [v2.1.8](https://github.com/project-zot/zot/releases/tag/v2.1.8)
+
+### Bug fixes
+
+Some bug fixes in sync mirroring and garbage collection.
+
 ## [v2.1.7](https://github.com/project-zot/zot/releases/tag/v2.1.7)
 
 ### zot OCI Container Images for FreeBSD
