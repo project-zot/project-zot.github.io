@@ -1,6 +1,6 @@
 # Configuring zot Tag Retention Policies
 
-> :point_right: To optimize image storage, you can configure tag retention policies to remove images that are no longer needed. 
+> :point_right: To optimize image storage, you can configure tag retention policies to remove images that are no longer needed.
 
 Tag retention policies in zot can specify how many tags of a given repository to retain or how long to retain certain tags.
 
@@ -15,8 +15,9 @@ You can define tag retention policies that apply one or more of the following ru
 
 ## Configuring retention policies
 
-Retention policies are configured in the `storage` section of the zot configuration file under the `retention` attribute.  One or more policies can be grouped under the `policies` attribute.  
+Retention policies are configured in the `storage` section of the zot configuration file under the `retention` attribute.  One or more policies can be grouped under the `policies` attribute.
 
+By default, if no retention policies are defined, all untagged manifests are deleted, unless they are referenced by indexes or artifacts.
 By default, if no retention policies are defined, all tags are retained.
 
 > :warning: If at least one `keepTags` policy is defined for a repository, all tags not matching those policies are removed.  To avoid unintended removals, we recommend defining a default policy, as described in [Configuration notes](#configuration-notes).
@@ -25,7 +26,7 @@ By default, if no retention policies are defined, all tags are retained.
 
 The following example is a simple retention configuration with two policies:
 
-- The first includes all available configuration attributes. 
+- The first includes all available configuration attributes.
 - The second acts as a default policy.
 
 _simple policy example_
@@ -46,7 +47,7 @@ _simple policy example_
             "mostRecentlyPulledCount": 10,
             "pulledWithin": "720h",
             "pushedWithin": "720h"
-          }]  
+          }]
         },
         {
           "keepTags": [{
@@ -65,9 +66,9 @@ The following table lists the attributes available in the retention policy confi
 | Attribute | Value | Description |
 |-----------| ----- | ------------|
 | dryRun | boolean | If `true`, will log a removal action without actually removing the image.  Default is `false`. |
-| delay | time | Remove untagged and referrers only if they are older than the specified <time\> hours, such as 24h. |
+| delay | time | Remove untagged and referrers only if they are older than the specified <time\> hours. Defaults to `gcDelay`. |
 | policies | list | A list of policies. |
-| repositories | list | A list of glob patterns to match repositories. |  
+| repositories | list | A list of glob patterns to match repositories. |
 | deleteReferrers | boolean | If true, delete manifests with a missing Subject.  Default is `false`. |
 | deleteUntagged | boolean | If true, delete untagged manifests.  Default is `true`. |
 | keepTags | list | Criteria for tags to retain always. |
@@ -82,8 +83,8 @@ The following table lists the attributes available in the retention policy confi
 
 - All image retention and garbage collection processing is made per repository, not per groups of repositories. The count of retained images in one repository doesn't impact retention for another repository.
 - A repository will apply the first policy it matches.
-- If a repository matches no policy, the repository and all its tags are retained.  
-- If at least one `keepTags` policy is defined for a repository, all tags not matching those policies are removed. 
+- If a repository matches no policy, the repository and all its tags are retained.
+- If at least one `keepTags` policy is defined for a repository, all tags not matching those policies are removed.
 - If `keepTags` is present but empty, all tags are retained.
 - In general, when multiple rules are configured, a tag is retained if it meets at least one rule.
 - When multiple entries are configured under the same `keepTags` list, there is a logical OR applied between them.
@@ -97,7 +98,7 @@ _default policy example_
 
 ```json
   {
-    "keepTags": [{                               
+    "keepTags": [{
         "patterns": [".*"]
       }]
   }
@@ -198,7 +199,7 @@ For repositories having names starting with `tmp/`:
 For repositories having names starting with `a/infra/` and `a/prod/`:
 - These repositories are under a separate subpath, with an entirely different retention configuration.
 - Artifacts referring to missing images will be retained.
-- Untagged images pushed more than 24h ago will be deleted by default, as `deleteUntagged` is not specified and the default value for `delay` is 24h.
+- Untagged images pushed more than 1h ago will be deleted by default, as `deleteUntagged` is not specified and the default value for `delay` is `gcDelay`. In the case of this subpath `gcDelay` has the default value 1h.
 
 For the rest of repositories, all of them matching `**`:
 - Artifacts pushed more than 24h ago (`delay`) referring to missing images will be deleted.

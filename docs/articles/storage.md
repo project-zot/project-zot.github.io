@@ -17,7 +17,7 @@ Data handling in zot revolves around two main principles: that data and APIs on 
 
 Because zot supports the OCI image layout, it can readily host and serve any directories holding a valid OCI image layout even when those directories have been created elsewhere. This property of zot is suitable for use cases in which container images are independently built, stored, and transferred, but later need to be served over the network.
 
-## Storage features 
+## Storage features
 
 Exposing flexibility in storage capabilities is a key tenet for catering to the requirements of varied environments ranging from cloud to on-premises to IoT.
 
@@ -33,7 +33,7 @@ Upon startup, zot enforces the `dedupe` status on the existing storage. If the `
 
 #### Garbage collection
 
-After an image is deleted by deleting an image manifest, the corresponding blobs can be purged to free up space. However, since Distribution Specification APIs are not transactional between blob and manifest lifecycle, care must be taken so as not to put the storage in an inconsistent state. Garbage collection in zot is an inline feature meaning that it is **not** necessary to take the registry offline. See <a href="#config-gc"><i>Configuring garbage collection</i></a> for details. 
+After an image is deleted by deleting an image manifest, the corresponding blobs can be purged to free up space. However, since Distribution Specification APIs are not transactional between blob and manifest lifecycle, care must be taken so as not to put the storage in an inconsistent state. Garbage collection in zot is an inline feature meaning that it is **not** necessary to take the registry offline. See <a href="#config-gc"><i>Configuring garbage collection</i></a> for details.
 
 #### Scrub
 
@@ -150,7 +150,7 @@ disable deduplication.</p></td>
 <tr class="even">
 <td style="text-align: left;"><p><code>gc</code></p></td>
 <td style="text-align: left;"><p>When an image is deleted, either by tag
-or by reference, orphaned blobs can lead to wasted storage. Garbage
+or by digest, orphaned blobs can lead to wasted storage. Garbage
 collection (gc) is enabled by default to reclaim this space. Set to
 <code>false</code> to disable garbage collection.</p></td>
 </tr>
@@ -209,7 +209,7 @@ class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="
 
 ### Configuring garbage collection
 
-The zot configuration model allows for enabling and disabling garbage collection (`gc`) and specifying a periodic interval (`gcInterval`) for collection. 
+The zot configuration model allows for enabling and disabling garbage collection (`gc`) and specifying a periodic interval (`gcInterval`) for collection.
 
 | `gc`      | `gcInterval` | Result  |
 | --------- | ------------ | ------ |
@@ -221,6 +221,8 @@ The zot configuration model allows for enabling and disabling garbage collection
 
 The configuration model also allows the configuration of a tunable delay (`gcDelay`), which can be set depending on client network speeds and the size of blobs. The `gcDelay` attribute causes collection to run once after the specified delay time.  This attribute has a default value of one hour (`1h`).
 
+By default, if `retention` is not configured, garbage collection deletes all untagged manifests which are not referenced by indexes or artifacts after the `gcDelay` passes.
+This delay can we overwritten using a separate setting if `retention` is configured, for more details see the retention configuration article.
 
 <a name="config-s3"></a>
 
@@ -319,7 +321,7 @@ For more details about specifying s3 credentials, see the [AWS documentation](ht
 
 ### S3 permissions scopes
 
-The following AWS policy is required by zot for push and pull. 
+The following AWS policy is required by zot for push and pull.
 
 > :pencil2: Replace S3_BUCKET_NAME with the name of your s3 bucket.
 
@@ -421,10 +423,10 @@ If the search extension is enabled, additional parameters are required:
 
 #### DynamoDB permission scopes
 
-The following AWS policy is required by zot for caching blobs. 
+The following AWS policy is required by zot for caching blobs.
 
-> :pencil2: Replace DYNAMODB_TABLE with the name of your table, which should be the value of `cacheTablename` in the zot configuration.  
-> 
+> :pencil2: Replace DYNAMODB_TABLE with the name of your table, which should be the value of `cacheTablename` in the zot configuration.
+>
 > In this case, the AWS `Resource` value would be `arn:aws:dynamodb:*:*:table/ZotBlobTable`
 
 ```json
