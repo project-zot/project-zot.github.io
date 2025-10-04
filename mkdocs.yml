@@ -51,7 +51,7 @@ plugins:
   - git-revision-date-localized
   - macros
   - with-pdf:
-      copyright: Copyright &copy; 2019 - 2024 The zot project authors, All Rights Reserved.
+      copyright: Copyright &copy; 2019 - 2025 The zot project authors, All Rights Reserved.
 markdown_extensions:
   - abbr
   - admonition
@@ -91,7 +91,7 @@ markdown_extensions:
 nav:
   - Home: index.md
   - What's New: general/whats-new.md
-  - General: 
+  - General:
     - Concepts: general/concepts.md
     - Key Features: general/features.md
     - Architecture: general/architecture.md
@@ -106,10 +106,10 @@ nav:
   - Installation Guides:
     - Installing zot on Bare Metal Linux: install-guides/install-guide-linux.md
     - Installing zot with Kubernetes and Helm: install-guides/install-guide-k8s.md
-  - Administrator Guides: 
+  - Administrator Guides:
     - Getting Started: admin-guide/admin-getting-started.md
     - Configuring zot: admin-guide/admin-configuration.md
-  - Developer Guide: 
+  - Developer Guide:
     - Onboarding: developer-guide/onboarding.md
     - Extensions: developer-guide/extensions-dev.md
     - Using the API: developer-guide/api-user-guide.md
