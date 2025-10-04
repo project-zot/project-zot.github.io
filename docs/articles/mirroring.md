@@ -4,32 +4,34 @@
 
 A key use case for zot is to act as a mirror for upstream registries. If an upstream registry is OCI distribution-spec conformant for pulling images, you can use zot's `sync` feature to implement a downstream mirror, synchronizing OCI images and corresponding artifacts. Because synchronized images are stored in zot's local storage, registry mirroring allows for a fully distributed disconnected container image build pipeline. Container image operations terminate in local zot storage, which may reduce network latency and costs.
 
-> :warning: Because zot is a OCI-only registry, any upstream image stored in the Docker image format is converted to OCI format when downloading to zot. In the conversion, some non-OCI attributes may be lost and the image digest will change. Pulling with <tag>@<digest> will not work as expected. Signatures, for example, are removed due to the mismatch between the old and the new digests. 
+> :warning: Because zot is a OCI-only registry, any upstream image stored in the Docker image format is converted to OCI format when downloading to zot. In the conversion, some non-OCI attributes may be lost and the image digest will change. Pulling with <tag>@<digest> will not work as expected. Signatures, for example, are removed due to the mismatch between the old and the new digests.
+
+> :pencil2: If Docker compatibility is enabled using the `compat` attribute under `http` in the zot configuration, Docker image format conversion to OCI image format can be disabled using the `preserveDigest` setting.
 
 ## Mirroring modes
 
 For mirroring an upstream registry, two common use cases are a fully mirrored or a pull through (on-demand) cache registry.
 
-As with git, wherein every clone is a full repository, you can configure your local zot instance to be a fully mirrored OCI registry. For this mode, configure zot for synchronization by periodic polling, not on-demand. Zot copies and caches a full copy of every image on the upstream registry, updating the cache whenever polling discovers a change in content or image version at the upstream registry. 
+As with git, wherein every clone is a full repository, you can configure your local zot instance to be a fully mirrored OCI registry. For this mode, configure zot for synchronization by periodic polling, not on-demand. Zot copies and caches a full copy of every image on the upstream registry, updating the cache whenever polling discovers a change in content or image version at the upstream registry.
 
-For a pull through cache mirrored registry, configure zot for on-demand synchronization. When an image is first requested from the local zot registry, the image is downloaded from the upstream registry and cached in local storage. Subsequent requests for the same image are served from zot's cache. Images that have not been requested are not downloaded. If a polling interval is also configured, zot periodically polls the upstream registry for changes, updating any cached images if changes are detected. 
+For a pull through cache mirrored registry, configure zot for on-demand synchronization. When an image is first requested from the local zot registry, the image is downloaded from the upstream registry and cached in local storage. Subsequent requests for the same image are served from zot's cache. Images that have not been requested are not downloaded. If a polling interval is also configured, zot periodically polls the upstream registry for changes, updating any cached images if changes are detected.
 
-> :pencil2: 
+> :pencil2:
 > Because Docker Hub rate-limits pulls and does not support catalog listing, do not use polled mirroring with Docker Hub. Use only on-demand mirroring with Docker Hub.
 
 ## Migrating or updating a registry using mirroring
 
 Mirroring zot using the `sync` feature allows you to easily migrate a registry. In situations such as the following, zot mirroring provides an easy solution.
 
-- Migrating an existing zot or non-zot registry to a new location. 
-  
+- Migrating an existing zot or non-zot registry to a new location.
+
     Provided that the source registry is OCI-compliant for image pulls, you can mirror the registry to a new zot registry, delete the old registry, and reroute network traffic to the new registry.
 
-- Updating (or downgrading) a zot registry. 
-  
+- Updating (or downgrading) a zot registry.
+
     To minimize downtime during an update, or to avoid any incompatibilities between zot releases that would preclude an in-place update, you can bring up a new zot registry with the desired release and then migrate from the existing registry.
 
-To ensure a complete migration of the registry contents, set a polling interval in the configuration of the new zot registry and set `prefix` to `**`, as shown in this example: 
+To ensure a complete migration of the registry contents, set a polling interval in the configuration of the new zot registry and set `prefix` to `**`, as shown in this example:
 
 ```json
   {
@@ -64,8 +66,9 @@ The `sync` feature of zot is an [extension](https://github.com/opencontainers/di
           "tlsVerify": true,
           "certDir": "/home/user/certs",
           "maxRetries": 3,
-          "retryDelay": "5m", 
+          "retryDelay": "5m",
           "onlySigned": true,
+          "preserveDigest": true,
           "content": [
             {
               "prefix": "/repo2/repo",
@@ -108,9 +111,8 @@ The following table lists the configurable attributes for the `sync` feature:
 <tr class="even">
 <td style="text-align: left;"><p><strong>onDemand</strong></p></td>
 <td style="text-align: left;"><ul>
-<li><p><code>false</code>: Pull all images not found in the local
-registry.</p></li>
-<li><p><code>true</code>: Pull any image not found in the local registry only when the image is requested by a user.</p></li>
+<li><p><code>true</code>: When an image is requested by the user, pull it from the upstream registries and serve it to the user.</p></li>
+<li><p><code>false</code>: When an image is requested by the user, serve it only if already synced in the local registry.</p></li>
 </ul></td>
 </tr>
 <tr class="odd">
@@ -143,6 +145,15 @@ error occurs during either an on-demand or periodic synchronization. If no value
 <td style="text-align: left;"><ul>
 <li><p><code>false</code>: Synchronize signed or unsigned images.</p></li>
 <li><p><code>true</code>: Synchronize only signed images (either notary or cosign).</p></li>
+</ul></td>
+<tr class="odd">
+<td style="text-align: left;"><p><strong>preserveDigest</strong></p></td>
+<td style="text-align: left;"><ul>
+<li><p><code>false</code>: Convert remote compatible media types to OCI media types locally.</p></li>
+<li><p><code>true</code>: Keep remote media types as they are.</p></li>
+<div class="note">
+<p><strong>Note:</strong> For Docker media types support, set this setting to <code>false</code> to keep signatures and other referrers in working condition</p>
+</div></li>
 </ul></td>
 </tr>
 <tr class="odd">
@@ -188,6 +199,24 @@ error occurs during either an on-demand or periodic synchronization. If no value
 </tbody>
 </table>
 
+## Configuring mirroring modes
+
+Two mirroring modes were described in this document:
+- periodic - the registry syncs images matching specific patters from the upstream registries at a given polling interval
+- on demand - the registry reaches out to the upstream registries when the image is requested by the user
+
+These two modes can be configured, separately or together, using specific settings. See the table below for details:
+
+| `onDemand` | `pollInterval` | `content` | Result |
+| ---------- | -------------- | --------- | ------ |
+| false      | omitted        | omitted            | sync is disabled |
+| false      |  >0            | omitted            | sync is disabled |
+| false      | omitted        | at least 1 entry   | sync is disabled |
+| false      |  >0            | at least 1 entry   | sync is enabled in periodic mode for the images matching the content patterns |
+| true       | omitted        | omitted            | sync is enabled in on demand mode for any image |
+| true       |  >0            | omitted            | sync is enabled in on demand mode for any image |
+| true       | omitted        | at least 1 entry   | sync is enabled in on demand mode for the images matching the content patterns |
+| true       |  >0            | at least 1 entry   | sync is enabled in both periodic and on demand modes for the images matching the content patterns |
 
 ## Configuration examples for mirroring
 
@@ -236,9 +265,9 @@ The following is an example of sync configuration for mirroring multiple reposit
 
 The configuration in this example will result in the following behavior:
 
-- Only signed images (notation and cosign) are synchronized.  
+- Only signed images (notation and cosign) are synchronized.
 - The sync communication is secured using certificates in `certDir`.
-- This registry synchronizes with upstream registry every 6 hours. 
+- This registry synchronizes with upstream registry every 6 hours.
 - This registry preserves upstream digests instead of converting them to OCI images.
 - On-demand mirroring is disabled.
 - Based on the content filtering options, this registry synchronizes these images:
@@ -272,7 +301,7 @@ The following is an example of sync configuration for mirroring multiple registr
           "urls": ["https://k8s.gcr.io"],
           "content": [
             {
-              "prefix": "**", 
+              "prefix": "**",
               "destination": "/k8s-images"
             }
           ],
@@ -283,7 +312,7 @@ The following is an example of sync configuration for mirroring multiple registr
           "urls": ["https://docker.io/library"],
           "content": [
             {
-              "prefix": "**", 
+              "prefix": "**",
               "destination": "/docker-images"
             }
           ],
@@ -314,7 +343,7 @@ You can use this command:<br/>&nbsp;&nbsp;&nbsp;&nbsp;
       "k8s-images/kube-proxy"
     ]
   }
-``` 
+```
 
 ### Example: Multiple registries with mixed mirroring modes
 
@@ -433,7 +462,7 @@ The following is an example of a zot configuration file for mirroring multiple u
           "urls": ["https://k8s.gcr.io"],
           "content": [
             {
-              "destination": "/kube-proxy", 
+              "destination": "/kube-proxy",
               "prefix": "**"
             }
           ],
