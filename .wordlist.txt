@@ -217,6 +217,7 @@ pprof
 PR
 preimage
 prepended
+preserveDigest
 prometheus
 PRs
 pulledWithin
