@@ -1,6 +1,6 @@
 # Configuring zot
 
-> :point_right: The registry administrator configures zot primarily through settings in the configuration file. 
+> :point_right: The registry administrator configures zot primarily through settings in the configuration file.
 
 Using the information in this guide, you can compose a configuration file with the settings and features you require for your zot registry server.
 
@@ -18,7 +18,7 @@ The configuration file is a JSON or YAML file that contains all configuration se
 -   logging
 -   metrics
 -   synchronization with other registries
--   
+-
 -   clustering
 
 The zot service is initiated with the `zot serve` command followed by the name of a configuration file, as in this example:
@@ -53,7 +53,7 @@ described in the later sections of this guide.
 
 ### Extensions
 
-Additional registry features that are not a part of the Distribution Specification are allowed to be added as [Extensions](https://github.com/opencontainers/distribution-spec/tree/main/extensions).  
+Additional registry features that are not a part of the Distribution Specification are allowed to be added as [Extensions](https://github.com/opencontainers/distribution-spec/tree/main/extensions).
 
 With a full (not minimal) zot image, the following extension features can be enabled and configured under an `extensions` attribute in the configuration file as shown in the following example.
 
@@ -85,14 +85,14 @@ The following features are configured under the `extensions` attribute.
 -   [Lint](#lint_config)
 -   [ImageTrust](#trust_config)
 -   [UI](#ui_config)
-  
+
 An extension feature is usually enabled by the presence of the feature’s attribute under `extensions`. An extension feature can then be disabled by either omitting the feature attribute or by including an `enable` attribute with a value of `false`.
 
 > :pencil2: Two API-only extensions, [User Preferences](#userprefs_config) and [Mgmt](#mgmt_config), are not enabled or configured under the `extensions` section of the configuration file.  These API-only extensions are enabled as follows:
 >
 > - [Mgmt](#mgmt_config) is enabled when the `Search` extension is enabled.
 >
-> - [User Preferences](#userprefs_config) is enabled when both the `Search` and `UI` extensions are enabled. 
+> - [User Preferences](#userprefs_config) is enabled when both the `Search` and `UI` extensions are enabled.
 
 #### Enabling and disabling extensions
 
@@ -415,7 +415,7 @@ To enable image signature verification, you must add the `trust` attribute under
 }
 ```
 
-You must also upload public keys (for `cosign`) or certificates (for `notation`) that can be used to verify the image signatures.  
+You must also upload public keys (for `cosign`) or certificates (for `notation`) that can be used to verify the image signatures.
 
 For detailed information about configuring image signature verification, see [Verifying image signatures](../articles/verifying-signatures.md).
 
@@ -472,7 +472,7 @@ The following table lists the configurable attributes for scrubbing the registry
 
 ## Scheduling background tasks
 
-Some zot functions, such as garbage collection and registry synchronization, run as background tasks. These tasks are queued and executed by the scheduler. 
+Some zot functions, such as garbage collection and registry synchronization, run as background tasks. These tasks are queued and executed by the scheduler.
 
 The scheduler is by default allowed to simultaneously run a maximum number of tasks equal to four times the number of CPUs available to the zot process. For most users, there should be no need to modify this maximum number. If such a need arises, you can configure a new maximum number of simultaneous tasks in the `numWorkers` property of the `scheduler` attribute in the configuration file, as shown in the following example.
 
