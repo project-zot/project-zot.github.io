@@ -1,5 +1,18 @@
 # What's New
 
+## [v2.1.9](https://github.com/project-zot/zot/releases/tag/v2.1.9)
+
+### Garbage Collection and Retention
+
+Untagged manifests are now removed by default in garbage collection unless they are referenced by indexes or artifacts.
+Previously they were only removed if the retention policies settings were present in the zot configuration.
+If unspecified, the configuration option for retention delay (used for untagged manifests and orphan referrers),
+now defaults to the GC delay instead of 24 hours.
+
+### Bug fixes
+
+Update the GraphQL playground version to 5.2, as the old one had broken online dependencies.
+
 ## [v2.1.8](https://github.com/project-zot/zot/releases/tag/v2.1.8)
 
 ### Bug fixes
@@ -221,7 +234,7 @@ Under some configurations, zot consumes significant CPU and memory resources. Th
 
 ### GraphQL support for search
 
-- A [GraphQL backend server](../articles/graphql.md) within zot's registry search engine provides efficient and enhanced search capabilities. In addition to supporting direct GraphQL queries through the API, zot hosts the GraphQL Playground, which provides an interactive graphical environment for GraphQL queries. 
+- A [GraphQL backend server](../articles/graphql.md) within zot's registry search engine provides efficient and enhanced search capabilities. In addition to supporting direct GraphQL queries through the API, zot hosts the GraphQL Playground, which provides an interactive graphical environment for GraphQL queries.
 
 ### Scheduling of background tasks
 
