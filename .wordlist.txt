@@ -1,5 +1,6 @@
 accesskey
 ACL
+AIX
 allocs
 alongside
 amd
@@ -54,6 +55,7 @@ credentialsFile
 CRI
 cri
 crt
+cryptographic
 CSS
 cURL
 CVE
@@ -91,6 +93,8 @@ Filebeat
 filesystem
 filesystems
 forcepathstyle
+FIPS
+fips
 FQDN
 FreeBSD
 freebsd
@@ -105,6 +109,7 @@ github
 GitLab
 gitlab
 GlobalSearch
+GODEBUG
 golang
 golang's
 goroutine
@@ -201,6 +206,7 @@ onboarding
 onDemand
 onlySigned
 OpenAPI
+OpenBSD
 OpenID
 openjdk
 ORA
@@ -311,6 +317,7 @@ usr
 UUID
 VM
 VMs
+Wasm
 www
 YAML
 yaml
