@@ -9,6 +9,14 @@ Previously they were only removed if the retention policies settings were presen
 If unspecified, the configuration option for retention delay (used for untagged manifests and orphan referrers),
 now defaults to the GC delay instead of 24 hours.
 
+### FIPS 140-3 Compliance
+
+On Linux, zot can be deployed in FIPS 140-3 mode (in terms of
+cryptographic protocols used) by setting the environment variable
+[`GODEBUG="fips140=only"`](https://go.dev/doc/security/fips140).
+
+Note that GODEBUG=fips140=on and only are not supported on OpenBSD, Wasm, AIX, and 32-bit Windows platforms.
+
 ### Bug fixes
 
 Update the GraphQL playground version to 5.2, as the old one had broken online dependencies.
