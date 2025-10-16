@@ -72,12 +72,14 @@ prefixes during load balancing and ingress gateway configuration.
 
 ## Examples
 
-Clustering is supported by using multiple stateless zot replicas with shared S3 storage and an HAProxy (with sticky session) load balancing traffic to the replicas. Each replica is responsible for one or more repositories.
+Clustering is supported by using multiple stateless zot replicas with shared S3 storage and an HAProxy (with sticky session) load balancing traffic to the replicas. Each replica is responsible for one or more repositories. If zli and the zot UI are used to interact with zot, the proxy is also required to deliver a cookie to the requestor to maintain a sticky session connection to the assigned instance.
+
+> :point_right: For zot releases v2.1.9 and newer, zot can be optionally configured to save session information to an external Redis-compatible storage which can be shared by all zot instances. If this configuration is enabled, the proxy need not configure a sticky cookie. Note that this configuration is suitable for use when all the zot instances share a common data storage such as S3 and a common remote metadata store such as DynamoDB or Redis.
 
 ### HAProxy configuration
 
 <details>
-  <summary markdown="span">Click here to view a sample HAProxy configuration.</summary>
+  <summary markdown="span">Click here to view a sample HAProxy configuration with a sticky session cookie.</summary>
 
 ```yaml
 
@@ -132,6 +134,74 @@ backend zot-cluster
     server zot-server1 127.0.0.1:9000 check cookie zot-server1
     server zot-server2 127.0.0.2:9000 check cookie zot-server2
     server zot-server3 127.0.0.3:9000 check cookie zot-server3
+
+backend zot-instance1
+    server zot-server1 127.0.0.1:9000 check maxconn 30
+
+backend zot-instance2
+    server zot-server2 127.0.0.2:9000 check maxconn 30
+
+backend zot-instance3
+    server zot-server3 127.0.0.3:9000 check maxconn 30
+```
+
+</details>
+
+<details>
+  <summary markdown="span">Click here to view a sample HAProxy configuration without a sticky session cookie (only zot v2.1.9 and newer if remote session storage is enabled)</summary>
+
+```yaml
+
+global
+        log /dev/log    local0
+        log /dev/log    local1 notice
+        chroot /var/lib/haproxy
+        maxconn 2000
+        stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
+        stats timeout 30s
+        user haproxy
+        group haproxy
+        daemon
+
+        # Default SSL material locations
+        ca-base /etc/ssl/certs
+        crt-base /etc/ssl/private
+
+        # See: https://ssl-config.mozilla.org/#server=haproxy&server-version=2.0.3&config=intermediate
+        ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+        ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
+        ssl-default-bind-options ssl-min-ver TLSv1.2 no-tls-tickets
+
+defaults
+        log     global
+        mode    http
+        option  httplog
+        option  dontlognull
+        timeout connect 5000
+        timeout client  50000
+        timeout server  50000
+        errorfile 400 /etc/haproxy/errors/400.http
+        errorfile 403 /etc/haproxy/errors/403.http
+        errorfile 408 /etc/haproxy/errors/408.http
+        errorfile 500 /etc/haproxy/errors/500.http
+        errorfile 502 /etc/haproxy/errors/502.http
+        errorfile 503 /etc/haproxy/errors/503.http
+        errorfile 504 /etc/haproxy/errors/504.http
+
+frontend zot
+    bind *:8080
+    mode http
+    use_backend zot-instance1 if { path_beg /v2/repo1/ }
+    use_backend zot-instance2 if { path_beg /v2/repo2/ }
+    use_backend zot-instance3 if { path_beg /v2/repo3/ }
+    default_backend zot-cluster
+
+backend zot-cluster
+    mode http
+    balance roundrobin
+    server zot-server1 127.0.0.1:9000 check
+    server zot-server2 127.0.0.2:9000 check
+    server zot-server3 127.0.0.3:9000 check
 
 backend zot-instance1
     server zot-server1 127.0.0.1:9000 check maxconn 30
@@ -220,6 +290,62 @@ While the Redis `cacheDriver` implementation does support local storage, zot clu
     "http": {
         "address": "127.0.0.1",
         "port": "8080"
+    },
+    "log": {
+        "level": "debug"
+    }
+}
+
+```
+</details>
+
+### zot S3 configuration with Redis for both metadata and session storage
+
+Along with the same S3 `storageDriver` and Redis `cacheDriver`, from zot release v2.1.9 and newer, the Redis `sessionDriver` configuration can also be shared among zot instances.
+
+The Redis server, DB, and `keyprefix` must match for all zot instances.
+
+> :pencil2:
+> It is recommended to use the shared `sessionDriver` configuration together with a common remote `cacheDriver` and `storageDriver`.
+
+<details>
+  <summary markdown="span">Click here to view a sample zot configuration for S3, Redis for metadata, and Redis for sessions storage</summary>
+
+```json
+
+{
+    "distSpecVersion": "1.0.1-dev",
+    "storage": {
+        "rootDirectory": "/tmp/zot",
+        "dedupe": false,
+        "remoteCache": true,
+        "storageDriver": {
+            "name": "s3",
+            "rootdirectory": "/zot",
+            "region": "us-east-2",
+            "bucket": "zot-storage",
+            "secure": true,
+            "skipverify": false
+        },
+        "cacheDriver": {
+            "name": "redis",
+            "url": "redis://host:6379",
+            "keyprefix": "zot"
+        }
+    },
+    "http": {
+        "address": "127.0.0.1",
+        "port": "8080",
+        "auth": {
+            "htpasswd": {
+                "path": "path/to/htpasswd"
+            },
+            "sessionDriver": {
+                "name": "redis",
+                "url": "redis://host:6379",
+                "keyprefix": "zotsession"
+            }
+        }
     },
     "log": {
         "level": "debug"
