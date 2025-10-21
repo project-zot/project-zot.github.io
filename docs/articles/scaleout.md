@@ -17,7 +17,7 @@ In a cloud deployment, the shared backend storage (such as AWS S3) and metadata 
 For easy scaling of instances (replicas), the following conditions must be met:
 
 - All zot replicas must be running zot release v2.1.0 (or later) with identical configurations.
-- All zot replicas in the cluster use remote storage at a single shared S3 backend. There is no local caching in the zot replicas.
+- All zot replicas in the cluster use remote storage and a single shared S3 backend. There is no local caching in the zot replicas.
 - Each zot replica in the cluster has its own IP address, but all replicas use the same port number.
 
 
@@ -25,9 +25,9 @@ For easy scaling of instances (replicas), the following conditions must be met:
 
 Each repo is served by one zot replica, and that replica is solely responsible for serving all images of that repo. A repo in storage can be written to only by the zot replica responsible for that repo.
 
-When a zot replica in the cluster receives an image push or pull request for a repo, the receiving replica hashes the repo path and consults a hash table to determine which replica is responsible for the repo. 
+When a zot replica in the cluster receives an image push or pull request for a repo, the receiving replica hashes the repo path and consults a hash table to determine which replica is responsible for the repo.
 
-- If the hash indicates that another replica is responsible, the receiving replica forwards the request to the responsible replica and then acts as a proxy, returning the response to the requestor. 
+- If the hash indicates that another replica is responsible, the receiving replica forwards the request to the responsible replica and then acts as a proxy, returning the response to the requestor.
 - If the hash indicates that the current (receiving) replica is responsible, the request is handled locally.
 
 
@@ -39,9 +39,9 @@ Either of the following two schemes can be used to reach the cluster.
 
 ![504569](../assets/images/504569.jpg){width="500"}
 
-When a single entry point load balancer such as [HAProxy](https://www.haproxy.com/) is deployed, the number of zot replicas can easily be expanded by simply adding the IP addresses of the new replicas in the load balancer configuration. 
+When a single entry point load balancer such as [HAProxy](https://www.haproxy.com/) is deployed, the number of zot replicas can easily be expanded by simply adding the IP addresses of the new replicas in the load balancer configuration.
 
-When the load balancer receives an image push or pull request for a repo, it forwards the request to any replica in the cluster.  No repo-specific programming of the load balancer is needed because the load balancer does not need to know which replica owns which repo. The replicas themselves can determine this.  
+When the load balancer receives an image push or pull request for a repo, it forwards the request to any replica in the cluster. No repo-specific programming of the load balancer is needed because the load balancer does not need to know which replica owns which repo. The replicas themselves can determine this.
 
 ### Using DNS-based load balancing
 
@@ -53,9 +53,11 @@ In these examples, clustering is supported by using multiple stateless zot repli
 
 ### Cluster member configuration
 
-In the replica configuration, each replica must have a list of its peers configured in the "members" section of the JSON structure. This is a list of reachable addresses or hostnames.  Each replica owns one of these addresses.
+In the zot configuration, each replica must have a list of its peers configured in the "members" section of the JSON structure. This is a list of reachable addresses or hostnames. Each replica owns one of these addresses.
 
 The replica must also have a hash key for hashing the repo path of the image request and a TLS certificate for authenticating with its peers.
+
+From zot release v2.1.9 and newer, the `sessionDriver` configuration can also be specified to save session information to an external Redis-compatible storage.
 
 <details>
   <summary markdown="span">Click here to view a sample cluster configuration for each replica. See the "cluster" section in the JSON structure.</summary>
@@ -95,6 +97,16 @@ The replica must also have a hash key for hashing the repo path of the image req
     "tls": {
       "cert": "test/data/server.cert",
       "key": "test/data/server.key"
+    },
+    "auth": {
+      "htpasswd": {
+        "path": "/tmp/zotpasswd"
+      },
+      "sessionDriver": {
+        "name": "redis",
+        "url": "redis://localhost:6379",
+        "keyprefix": "zotsession"
+      }
     }
   },
   "log": {
@@ -118,10 +130,12 @@ The replica must also have a hash key for hashing the repo path of the image req
 
 ### HAProxy configuration
 
-The HAProxy load balancer uses a simple round-robin balancing scheme and delivers a cookie to the requestor to maintain a sticky session connection to the assigned replica.
+The HAProxy load balancer uses a simple round-robin balancing scheme. If zli and the zot UI are used to interact with zot, the proxy is also required to deliver a cookie to the requestor to maintain a sticky session connection to the assigned instance.
+
+> :point_right: For zot releases v2.1.9 and newer, zot can be optionally configured to save session information to an external Redis-compatible storage which can be shared by all zot replicas. If this configuration is enabled, the proxy need not configure a sticky cookie and the proxy can be optionally removed from the deployment. Note that this configuration is suitable for use when all the zot replicas share a common data storage such as S3 and a common remote metadata store such as DynamoDB or Redis.
 
 <details>
-  <summary markdown="span">Click here to view a sample HAProxy configuration.</summary>
+  <summary markdown="span">Click here to view a sample HAProxy configuration with sticky session cookie</summary>
 
 ```yaml
 
@@ -156,6 +170,54 @@ backend zot-cluster
 ```
 
 </details>
+
+<details>
+  <summary markdown="span">Click here to view a sample HAProxy configuration without sticky session cookie (only zot v2.1.9 and newer when remote session storage is configured)</summary>
+
+```yaml
+
+global
+        log /dev/log    local0
+        log /dev/log    local1 notice
+        chroot /var/lib/haproxy
+        maxconn 2000
+        stats timeout 30s
+
+defaults
+        log     global
+        mode    tcp
+        option  tcplog
+        option  dontlognull
+        timeout connect 5000
+        timeout client  50000
+        timeout server  50000
+
+frontend zot
+    bind *:8080
+    default_backend zot-cluster
+
+backend zot-cluster
+    mode http
+    balance roundrobin
+    server zot-server1 127.0.0.1:9000 check
+    server zot-server2 127.0.0.2:9000 check
+    server zot-server3 127.0.0.3:9000 check
+
+```
+
+</details>
+
+### Supported deployments
+
+The below table describes some supported scale-out use cases and the configurations needed to achieve them.
+
+A "yes" indicates that the feature should be enabled. A "no" indicates that it should not be enabled.
+
+| use case              | type of scale-out | shared S3-compatible storage | shared metadata | shared session storage (zot v2.1.9 and newer) |
+|-----------------------|-------------------|------------------------------|-----------------|-----------------------------------------------|
+| No UI. OCI APIs only. | compute only      | yes                          | yes             | no                                            |
+| No UI. OCI APIs only. | compute + storage | no                           | no              | no                                            |
+| zot web UI and zli    | compute only      | yes                          | yes             | yes                                           |
 
 ## When a replica fails
 
