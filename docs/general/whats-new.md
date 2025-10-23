@@ -1,5 +1,20 @@
 # What's New
 
+## [v2.1.10](https://github.com/project-zot/zot/releases/tag/v2.1.10)
+
+### zot as a Golang Library
+
+zot was originally intended as an application although implemented in golang.
+Starting from this release zot can also be used as a golang [library](https://pkg.go.dev/zotregistry.dev/zot/v2).
+
+`import zotregistry.dev/zot/v2`
+
+However, note that this aspect will be best-effort only.
+
+### Bug fixes
+
+Some minor bug fixes.
+
 ## [v2.1.9](https://github.com/project-zot/zot/releases/tag/v2.1.9)
 
 ### Garbage Collection and Retention
