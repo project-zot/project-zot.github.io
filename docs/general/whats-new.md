@@ -1,5 +1,57 @@
 # What's New
 
+## [v2.1.11](https://github.com/project-zot/zot/releases/tag/v2.1.11)
+
+### Further FIPS 140-3 Improvements
+
+Previously, password-based authentication supported only _bcrypt_ (based on
+Blowfish) which is not FIPS 140 approved. Starting with this release, both
+SHA256 and SHA512 based hashes are supported. You can use `mkpasswd` utility
+(available on most Linux distributions) for this purpose.
+
+### Test Retention Policies
+
+A `verify-feature` retention subcommand has been added that allows users to
+preview and validate retention policy changes without running the actual zot
+server. The command runs GC and retention tasks in dry-run mode for immediate
+feedback.
+
+`zot verify-feature retention -l /var/log/zot-retention-check.log -i 1m -t 10m <config-file>`
+
+### Improved Self-Hosted OAuth2 Support
+
+Some self-host applications such as GitHub Enterprise require custom auth url,
+token url and username claim mapping.
+
+```
+...
+"auth": {
+      "openid": {
+        "providers": {
+          "github": {
+            "clientid": <client_id>,
+            "clientsecret": <client_secret>,
+            "authurl": "https://github.company.com/login/oauth/authorize",     // Custom GHE authorization endpoint
+            "tokenurl": "https://github.company.com/login/oauth/access_token", // Custom GHE token endpoint
+            "scopes": ["read:org", "user", "repo"],
+            "claimMapping": {
+              "username": "preferred_username"                                 // Custom claim mapping
+            }
+          }
+        }
+      }
+...
+```
+
+### UI Improvements
+
+zot's UI has been migrated to use [vite](https://vite.dev/) which helps with
+startup times and long-term project maintenance.
+
+### Bug fixes
+
+Many bug fixes around security, sync and other miscellaneous features.
+
 ## [v2.1.10](https://github.com/project-zot/zot/releases/tag/v2.1.10)
 
 ### zot as a Golang Library
