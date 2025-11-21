@@ -141,6 +141,10 @@ error occurs during either an on-demand or periodic synchronization. If no value
 <td style="text-align: left;"><p>The interval in seconds between retries. This attribute is mandatory when maxRetries is configured.</p></td>
 </tr>
 <tr class="even">
+<td style="text-align: left;"><p><strong>syncTimeout</strong></p></td>
+<td style="text-align: left;"><p>The timeout duration for on-demand sync operations. This timeout applies to the entire image sync operation, including downloading the manifest and all associated blobs (layers, config, referrers, etc.). If the requesting client disconnects, the sync operation will continue in the background until this timeout is reached. If not specified or set to zero, the default timeout of 3 hours is used. This prevents sync operations from being cancelled when HTTP clients disconnect (e.g., Kubernetes timeout/retries).</p></td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;"><p><strong>onlySigned</strong></p></td>
 <td style="text-align: left;"><ul>
 <li><p><code>false</code>: Synchronize signed or unsigned images.</p></li>
@@ -306,7 +310,8 @@ The following is an example of sync configuration for mirroring multiple registr
             }
           ],
           "onDemand": true,
-          "tlsVerify": true
+          "tlsVerify": true,
+          "syncTimeout": "10m"
         },
         {
           "urls": ["https://docker.io/library"],
