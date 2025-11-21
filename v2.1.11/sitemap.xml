@@ -2,162 +2,162 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://zotregistry.dev/v2.1.11/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/admin-guide/admin-configuration/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/admin-guide/admin-getting-started/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/articles/authn-authz/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/articles/benchmarking-with-zb/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/articles/building-ci-cd-pipeline/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/articles/clustering/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/articles/containerd/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/articles/events/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/articles/graphql/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/articles/high-availability/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/articles/immutable-tags/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/articles/kind-deploy/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/articles/mirroring/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/articles/monitoring/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/articles/pprofiling/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/articles/retention/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/articles/scaleout/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/articles/security-posture/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/articles/storage/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/articles/verifying-signatures/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/articles/workflow/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/developer-guide/api-reference/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/developer-guide/api-user-guide/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/developer-guide/contributing/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/developer-guide/extensions-dev/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/developer-guide/onboarding/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/general/architecture/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/general/concepts/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/general/extensions/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/general/features/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/general/glossary/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/general/project/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/general/releases/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/general/whats-new/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/install-guides/install-guide-k8s/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/install-guides/install-guide-linux/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/user-guides/user-guide-datapath/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/user-guides/user-guide-gui/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
     <url>
          <loc>https://zotregistry.dev/v2.1.11/user-guides/zli/</loc>
-         <lastmod>2025-11-20</lastmod>
+         <lastmod>2025-11-21</lastmod>
     </url>
 </urlset>
