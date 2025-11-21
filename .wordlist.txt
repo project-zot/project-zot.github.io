@@ -58,6 +58,7 @@ cri
 crt
 cryptographic
 CSS
+Ctrl
 cURL
 CVE
 cve

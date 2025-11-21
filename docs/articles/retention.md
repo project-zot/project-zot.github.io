@@ -208,3 +208,87 @@ For the rest of repositories, all of them matching `**`:
 - All other tags will be deleted.
 
 :warning: `subPaths` are a separate feature with use cases outside the scope of this article. Do NOT use `subPaths` just for the purpose of configuring retention.
+
+
+## Testing retention policies
+
+Before applying retention policies to a production environment, you can test and validate your retention configuration using the `verify-feature retention` subcommand. This command allows you to preview retention policy decisions without running the actual zot server or making any changes to your storage.
+
+The `verify-feature retention` subcommand:
+- Runs garbage collection and retention tasks
+- Provides immediate feedback on what would be deleted or retained
+- Does not require the zot server to be running
+- Automatically enables dry-run mode for retention policies
+
+> :warning: For local storage configurations, the zot server must be stopped before running this command to avoid database lock conflicts.
+
+> :warning: While retention policies for tags and untagged manifests run in dry-run mode (preview only), garbage collection actually executes and will clean up orphan blobs that are no longer referenced by any manifest. This means orphan blobs will be permanently deleted during the verification process.
+
+### Basic usage
+
+The basic command requires only a configuration file:
+
+```bash
+zot verify-feature retention <config-file>
+```
+
+> :information_source: The command runs indefinitely, performing garbage collection and retention tasks at the configured intervals, unless you specify a timeout using the `-t` or `--timeout` option, or manually interrupt it using `SIGINT` (Ctrl+C) or `SIGTERM`.
+
+### Command-line options
+
+The `verify-feature retention` subcommand supports the following options:
+
+| Option | Short | Description |
+|--------|-------|-------------|
+| `--log-file` | `-l` | Specify a log file location. If not provided, logs are written to standard out. |
+| `--gc-interval` | `-i` | Override the GC interval setting from the configuration file. This applies to all storage paths, including subpaths. |
+| `--timeout` | `-t` | Set a timeout for waiting for tasks to complete. If not specified, the command waits indefinitely until interrupted. |
+
+### Usage examples
+
+**Basic usage with default settings:**
+```bash
+zot verify-feature retention /etc/zot/config.json
+```
+
+**Save logs to a file:**
+```bash
+zot verify-feature retention -l /var/log/zot-retention-check.log /etc/zot/config.json
+```
+
+**Override GC interval (runs GC tasks every 30 seconds):**
+```bash
+zot verify-feature retention -i 30s /etc/zot/config.json
+```
+
+**Set a timeout (wait up to 5 minutes for tasks to complete):**
+```bash
+zot verify-feature retention -t 5m /etc/zot/config.json
+```
+
+**Combine multiple options:**
+```bash
+zot verify-feature retention -l /var/log/zot-retention-check.log -i 1m -t 10m /etc/zot/config.json
+```
+
+### Requirements
+
+- Garbage collection must be enabled in the configuration file (`"gc": true`)
+- For local storage, the zot server must be stopped before running the command
+- The configuration file must be valid and accessible
+
+### How it works
+
+When you run `verify-feature retention`, the command:
+1. Validates the configuration file
+2. Checks that garbage collection is enabled
+3. Automatically enables dry-run mode for all retention policies
+4. Initializes the storage and metadata database (if retention policies are configured)
+5. Runs garbage collection and retention tasks through the scheduler
+6. Logs all retention policy decisions for tags and orphan manifests without actually deleting them (dry-run mode)
+7. Actually cleans up orphan blobs that are no longer referenced by any manifest
+8. Waits for tasks to complete indefinitely, unless:
+   - A timeout is specified using the `-t` or `--timeout` option
+   - The command is manually interrupted using `SIGINT` (Ctrl+C) or `SIGTERM`
+
+The command will continue running and performing garbage collection and retention tasks at the configured intervals until one of these conditions is met. You can interrupt the command at any time, and it will shut down gracefully.
