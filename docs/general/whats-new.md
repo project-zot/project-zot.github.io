@@ -20,12 +20,11 @@ feedback.
 
 ### Improved Self-Hosted OAuth2 Support
 
-Some self-host applications such as GitHub Enterprise require custom auth url,
+Some self-hosted applications such as GitHub Enterprise require custom auth url,
 token url and username claim mapping.
 
-```
-...
-"auth": {
+```json
+  "auth": {
       "openid": {
         "providers": {
           "github": {
@@ -40,7 +39,6 @@ token url and username claim mapping.
           }
         }
       }
-...
 ```
 
 ### UI Improvements

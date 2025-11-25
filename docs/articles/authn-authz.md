@@ -396,6 +396,29 @@ For the GitHub authentication example:
 
 :pencil2: If your network policy doesn't allow inbound connections, the callback will not work and this authentication method will fail.
 
+### Using GitHub Enterprise
+
+Some self-hosted applications such as GitHub Enterprise require custom auth url,
+token url and username claim mapping.
+
+```json
+  "auth": {
+      "openid": {
+        "providers": {
+          "github": {
+            "clientid": <client_id>,
+            "clientsecret": <client_secret>,
+            "authurl": "https://github.company.com/login/oauth/authorize",     // Custom GHE authorization endpoint
+            "tokenurl": "https://github.company.com/login/oauth/access_token", // Custom GHE token endpoint
+            "scopes": ["read:org", "user", "repo"],
+            "claimMapping": {
+              "username": "preferred_username"                                 // Custom claim mapping
+            }
+          }
+        }
+      }
+```
+
 #### Using dex
 
 [dex](https://dexidp.io/) is an identity service that uses OpenID Connect (OIDC) to drive authentication for client apps, such as zot. While this section shows how to use dex with zot, zot supports other OIDC services as well.
