@@ -269,6 +269,7 @@ This section provides detailed usage information for basic first-level zli comma
       image       List images hosted on the zot registry
       repo        List all repositories
       search      Search images and their tags
+      status      Information about the server configuration and build information
 
     Flags:
       -h, --help      help for zli
@@ -488,7 +489,7 @@ The `search` command allows smart searching for a repository by its name or for 
 
     $ ./zli search subject --help
 
-    List all referrers for this subject. The subject can be specified by tag(repo:tag) or by digest" or (repo@digest)
+    List all referrers for this subject. The subject can be specified by tag (repo:tag) or by digest (repo@digest)
 
     Usage:
       zli search subject [repo:tag]|[repo@digest] [flags]
@@ -509,5 +510,27 @@ The `search` command allows smart searching for a repository by its name or for 
           --url string      Specify zot server URL if config-name is not mentioned
       -u, --user string     User Credentials of zot server in "username:password" format
           --verbose         Show verbose output
+
+    Run 'zli config -h' for details on [config-name] argument
+
+<a name="_zli-status"></a>
+
+### zli status
+
+This command provides information about the server configuration and build information.
+
+    $ ./zli status --help
+
+    Information about the server configuration and build information
+
+    Usage:
+      zli status [flags]
+
+    Flags:
+      -c, --config string   Specify the registry configuration to use for connection
+      -f, --format string   Specify the output format [text|json|yaml] (default "text")
+      -h, --help            help for status
+          --url string      Specify zot server URL if config-name is not mentioned
+      -u, --user string     User Credentials of zot server in "username:password" format
 
     Run 'zli config -h' for details on [config-name] argument
