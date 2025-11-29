@@ -511,7 +511,12 @@ The following table lists the configurable attributes for enhanced search.
 |------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
 | `enable`         | If this attribute is missing, enhanced search is enabled by default. Enhanced search can be disabled by setting this attribute to `false`. |
 | `cve`            | Extends enhanced search to allow searching of Common Vulnerabilities and Exposures (CVE).                                                  |
-| `updateInterval` | Sets the interval at which the searchable database of CVE items is refreshed.                                                              |
+| `updateInterval` | Sets the interval at which the Trivy vulnerability databases are refreshed. This is optional; if not specified, it defaults to 2 hours. The minimum value is 2 hours. If a value less than 2 hours is specified, it will be automatically adjusted to 2 hours. **Note**: This controls database updates, not scan frequency. |
+| `trivy`          | Optional configuration for custom Trivy database repositories. See the table below for available options.                                  |
+| `trivy.dbRepository` | Container registry URL for Trivy vulnerability database. Default: `ghcr.io/aquasecurity/trivy-db`                                      |
+| `trivy.javaDBRepository` | Container registry URL for Trivy Java vulnerability database. Default: `ghcr.io/aquasecurity/trivy-java-db`                        |
+
+> :bulb: For detailed CVE scanning configuration examples, see [CVE Scanning with zot](../articles/cve-scanning.md#configuration).
 
 <a name="userprefs_config"></a>
 
