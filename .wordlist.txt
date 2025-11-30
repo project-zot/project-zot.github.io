@@ -5,6 +5,7 @@ allocs
 alongside
 amd
 apache
+apk
 API
 api
 apikey
@@ -21,6 +22,7 @@ autocompletion
 aws
 backend
 backends
+backoff
 balancer
 BaseImageList
 bcrypt
@@ -123,6 +125,7 @@ graphql
 gui
 haproxy
 HAProxy
+hardcoded
 hostname
 hostnames
 href
@@ -174,6 +177,7 @@ Loadbalancing
 loadbalancing
 localhost
 loglevel
+lookups
 MacOS
 maxRetries
 md
@@ -196,6 +200,7 @@ nats
 NATS
 ng
 nginx
+npm
 NodePort
 OAuth
 objectacl
@@ -237,6 +242,7 @@ rc
 README
 redis
 regclient
+rescanned
 regctl
 regionendpoint
 replicaCount
@@ -258,6 +264,7 @@ satisfiable
 SBOM
 SBOMs
 scalable
+scannable
 SDK
 secretkey
 semver
@@ -308,6 +315,7 @@ twemoji
 UI
 unrecovered
 unreviewed
+unscanned
 untagged
 URI
 uri

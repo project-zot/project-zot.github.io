@@ -136,6 +136,10 @@ The following zot configuration file (`config.json`) can be used as a
 template for your own installation. You can modify this file to suit
 your own environment.
 
+> :pencil2: **CVE Scanning Configuration Notes**: The `updateInterval` in the CVE configuration is optional.
+> If omitted, it defaults to 2 hours. The minimum value is 2 hours. Before enabling CVE scanning,
+> ensure zot has write access to the storage directory and sufficient `/tmp` space for
+> Trivy database downloads and layer unpacking.
 
 <details>
   <summary markdown="span">Click here to view the sample configuration file.</summary>

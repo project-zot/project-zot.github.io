@@ -102,6 +102,10 @@ This example displays a list of all CVEs affecting a specific image:
     CVE-2015-8540     LOW       libpng: underflow read in png_check_keyword()
     CVE-2017-16826    LOW       binutils: Invalid memory access in the coff_s...
 
+This example filters results to show only a specific CVE:
+
+    $ bin/zli cve list c3/openjdk-dev:0.3.19 --config remote-zot --cve-id CVE-2015-8540
+
 This example (--verbose) displays a list of all CVEs affecting a specific image with details:
 
     $ bin/zli cve list c3/openjdk-dev:0.3.19 --config remote-zot --verbose
@@ -144,7 +148,7 @@ This example displays the detailed CVEs in JSON format:
 
 This example lists all images on a specific zot server that are affected by a specific CVE:
 
-    $ bin/zli cve affected --config remote-zot CVE-2017-9935 --repo c3/openjdk-dev
+    $ bin/zli cve affected CVE-2017-9935 --config remote-zot --repo c3/openjdk-dev
 
     IMAGE NAME        TAG               DIGEST    SIZE
     c3/openjdk-dev    commit-2674e8a    71046748  338MB
@@ -168,6 +172,10 @@ This example lists all CVEs that have been found in one image and not the other:
 
   For example, the above query lists all CVEs that have been found in
   c3/openjdk-dev:1.0.0 but not in c3/openjdk-dev:2.0.0
+
+For multi-arch images, you can specify platform information:
+
+    $ bin/zli cve diff myapp:v1.0 linux/amd64 myapp:v2.0 linux/arm64 --config remote-zot
 
 ### Listing repositories
 
@@ -261,6 +269,7 @@ This section provides detailed usage information for basic first-level zli comma
       image       List images hosted on the zot registry
       repo        List all repositories
       search      Search images and their tags
+      status      Information about the server configuration and build information
 
     Flags:
       -h, --help      help for zli
@@ -339,7 +348,8 @@ This command lists CVEs (Common Vulnerabilities and Exposures) of images hosted 
 
     Available Commands:
       affected    List images affected by a CVE
-      fixed       List tags where a CVE is fixedRetryWithContext
+      diff        List the CVE's present in minuend that are not present in subtrahend
+      fixed       List tags where a CVE is fixed
       list        List CVEs by REPO:TAG or REPO@DIGEST
 
     Flags:
@@ -354,6 +364,9 @@ This command lists CVEs (Common Vulnerabilities and Exposures) of images hosted 
     Use "zli cve [command] --help" for more information about a command.
 
     Run 'zli config -h' for details on [config-name] argument
+
+    Note: The `cve list` command supports the `--cve-id` option to filter results to a specific CVE ID.
+    The `cve diff` command supports platform specifications for multi-arch images.
 
 <a name="_zli-image"></a>
 
@@ -476,7 +489,7 @@ The `search` command allows smart searching for a repository by its name or for 
 
     $ ./zli search subject --help
 
-    List all referrers for this subject. The subject can be specified by tag(repo:tag) or by digest" or (repo@digest)
+    List all referrers for this subject. The subject can be specified by tag (repo:tag) or by digest (repo@digest)
 
     Usage:
       zli search subject [repo:tag]|[repo@digest] [flags]
@@ -497,5 +510,27 @@ The `search` command allows smart searching for a repository by its name or for 
           --url string      Specify zot server URL if config-name is not mentioned
       -u, --user string     User Credentials of zot server in "username:password" format
           --verbose         Show verbose output
+
+    Run 'zli config -h' for details on [config-name] argument
+
+<a name="_zli-status"></a>
+
+### zli status
+
+This command provides information about the server configuration and build information.
+
+    $ ./zli status --help
+
+    Information about the server configuration and build information
+
+    Usage:
+      zli status [flags]
+
+    Flags:
+      -c, --config string   Specify the registry configuration to use for connection
+      -f, --format string   Specify the output format [text|json|yaml] (default "text")
+      -h, --help            help for status
+          --url string      Specify zot server URL if config-name is not mentioned
+      -u, --user string     User Credentials of zot server in "username:password" format
 
     Run 'zli config -h' for details on [config-name] argument
