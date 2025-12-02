@@ -146,6 +146,7 @@ ImagesListWithCVEFixed
 ImagesListWithCVEFixed
 ImageTags
 ImageTrust
+imagetrust
 in-place
 inlinehilite
 io
@@ -313,6 +314,7 @@ truststoreType
 tunable
 twemoji
 UI
+ui
 unrecovered
 unreviewed
 unscanned
@@ -331,6 +333,7 @@ vite
 VM
 VMs
 Wasm
+webhook
 www
 YAML
 yaml

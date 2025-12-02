@@ -67,6 +67,49 @@ your server.
 
 > :bulb: For convenience, you can rename the binary image file to simply `zot`.
 
+#### Published container images
+
+The zot project publishes the following container images to GitHub Container Registry (ghcr.io):
+
+- **zot** - Full-featured OCI-native container image/artifact registry
+  - Registry: `ghcr.io/project-zot/zot`
+  - **Extensions built into binary**: All available extensions are compiled into the binary: sync, search, scrub, metrics, lint, ui, mgmt, profile, userprefs, imagetrust, and events
+  - **Extensions enabled by default**: Only three extensions are enabled in the default configuration: search (with CVE scanning), ui (web interface), and mgmt (management API)
+  - **Other extensions available**: sync, scrub, metrics, lint, profile, userprefs, imagetrust, and events are built into the binary but require explicit configuration to enable
+
+- **zot-minimal** - Minimal dist-spec only zot registry
+  - Registry: `ghcr.io/project-zot/zot-minimal`
+  - **No extensions**: Distribution-spec conformant only, without any extensions (reduced attack surface)
+  - Suitable for embedded deployments or when only core OCI functionality is needed
+
+- **zxp** (zot-exporter) - Metrics exporter for zot-minimal image
+  - Registry: `ghcr.io/project-zot/zxp`
+  - Standalone metrics exporter that connects to a zot instance
+  - Provides metrics collection for minimal zot deployments that don't include the built-in metrics extension
+
+- **zb** - Performance benchmark tool for OCI conformant registries
+  - Registry: `ghcr.io/project-zot/zb`
+  - Tool for benchmarking OCI registries
+
+All images support multiple architectures (linux/amd64, linux/arm64, freebsd/amd64, freebsd/arm64) and are tagged with release version tags (e.g., `v2.1.11`) and `latest`. Docker/Podman will automatically pull the correct architecture for your platform.
+
+**Extension Details for Full zot Image:**
+
+The full zot image includes the following extensions built into the binary:
+
+- **sync** - Registry synchronization for syncing images from remote registries
+- **search** - Search extension for discovering and querying images (includes CVE scanning capabilities)
+- **scrub** - Image integrity checking for verifying image integrity
+- **metrics** - Metrics collection for Prometheus-compatible metrics
+- **lint** - Image linting for validating image compliance
+- **ui** - Web UI providing a graphical interface (automatically includes search, mgmt, and userprefs as dependencies)
+- **mgmt** - Management API for administrative operations
+- **profile** - Profiling extension for performance analysis
+- **userprefs** - User preferences for storing user-specific settings
+- **imagetrust** - Image trust for signature verification (Notation and Cosign support)
+- **events** - Events extension for webhook notifications
+
+**Important**: While all these extensions are built into the binary, only search, ui, and mgmt are enabled by default. To use other extensions (sync, scrub, metrics, lint, profile, userprefs, imagetrust, events), you must add their configuration sections to your `config.json` file. See [Configuring zot](admin-configuration.md) for details on enabling and configuring extensions.
 
 #### Example: Deploying with a container manager
 
@@ -75,9 +118,9 @@ install a zot binary image, as in the following examples.
 
 **Using podman**
 
-    podman run -p 5000:5000 ghcr.io/project-zot/zot-linux-amd64:latest
+    podman run -p 5000:5000 ghcr.io/project-zot/zot:latest
 
-    podman run -p 5000:5000 ghcr.io/project-zot/zot-minimal-linux-amd64:latest
+    podman run -p 5000:5000 ghcr.io/project-zot/zot-minimal:latest
 
 <details>
   <summary markdown="span">Click here to view an example of deploying using podman.</summary>
@@ -90,11 +133,11 @@ install a zot binary image, as in the following examples.
 
 **Using docker**
 
-    docker run -p 5000:5000 ghcr.io/project-zot/zot-linux-amd64:latest
+    docker run -p 5000:5000 ghcr.io/project-zot/zot:latest
 
-Each of these example commands pulls a zot binary image from
+Each of these example commands pulls a zot container image from
 the GitHub Container Registry (ghcr.io) and launches a zot
-image registry at `http://localhost:5000`.
+image registry at `http://localhost:5000`. The container runtime will automatically select the correct architecture for your platform.
 
 <details>
   <summary markdown="span">Click here to view an example of deploying using docker.</summary>
@@ -201,8 +244,8 @@ A container image built with the sample Dockerfile and deployed with the
 example command results in a running registry at
 `http://localhost:5000`. Registry content is stored at `.registry`,
 which is bind mounted to `/var/lib/registry` in the container. By
-default, auth is disabled. As part of the build, a YAML configuration
-file is created at `/etc/zot/config.yml` in the container.
+default, auth is disabled. As part of the build, a JSON configuration
+file is created at `/etc/zot/config.json` in the container.
 
 You can override the configuration file with custom configuration
 settings in the deployment command and in a local configuration file as

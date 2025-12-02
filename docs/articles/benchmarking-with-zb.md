@@ -16,7 +16,7 @@ With the zb tool, you can benchmark a zot registry or any other container image 
 
 ## How to get zb
 
-The zb project is hosted with zot on GitHub at [project-zot](https://github.com/project-zot/zot). From GitHub, you can download the zb binary or you can build zb from the source. You can also directly run the released docker image.
+The zb project is hosted with zot on GitHub at [project-zot](https://github.com/project-zot/zot). From GitHub, you can download the zb binary or you can build zb from the source. You can also directly run the released container image.
 
 <a name="supported-platforms"></a>
 ## Supported platforms and architectures
@@ -92,9 +92,9 @@ The following example executes a benchmark operation using zb.
 
 `bin/zb -c 10 -s 127.0.10.0/24 -n 1000 http://localhost:8080`
 
-You can also run the released docker image.
+You can also run the released container image.
 
-`docker run --net=host -it ghcr.io/project-zot/zb-linux-amd64:latest -c 10 -n 1000 -s 127.0.10.0/24 http://localhost:8080`
+`docker run --net=host -it ghcr.io/project-zot/zb:latest -c 10 -n 1000 -s 127.0.10.0/24 http://localhost:8080`
 
 Command output:
 
