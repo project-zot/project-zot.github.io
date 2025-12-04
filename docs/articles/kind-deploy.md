@@ -36,13 +36,14 @@ fi
 
 ### Step 2: Create a registry container
 
-Create a `kind-registry` container, pulling a zot binary from the GitHub Container Registry (ghcr.io).  
+Create a `kind-registry` container, pulling a zot image from the GitHub Container Registry (ghcr.io).
 
-> :pencil2: This example pulls `zot-minimal-linux-amd64:latest`,   
-> a minimal (no extensions) zot image for an AMD-based linux server. 
+> :pencil2: This example pulls `zot-minimal:latest`,
+> a minimal (no extensions) zot image. The container runtime will automatically select the correct architecture for your platform.
 >       
-> Other available images are described at the [zot releases page](https://github.com/project-zot/zot/releases) in GitHub.  
-> You can also specify a release by replacing `latest` with an available release number.
+> Other available images include `zot:latest` (full-featured) and `zxp:latest` (metrics exporter).
+> For detailed information about available releases, see the [zot releases page](https://github.com/project-zot/zot/releases) in GitHub.
+> You can specify a release by replacing `latest` with an available release number (e.g., `v2.1.11`).
 
 ```shell
 {% raw %}
@@ -52,7 +53,7 @@ reg_port='5001'
 if [ "$(docker inspect -f '{{.State.Running}}' "${reg_name}" 2>/dev/null || true)" != 'true' ]; then
   docker run \
     -d --restart=always -p "127.0.0.1:${reg_port}:5000" --name "${reg_name}" \
-    ghcr.io/project-zot/zot-minimal-linux-amd64:latest
+    ghcr.io/project-zot/zot-minimal:latest
 fi
 {% endraw %}
 ```
@@ -163,7 +164,7 @@ reg_port='5001'
 if [ "$(docker inspect -f '{{.State.Running}}' "${reg_name}" 2>/dev/null || true)" != 'true' ]; then
   docker run \
     -d --restart=always -p "127.0.0.1:${reg_port}:5000" --name "${reg_name}" \
-    ghcr.io/project-zot/zot-minimal-linux-amd64:latest
+    ghcr.io/project-zot/zot-minimal:latest
 fi
 
 # create a cluster with the local registry enabled in containerd

@@ -90,7 +90,7 @@ image variations, image locations, and image naming formats.
     # Declare variables to be passed into your templates.
     replicaCount: 1
     image:
-      repository: ghcr.io/project-zot/zot-linux-amd64
+      repository: ghcr.io/project-zot/zot
       pullPolicy: IfNotPresent
       tag: "{{ git.tag }}"
     serviceAccount:
@@ -119,7 +119,7 @@ using the command in the following example:
   # Declare variables to be passed into your templates.
   replicaCount: 1
   image:
-    repository: ghcr.io/project-zot/zot-linux-amd64
+    repository: ghcr.io/project-zot/zot
     pullPolicy: IfNotPresent
     tag: "{{ git.tag }}"
   serviceAccount:
@@ -213,11 +213,9 @@ service</p></td>
 To override the default values in the chart, you can pass your custom
 values by adding the `--set` flag in the `helm install` command.
 
-For example, if your servers use an ARM processor instead of Intel, you
-must change the `image.repository` name from **zot-linux-amd64** to
-**zot-linux-arm64**:
+> :pencil2: **Note:** The zot container images support multiple architectures (linux/amd64, linux/arm64, freebsd/amd64, freebsd/arm64). Docker/Podman will automatically pull the correct architecture for your platform, so you typically don't need to change the repository name. However, if you want to use the minimal image instead of the full-featured image, you can change the repository:
 
-`--set image.repository=ghcr.io/project-zot/zot-linux-arm64`
+`--set image.repository=ghcr.io/project-zot/zot-minimal`
 
 You can change multiple settings with one `--set` statement. For
 example, you might want your installation to have more replicas or a

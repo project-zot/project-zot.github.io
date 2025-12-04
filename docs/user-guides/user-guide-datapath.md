@@ -56,11 +56,11 @@ application and stores the image to a local OCI-layout directory
 ### Pull an OCI image to a private docker registry
 
 This example pulls the latest container image for the `busybox`
-application and stores the image to a local private docker registry.
+application and stores the image to a local private registry.
 
     $ skopeo --insecure-policy copy --src-tls-verify=false --multi-arch=all \
        docker://localhost:5000/busybox:latest \
-       docker://localhost:5000/busybox:latest
+       docker://localhost:5001/busybox:latest
 
 <details>
   <summary markdown="span">Click here to view an example of pushing and pulling an image using skopeo.</summary>
@@ -255,7 +255,7 @@ You will be prompted to manually enter a password.
 ### Push an OCI image
 
 This example pushes the latest container image for the `alpine`
-application to a  registry.
+application to a registry.
 
     $ crane --insecure push \
        oci/images/alpine:latest \
@@ -272,10 +272,10 @@ application and stores the image to a local OCI-layout directory
        localhost:5000/alpine:latest \
        oci/images/alpine:latest
 
-### Copy an OCI image to a private docker registry
+### Copy an OCI image to a private registry
 
 This example pulls the latest container image for the `alpine`
-application and stores the image to a local private docker registry.
+application and stores the image to a local private registry.
 
     $ crane --insecure copy \
        alpine:latest \

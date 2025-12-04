@@ -47,7 +47,7 @@ An executable binary image for zot is named using the target platform and archit
 
 ## Where to get zot
 
-You can download native executable binary images or container (Docker) images.
+You can download native executable binary images or container (OCI) images.
 
 ### Getting binary images
 
@@ -63,16 +63,92 @@ To download a binary image, go to the [zot releases](https://github.com/project-
 
 ### Getting container images 
 
-You can download a container image from `ghcr.io` by forming a URL with the desired image name, such as:
+The zot project publishes OCI container images to GitHub Container Registry (ghcr.io). All images support multiple architectures (linux/amd64, linux/arm64, freebsd/amd64, freebsd/arm64) and Docker/Podman will automatically pull the correct architecture for your platform.
 
-    https://ghcr.io/project-zot/zot-<os>-<architecture>[-<build>]
+**Main Images:**
 
-If `<build>` is not specified, the default is `full`. For example, to download the minimal binary image for an Intel-based linux server. The URL is:
+- **zot** (full-featured): `ghcr.io/project-zot/zot:latest` or `ghcr.io/project-zot/zot:v2.1.11`
+  - Includes all extensions built into binary: sync, search, scrub, metrics, lint, ui, mgmt, profile, userprefs, imagetrust, events
+  - Extensions enabled by default: search (with CVE scanning), ui (web interface), mgmt (management API)
+  - Other extensions (sync, scrub, metrics, lint, profile, userprefs, imagetrust, events) require configuration to enable
+  - **Default configuration** (`/etc/zot/config.json`):
+    ```json
+    {
+      "storage": {
+        "rootDirectory": "/var/lib/registry"
+      },
+      "http": {
+        "address": "0.0.0.0",
+        "port": "5000",
+        "compat": ["docker2s2"]
+      },
+      "log": {
+        "level": "debug"
+      },
+      "extensions": {
+        "search": {
+          "enable": true,
+          "cve": {
+            "updateInterval": "2h"
+          }
+        },
+        "ui": {
+          "enable": true
+        },
+        "mgmt": {
+          "enable": true
+        }
+      }
+    }
+    ```
 
-    https://ghcr.io/project-zot/zot-linux-amd64-minimal
+- **zot-minimal** (minimal dist-spec only): `ghcr.io/project-zot/zot-minimal:latest` or `ghcr.io/project-zot/zot-minimal:v2.1.11`
+  - No extensions included; core OCI Distribution Specification functionality only
+  - **Default configuration** (`/etc/zot/config.json`):
+    ```json
+    {
+      "storage": {
+        "rootDirectory": "/var/lib/registry"
+      },
+      "http": {
+        "address": "0.0.0.0",
+        "port": "5000"
+      },
+      "log": {
+        "level": "debug"
+      }
+    }
+    ```
+
+- **zxp** (zot-exporter): `ghcr.io/project-zot/zxp:latest` or `ghcr.io/project-zot/zxp:v2.1.11`
+  - Standalone metrics exporter for zot-minimal deployments
+  - **Default configuration** (`/etc/zxp/config.json`):
+    ```json
+    {
+      "Server": {
+        "protocol": "http",
+        "host": "127.0.0.1",
+        "port": "5000"
+      },
+      "Exporter": {
+        "port": "5001",
+        "log": {
+          "level": "debug"
+        }
+      }
+    }
+    ```
+
+- **zb** (benchmark tool): `ghcr.io/project-zot/zb:latest` or `ghcr.io/project-zot/zb:v2.1.11`
+  - Performance benchmarking tool
+
+**Example usage:**
+
+    docker pull ghcr.io/project-zot/zot:latest
+    docker pull ghcr.io/project-zot/zot-minimal:latest
 
 > :pencil2: 
-> When downloading a container image for MacOS, download the linux image, not the darwin image.
+> Container images are Linux-based (or FreeBSD-based). When running containers on MacOS, Docker/Podman runs Linux containers in a VM. The container runtime will automatically select the appropriate Linux architecture based on your Docker/Podman environment.
 
 ## Licensing
 
