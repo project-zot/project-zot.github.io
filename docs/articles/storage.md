@@ -222,7 +222,7 @@ The zot configuration model allows for enabling and disabling garbage collection
 The configuration model also allows the configuration of a tunable delay (`gcDelay`), which can be set depending on client network speeds and the size of blobs. The `gcDelay` attribute causes collection to run once after the specified delay time.  This attribute has a default value of one hour (`1h`).
 
 By default, if `retention` is not configured, garbage collection deletes all untagged manifests which are not referenced by indexes or artifacts after the `gcDelay` passes.
-This delay can we overwritten using a separate setting if `retention` is configured, for more details see the retention configuration article.
+This delay can be overwritten using a separate setting if `retention` is configured, for more details see the retention configuration article.
 
 <a name="config-s3"></a>
 
