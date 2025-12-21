@@ -45,8 +45,9 @@ To avoid passing the username and password credentials for every HTTP request, a
 
 Configure bearer authentication in the zot configuration file as shown in this example.
 
+```json
     "http": {
-    ...
+      ...
       "auth": {
         "bearer": {
           "realm": "https://auth.myreg.io/auth/token",
@@ -54,6 +55,8 @@ Configure bearer authentication in the zot configuration file as shown in this e
           "cert": "/etc/zot/auth.crt"
         }
       }
+    }
+```
 
 The following table lists the configurable attributes.
 
@@ -68,21 +71,166 @@ The following table lists the configurable attributes.
 
 zot supports basic TLS and password-less mutual TLS authentication (mTLS). Specifying a `cacert` file in the TLS section of the zot configuration file enables mTLS. The `cacert` parameter is used to validate the client-side TLS certificates.
 
+```json
     "http": {
-    ...
-      "tls": {
-        "cert": "/etc/zot/certs/server.cert",
-        "key": "/etc/zot/certs/server.key",
-        "cacert": "/etc/zot/certs/ca.cert"
+      ...
+      "auth": {
+        "tls": {
+          "cert": "/etc/zot/certs/server.cert",
+          "key": "/etc/zot/certs/server.key",
+          "cacert": "/etc/zot/certs/ca.cert"
+        }
       }
+    }
+```
 
 The following table lists the configurable attributes.
 
 | Attribute | Description                                                                                                           |
 |-----------|-----------------------------------------------------------------------------------------------------------------------|
-| `cert`    | The path and filename of the server’s SSL/TLS certificate.                                                            |
-| `key`     | The path and filename of the server’s registry key.                                                                   |
-| `cacert`  | The path and filename of the server’s `cacerts` file, which contains trusted certificate authority (CA) certificates. |
+| `cert`    | The path and filename of the server's SSL/TLS certificate.                                                            |
+| `key`     | The path and filename of the server's registry key.                                                                   |
+| `cacert`  | The path and filename of the server's `cacerts` file, which contains trusted certificate authority (CA) certificates. |
+
+### Identity extraction from client certificates
+
+By default, mTLS authentication extracts the client identity from the certificate's Common Name (`CN`) field. However, zot provides flexible configuration options to extract identity from alternative certificate attributes with a fallback chain mechanism.
+
+You can configure identity extraction under the `auth.mtls` section in the zot configuration file:
+
+```json
+"http": {
+  ...
+  "auth": {
+    "mtls": {
+      "identityAttributes": ["URI", "CommonName"],
+      "uriSanPattern": "spiffe://example.org/workload/(.*)",
+      "uriSanIndex": 0,
+      "dnsSanIndex": 0,
+      "emailSanIndex": 0
+    }
+  }
+}
+```
+
+#### Identity attributes
+
+The `identityAttributes` array defines an ordered list of certificate attributes to try for identity extraction. If the first attribute fails to extract an identity (e.g., the field is empty or doesn't match the pattern), zot tries the next attribute in the list, and so on.
+
+Supported identity attributes (case-insensitive):
+
+| Attribute | Aliases | Description |
+|-----------|---------|-------------|
+| `CommonName` | `CN` | Extracts identity from the certificate's Common Name (`CN`) field |
+| `Subject` | `DN` | Extracts the full Subject Distinguished Name (DN) |
+| `Email` | `rfc822name` | Extracts identity from the Email Subject Alternative Name (SAN) |
+| `URI` | `URL` | Extracts identity from the URI Subject Alternative Name (SAN) |
+| `DNSName` | `DNS` | Extracts identity from the DNS Subject Alternative Name (SAN) |
+
+**Default behavior:** If no `identityAttributes` are configured, zot defaults to `["CommonName"]` for backward compatibility.
+
+#### URI SAN pattern matching
+
+When using `URI` as an identity attribute, you can specify a regular expression pattern to extract a specific part of the URI. This is particularly useful for `SPIFFE`-based authentication or other URI-based identity systems.
+
+**Example - `SPIFFE` workload identity:**
+- Certificate URI SAN: `spiffe://example.org/workload/testuser`
+- Pattern: `spiffe://example.org/workload/(.*)`
+- Extracted identity: `testuser`
+
+If no `uriSanPattern` is specified, the full URI value is used as the identity.
+
+#### SAN indexes
+
+When a certificate contains multiple values in a Subject Alternative Name field (URI, DNS, or Email), you can specify which value to use with the corresponding index field (0-based indexing):
+
+| Configuration Field | Description | Default |
+|---------------------|-------------|---------|
+| `uriSanIndex` | Index of the URI SAN to use (maps to `cert.URIs[index]`) | 0 |
+| `dnsSanIndex` | Index of the DNS SAN to use (maps to `cert.DNSNames[index]`) | 0 |
+| `emailSanIndex` | Index of the Email SAN to use (maps to `cert.EmailAddresses[index]`) | 0 |
+
+### Configuration examples
+
+#### Basic mTLS with Common Name
+
+The simplest configuration uses the certificate's Common Name for identity:
+
+```json
+{
+  "http": {
+    ...
+    "tls": {
+      "cert": "test/data/server.cert",
+      "key": "test/data/server.key",
+      "cacert": "test/data/ca.crt"
+    },
+    "auth": {
+      "mtls": {
+        "identityAttributes": ["CommonName"]
+      }
+    }
+  }
+}
+```
+
+#### `SPIFFE` with URI SAN pattern
+
+For `SPIFFE`-based authentication where identity is embedded in the URI:
+
+```json
+{
+  "http": {
+    ...
+    "tls": {
+      "cert": "test/data/server.cert",
+      "key": "test/data/server.key",
+      "cacert": "test/data/ca.crt"
+    },
+    "auth": {
+      "mtls": {
+        "identityAttributes": ["URI", "CommonName"],
+        "uriSanPattern": "spiffe://example.org/workload/(.*)"
+      }
+    }
+  }
+}
+```
+
+In this configuration, zot first attempts to extract identity from the URI SAN using the regex pattern. If the URI SAN is not present or doesn't match the pattern, it falls back to using the Common Name.
+
+#### Multiple `SANs` with indexing
+
+If a certificate contains multiple email addresses and you want to use the second one:
+
+```json
+{
+  "http": {
+    ...
+    "auth": {
+      "mtls": {
+        "identityAttributes": ["Email", "CommonName"],
+        "emailSanIndex": 1
+      }
+    }
+  }
+}
+```
+
+### Combining mTLS with other authentication methods
+
+mTLS authentication can coexist with other basic authentication methods (htpasswd, LDAP, OpenID, etc.).
+mTLS certificate validation is always done first, if the client presents a certificate.
+In order to authenticate and establish identity, zot follows the priorities below:
+
+1. If an `Authorization` header is present and basic authentication is enabled, basic authentication is attempted.
+2. If an `Authorization` header is present but basic authentication is disabled, the request fails.
+3. If a session header is present (for the web-based UI use-case), session authentication is attempted.
+4. If mTLS is enabled and client certificates are present, mTLS authentication is attempted.
+5. If no authentication is configured, all requests are allowed.
+6. If anonymous access is configured, or management endpoints are accessed, those requests are allowed.
+
+This allows for flexible deployment scenarios where different clients can authenticate using different methods based on their capabilities and requirements.
 
 ### Preventing automated attacks with failure delay
 
