@@ -1,5 +1,18 @@
 # What's New
 
+## [v2.1.12](https://github.com/project-zot/zot/releases/tag/v2.1.12)
+
+### mTLS Configuration
+
+Previously, there were some access control/authz limitations when enabling UI
+and mTLS for machine clients. Now [mTLS authn configuration](../articles/authn-authz.md#mutual-tls-authentication) supports more
+flexible identity extraction from peer certs so that access control is
+uniformly enforced.
+
+### Bug fixes
+
+Many bug fixes around security, sync and other miscellaneous features.
+
 ## [v2.1.11](https://github.com/project-zot/zot/releases/tag/v2.1.11)
 
 ### Further FIPS 140-3 Improvements
