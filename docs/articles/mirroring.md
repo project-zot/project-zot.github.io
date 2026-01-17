@@ -75,7 +75,7 @@ The `sync` feature of zot is an [extension](https://github.com/opencontainers/di
               "tags": {
                 "regex": "4.*",
                 "semver": true
-              }
+              },
               "destination": "/repo2",
               "stripPrefix": true
             }
@@ -102,7 +102,7 @@ The following table lists the configurable attributes for the `sync` feature:
 <tbody>
 <tr class="even">
 <td style="text-align: left;"><p><strong>credentialsFile</strong></p></td>
-<td style="text-align: left;"><p>The location of a local file containing credentials for other registries, as in the following example: <pre>{<br/>&emsp;&emsp;"127.0.0.1:8080": {<br/>&emsp;&emsp;&emsp;&emsp;"username": "user",<br/>&emsp;&emsp;&emsp;&emsp;"password": "pass"<br/>&emsp;&emsp;},<br/>&emsp;&emsp;&emsp;&emsp;"registry2:5000": {<br/>&emsp;&emsp;&emsp;&emsp;"username": "user2",<br/>&emsp;&emsp;&emsp;&emsp;"password": "pass2"<br/>&emsp;&emsp;}<br/>}</pre></p></td>
+<td style="text-align: left;"><p>The location of a local file containing credentials for other registries, as in the following example: <pre>{<br/>&nbsp;&nbsp;"127.0.0.1:8080": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;"username": "user",<br/>&nbsp;&nbsp;&nbsp;&nbsp;"password": "pass"<br/>&nbsp;&nbsp;},<br/>&nbsp;&nbsp;"registry2:5000": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;"username": "user2",<br/>&nbsp;&nbsp;&nbsp;&nbsp;"password": "pass2"<br/>&nbsp;&nbsp;}<br/>}</pre></p></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><p><strong>urls</strong></p></td>
@@ -234,7 +234,9 @@ The following is an example of sync configuration for mirroring multiple reposit
   "credentialsFile": "./examples/sync-auth-filepath.json",
   "registries": [
     {
-      "urls": ["https://registry1:5000"],
+      "urls": [
+        "https://registry1:5000"
+      ],
       "onDemand": false,
       "pollInterval": "6h",
       "tlsVerify": true,
@@ -250,8 +252,8 @@ The following is an example of sync configuration for mirroring multiple reposit
             "regex": "4.*",
             "semver": true,
             "tags": {
-								"excludeRegex": ".*-(amd64|arm64)$"
-						}
+              "excludeRegex": ".*-(amd64|arm64)$"
+            }
           }
         },
         {
@@ -264,7 +266,8 @@ The following is an example of sync configuration for mirroring multiple reposit
         }
       ]
     }
-  }
+  ]
+}
 ```
 
 The configuration in this example will result in the following behavior:
