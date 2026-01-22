@@ -53,7 +53,7 @@ zot can store and serve files from one or more local directories. A minimum of o
 
 ### Remote filesystem
 
-zot can also store data remotely in the cloud, using the storage APIs of the cloud service. Currently, zot supports only the AWS s3 storage service.
+zot can also store data remotely in the cloud, using the storage APIs of the cloud service. Currently, zot supports only the AWS s3 storage service. S3 storage is not supported on Windows; see [Configuring remote storage with s3](#config-s3) for details.
 
 #### Example: configuration for remote (s3) storage
 
@@ -274,6 +274,9 @@ The following table lists the attributes of `storageDriver` when configuring s3 
 | loglevel                    | no       | The log level for the S3 client. The default value is off.                                                                         |
 
 For more information, see the [s3 storage driver docs](https://distribution.github.io/distribution/storage-drivers/s3/).
+
+> :warning:
+> **S3 storage and Windows:** The S3 storage driver is implemented by the [distribution](https://github.com/distribution/distribution) project, which does not support Windows. On Windows, the driver receives paths that use the backslash (`\`) separator instead of the forward slash (`/`) expected by S3, which can cause zot to hang at startup ("parsing storage and initializing"), exhaust memory, and consume high CPU. **Do not use the S3 storage driver when running zot on Windows.** Use local filesystem storage or run zot on Linux or MacOS when S3 storage is required.
 
 ### s3 Credentials
 
