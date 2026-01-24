@@ -279,6 +279,8 @@ You can find comprehensive details of all zot API commands in either of the foll
 
 - As an interactive OpenAPI (swagger) [JSON file](https://github.com/project-zot/zot/blob/main/swagger/swagger.json) in the zot Github project.
 
+- For enhanced search capabilities using GraphQL queries, see [Using GraphQL for Enhanced Searches](../articles/graphql.md).
+
   There are many ways to view a swagger file as an interactive document. If you have the `npm` package installed, for example, you can execute the following command:
 
       $ npx open-swagger-ui swagger.json
