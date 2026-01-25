@@ -1,5 +1,12 @@
 # What's New
 
+## [v2.1.13](https://github.com/project-zot/zot/releases/tag/v2.1.13)
+
+### Bug fixes
+
+Fixes a bug where requests having an Authorization header are rejected if basic
+auth is disabled.
+
 ## [v2.1.12](https://github.com/project-zot/zot/releases/tag/v2.1.12)
 
 ### mTLS Configuration
