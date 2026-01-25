@@ -1,5 +1,17 @@
 # What's New
 
+## [v2.1.14](https://github.com/project-zot/zot/releases/tag/v2.1.14)
+
+### Workload Identity Federation
+
+zot can now authenticate workloads using OIDC ID tokens, enabling secret-less authentication for automated workflows.
+
+See [examples/config-bearer-oidc-workload.json](https://github.com/project-zot/zot/blob/v2.1.14/examples/config-bearer-oidc-workload.json) for an example configuration.
+
+### Bug fixes
+
+Many bug fixes around storage and other miscellaneous features.
+
 ## [v2.1.13](https://github.com/project-zot/zot/releases/tag/v2.1.13)
 
 ### Bug fixes
