@@ -6,6 +6,8 @@ The information presented here is adapted from the interactive OpenAPI (formerly
 
 For instructions and examples of how to use the zot API, see [Using the zot API](../developer-guide/api-user-guide.md).
 
+> :bulb: **Note:** zot also provides a GraphQL API for enhanced search capabilities. For details on using GraphQL queries, see [Using GraphQL for Enhanced Searches](../articles/graphql.md).
+
 
 ## /zot/auth/apikey
 
