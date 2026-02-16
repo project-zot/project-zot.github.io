@@ -192,7 +192,9 @@ your own environment.
           "pollInterval": "6h"
         },
         {
-          "urls": ["https://docker.io/library"],
+          "urls": [
+              "https://index.docker.io"
+          ],
           "onDemand": true
         }
       ]
@@ -240,7 +242,9 @@ the Google and Docker container registries, as shown here:
       "pollInterval": "6h"
     },
     {
-      "urls": ["https://docker.io/library"],
+      "urls": [
+          "https://index.docker.io"
+      ],
       "onDemand": true
     }
   ]
