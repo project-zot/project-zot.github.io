@@ -317,7 +317,9 @@ The following is an example of sync configuration for mirroring multiple registr
           "syncTimeout": "10m"
         },
         {
-          "urls": ["https://docker.io/library"],
+          "urls": [
+              "https://index.docker.io"
+          ],
           "content": [
             {
               "prefix": "**",
@@ -423,7 +425,7 @@ The following is an example of a zot configuration file for mirroring multiple u
         },
         {
           "urls": [
-            "https://docker.io/library"
+              "https://index.docker.io"
           ],
           "onDemand": true,
           "tlsVerify": true,
