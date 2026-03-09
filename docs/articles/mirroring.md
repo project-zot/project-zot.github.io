@@ -160,6 +160,10 @@ error occurs during either an on-demand or periodic synchronization. If no value
 </div></li>
 </ul></td>
 </tr>
+<tr class="even">
+<td style="text-align: left;"><p><strong>syncLegacyCosignTags</strong></p></td>
+<td style="text-align: left;"><p>When <code>true</code> (default), sync legacy cosign/SBOM tags (for example, tag names derived from the image digest such as <code>sha256-&lt;digest&gt;.sig</code> or <code>sha256-&lt;digest&gt;.sbom</code>). Set to <code>false</code> to skip syncing these tags and reduce synced content.</p></td>
+</tr>
 <tr class="odd">
 <td style="text-align: left;"><p><strong>content</strong></p></td>
 <td style="text-align: left;"><p>The included attributes in this section specify which content will be pulled. If this section is not populated, periodic polling will not occur. The included attributes can also filter which on-demand images are pulled.</p></td>
