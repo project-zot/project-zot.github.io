@@ -1,5 +1,37 @@
 # What's New
 
+## [v2.1.15](https://github.com/project-zot/zot/releases/tag/v2.1.15)
+
+### Google Cloud Storage (GCS) support
+
+zot can use [Google Cloud Storage](../articles/storage.md#config-gcs) as a remote storage backend (currently experimental). See [Configuring remote storage with GCS](../articles/storage.md#config-gcs) for details.
+
+### Dynamic TLS certificate reloading
+
+TLS certificate and key files are watched for changes. When you update the certificate or key on disk (for example, after renewal), zot reloads them automatically without requiring a restart.
+
+### Sync: control legacy cosign/SBOM tag sync
+
+A new per-registry option `syncLegacyCosignTags` lets you skip syncing legacy cosign/SBOM tags (for example, `sha256-<digest>.sig` or `.sbom`). Set it to `false` to reduce synced content; when unset, the default is `true` (legacy behavior). See [Mirroring](../articles/mirroring.md).
+
+### Bearer and OIDC authentication improvements
+
+JWT verification keys for bearer authentication can be loaded from [AWS Secrets Manager](../articles/authn-authz.md#bearer-authentication-with-aws-secrets-manager) instead of a static certificate file. For [OIDC workload identity](../articles/authn-authz.md), each issuer can also specify its own CA for validating the provider's TLS certificate via `certificateAuthority` (PEM string) or `certificateAuthorityFile` (path).
+
+### OpenID/OAuth2 callback security
+
+To prevent open redirects, the `callback_ui` query parameter in the OpenID/OAuth2 login flow is restricted. For custom UIs that need to redirect to an external origin after login, configure `auth.openid.callbackAllowOrigins` with the list of allowed absolute URL origins (for example, `["https://ui.example.com"]`). If empty, only same-origin relative paths are allowed.
+
+### GraphQL and UI: tag timestamps
+
+The GraphQL API `ImageSummary` now includes `TaggedTimestamp`. The web UI tag details view shows a **Last Tagged** timestamp.
+
+### Bug fixes
+
+- Authorization is no longer skipped for the `latest` tag on update operations.
+- Sync skips OCI conversion when the image is already synced, avoiding unnecessary work and digest changes.
+- Miscellaneous fixes for path handling on Windows, metadata (`LastUpdated` and tag timestamps), and configuration.
+
 ## [v2.1.14](https://github.com/project-zot/zot/releases/tag/v2.1.14)
 
 ### Workload Identity Federation
