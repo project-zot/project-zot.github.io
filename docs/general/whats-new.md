@@ -1,5 +1,42 @@
 # What's New
 
+## [v2.1.15](https://github.com/project-zot/zot/releases/tag/v2.1.15)
+
+### GCS Storage Support
+
+zot now supports Google Cloud Storage (GCS) as a storage backend, expanding the available storage options alongside existing S3-compatible storage solutions.
+
+### Dynamic TLS Certificate Reloading
+
+TLS certificates can now be automatically reloaded when changed on disk, eliminating the need to restart zot when certificates are renewed. This is particularly useful in environments with short-lived certificates or automated certificate rotation.
+
+### Enhanced OIDC and JWT Authentication
+
+Multiple improvements to authentication capabilities:
+
+- **Per-issuer CA support**: Configure custom certificate authorities for individual OIDC issuers
+- **AWS Secrets Manager integration**: Support for AWS Secrets Manager for JWT verification key storage
+- **Fine-grained JWT expiration**: Configure `exp` claim at the access entry level for more granular token lifetime control
+
+### UI and GraphQL Enhancements
+
+- Added `TaggedTimestamp` to `ImageSummary` returned by GraphQL API
+- "Last Tagged" timestamp now displayed in the tag details view in zot's UI
+
+### Sync Improvements
+
+- **Legacy Cosign tag filtering**: New `SyncLegacyCosignTags` configuration option to selectively skip syncing legacy cosign/SBOM tags
+- **Smart OCI conversion**: Skip OCI conversion for already-synced images, improving sync performance
+
+### Security Fixes
+
+- Fixed open redirect vulnerability via `callback_ui`
+- Ensured "latest" tag authz checks are not skipped during updates
+
+### Bug fixes
+
+Many bug fixes around metadata timestamps, Windows path handling, and other miscellaneous features.
+
 ## [v2.1.14](https://github.com/project-zot/zot/releases/tag/v2.1.14)
 
 ### Workload Identity Federation

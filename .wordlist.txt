@@ -107,6 +107,7 @@ fullname
 Fullstack
 gc
 gcInterval
+GCS
 gcr
 ghcr
 GitHub
@@ -152,6 +153,7 @@ inlinehilite
 io
 IoT
 JSON
+JWT
 json
 keepTags
 KEP
