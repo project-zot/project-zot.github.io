@@ -64,7 +64,138 @@ The following table lists the configurable attributes.
 |-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `realm`   | A string typically related to the authentication scheme (*BASIC* and *BEARER*).                                                                                                                |
 | `service` | The name of the authentication service.                                                                                                                                                        |
-| `cert`    | The path and filename containing the public key to use to verify tokens. This file can either contain the public key directly, or an SSL/TLS certificate from which the key will be extracted. |
+| `cert`    | (Required for traditional bearer authentication unless `awsSecretsManager` is configured) The path and filename containing the public key to use to verify tokens. This file can either contain the public key directly, or an SSL/TLS certificate from which the key will be extracted. Mutually exclusive with `awsSecretsManager`. |
+| `awsSecretsManager` | (Required for traditional bearer authentication unless `cert` is configured) Configuration to load JWT verification keys from AWS Secrets Manager instead of a static certificate file. Mutually exclusive with `cert`. See [Bearer authentication with AWS Secrets Manager](#bearer-authentication-with-aws-secrets-manager). |
+
+<a name="bearer-authentication-with-aws-secrets-manager"></a>
+
+#### Bearer authentication with AWS Secrets Manager
+
+You can store JWT verification keys in AWS Secrets Manager and have zot load them dynamically. This allows key rotation without restarting zot and centralizes key management across multiple zot instances.
+
+Configure `awsSecretsManager` under `auth.bearer`:
+
+```json
+    "http": {
+      ...
+      "auth": {
+        "bearer": {
+          "realm": "https://auth.myreg.io/auth/token",
+          "service": "myauth",
+          "awsSecretsManager": {
+            "region": "us-east-1",
+            "secretName": "zot/jwt-verification-keys",
+            "refreshInterval": "5m"
+          }
+        }
+      }
+    }
+```
+
+| Attribute | Description |
+|-----------|-------------|
+| `region` | (Required) The AWS region where the secret is stored. |
+| `secretName` | (Required) The name or ARN of the secret in AWS Secrets Manager. |
+| `refreshInterval` | (Optional) How often to refresh keys from AWS. Default: `1m`. |
+
+The secret must be a JSON object mapping key IDs (`kid` values) to verification keys. Each value can be either a PEM-encoded public key string or a JWKS (JSON Web Key Set) JSON string containing a single key.
+
+**Example: PEM-encoded keys**
+
+```json
+{
+  "key-id-1": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA...\n-----END PUBLIC KEY-----\n",
+  "key-id-2": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG...\n-----END PUBLIC KEY-----\n"
+}
+```
+
+**Example: JWKS-encoded keys**
+
+```json
+{
+  "key-id-1": "{\"keys\":[{\"kty\":\"OKP\",\"crv\":\"Ed25519\",\"x\":\"...\"}]}"
+}
+```
+
+Supported key types include Ed25519 (EdDSA), RSA (`RS*`/`PS*`), and ECDSA (`ES*`). During verification, zot selects the appropriate key based on the `kid` in the JWT header and uses the corresponding public key (from PEM or JWKS) to verify the signature.
+
+**JWT token requirements**
+
+JWTs presented to zot must include a `kid` (Key ID) header that matches one of the key IDs in the secret. This is how zot selects the correct public key for verification.
+
+Example header:
+
+```json
+{
+  "alg": "EdDSA",
+  "kid": "key-id-1",
+  "typ": "JWT"
+}
+```
+
+Example payload:
+
+```json
+{
+  "iss": "https://auth.example.com",
+  "sub": "service-account-1",
+  "aud": ["zot"],
+  "exp": 1705258800,
+  "iat": 1705255200,
+  "access": [
+    {
+      "type": "repository",
+      "name": "my-app",
+      "actions": ["pull", "push"]
+    }
+  ]
+}
+```
+
+**Key rotation**
+
+To rotate keys without downtime:
+
+1. Add the new key to the secret in AWS Secrets Manager alongside the existing key(s).
+2. Update your token issuer to sign new tokens with the new key ID.
+3. Wait for the `refreshInterval` to elapse so zot picks up the new key.
+4. Remove the old key from the secret once tokens signed with the old key have expired.
+
+**Compatibility and constraints**
+
+- AWS Secrets Manager bearer authentication can coexist with OIDC workload identity: you can configure both sets of credentials, and zot will accept bearer tokens validated either via OIDC or via keys loaded from AWS Secrets Manager.
+- The static `cert` option and `awsSecretsManager` are mutually exclusive; zot will refuse to start if both are configured for the same `bearer` block.
+
+**AWS authentication and IAM permissions**
+
+zot uses the default AWS credential chain to authenticate with AWS Secrets Manager, so you can use:
+
+- Environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN` (optional)
+- Shared credentials file: `~/.aws/credentials`
+- IAM roles (EC2/ECS/EKS)
+- Web identity tokens (for example, EKS with IRSA)
+
+The IAM principal used by zot must be allowed to read the secret, for example:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "secretsmanager:GetSecretValue",
+      "Resource": "arn:aws:secretsmanager:us-east-1:123456789012:secret:zot/jwt-verification-keys-*"
+    }
+  ]
+}
+```
+
+**Troubleshooting and security considerations**
+
+- Ensure `region` and `secretName` are set; both are required.
+- Check AWS credentials and IAM policy if zot cannot fetch or parse the secret.
+- JWTs must include a `kid` header that matches a key in the secret.
+- Use least privilege on IAM (only `secretsmanager:GetSecretValue` for the specific secret ARN) and prefer short refresh intervals (1–5 minutes) so rotations are picked up quickly.
 
 <a name="mtls-authentication"></a>
 ## Mutual TLS authentication
@@ -524,15 +655,15 @@ The following table lists the configurable attributes of the oidc credentials fi
 
 #### Using Google, GitHub, or GitLab
 
-A client logging into zot by social login must specify a supported OpenID/OAuth2 provider as a URL query parameter.  A client logging in using Google, GitHub, or GitLab must additionally specify a callback URL for redirection to a zot page after a successful authentication. 
+A client logging into zot by social login must specify a supported OpenID/OAuth2 provider as a URL query parameter. A client logging in using Google, GitHub, or GitLab must additionally supply a `callback_ui` value that tells zot where to redirect after a successful authentication. In the typical (and recommended) configuration this value is a same-origin **relative path**; only when its origin is explicitly allowlisted can `callback_ui` be an absolute URL.
 
 The login URL using Google, GitHub, or GitLab uses the following format:
 
-    http://<zot-server>/auth/login?provider=<provider>&callback_ui=<zot-server>/<page>
+    http://<zot-server>/auth/login?provider=<provider>&callback_ui=<path>
 
 For example, a user logging in to the zot home page using GitHub as the authentication provider sends this URL:
 
-    http://zot.example.com:8080/auth/login?provider=github&callback_ui=http://zot.example.com:8080/home
+    http://zot.example.com:8080/auth/login?provider=github&callback_ui=/home
 
 Based on the specified provider, zot redirects the login to a provider service with the following URL:
 
@@ -544,13 +675,36 @@ For the GitHub authentication example:
 
 :pencil2: If your network policy doesn't allow inbound connections, the callback will not work and this authentication method will fail.
 
+For security, zot restricts the `callback_ui` parameter to prevent open redirects.
+
+- By default, `callback_ui` must be a **same-origin relative path** (for example, `/v2/` or `/home`).
+- If you want to use an **absolute URL** in `callback_ui` (for example, redirect to a custom UI on a different origin), you must add that URL origin to `auth.openid.callbackAllowOrigins`. Absolute URLs are rejected unless their origin is explicitly allowlisted.
+
+Example allowlist configuration:
+
+```json
+  "http": {
+    ...
+    "auth": {
+      "openid": {
+        "callbackAllowOrigins": ["https://ui.example.com", "http://localhost:3000"],
+        "providers": {
+          ...
+        }
+      }
+    }
+  }
+```
+
 ### Using GitHub Enterprise
 
 Some self-hosted applications such as GitHub Enterprise require custom auth url,
 token url and username claim mapping.
 
 ```json
-  "auth": {
+  "http": {
+    ...
+    "auth": {
       "openid": {
         "providers": {
           "github": {
@@ -565,6 +719,8 @@ token url and username claim mapping.
           }
         }
       }
+    }
+  }
 ```
 
 #### Using dex

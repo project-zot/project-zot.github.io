@@ -1,7 +1,10 @@
 accesskey
 ACL
 AIX
+ARN
 allocs
+allowlist
+allowlisted
 alongside
 amd
 apache
@@ -88,7 +91,11 @@ dropdown
 dryRun
 DynamoDB
 ecr
+ECDSA
+ECS
 ECR
+EdDSA
+EKS
 ExpandedRepoInfo
 ExpandedRepoInfo
 ExtensionList
@@ -152,8 +159,11 @@ in-place
 inlinehilite
 io
 IoT
+IRSA
 JSON
 JWT
+JWKS
+JWTs
 json
 keepTags
 KEP
@@ -224,6 +234,7 @@ ORA
 oras
 osscluster
 OSSF
+PEM
 permalink
 PKI
 plaintext
@@ -259,6 +270,7 @@ retryDelay
 roadmap
 rootdirectory
 rootDirectory
+RSA
 runc
 runtime
 runtimes
