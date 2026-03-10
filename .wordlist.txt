@@ -295,6 +295,7 @@ subpaths
 substring
 subtree
 subtrees
+syncLegacyCosignTags
 syncTimeout
 systemd
 threadcreate
