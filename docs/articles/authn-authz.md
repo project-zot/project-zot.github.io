@@ -64,7 +64,287 @@ The following table lists the configurable attributes.
 |-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `realm`   | A string typically related to the authentication scheme (*BASIC* and *BEARER*).                                                                                                                |
 | `service` | The name of the authentication service.                                                                                                                                                        |
-| `cert`    | The path and filename containing the public key to use to verify tokens. This file can either contain the public key directly, or an SSL/TLS certificate from which the key will be extracted. |
+| `cert`    | (Required for *traditional* JWT bearer verification unless `awsSecretsManager` or `oidc` is used.) Path to the public key or certificate used to verify tokens. Mutually exclusive with `awsSecretsManager`. Omit when using only [OIDC workload identity](#oidc-bearer-workload-identity). |
+| `awsSecretsManager` | (Required for *traditional* JWT bearer verification unless `cert` or `oidc` is used.) Load JWT verification keys from AWS Secrets Manager. Mutually exclusive with `cert`. See [Bearer authentication with AWS Secrets Manager](#bearer-authentication-with-aws-secrets-manager). Omit when using only OIDC workload identity. |
+| `oidc`    | (Optional) OIDC workload identity: validate Bearer tokens as OIDC ID tokens (e.g. Kubernetes ServiceAccount, GitHub Actions). No `cert` or `awsSecretsManager` needed when using only OIDC. See [OIDC Bearer (Workload Identity)](#oidc-bearer-workload-identity). |
+
+<a name="per-entry-expiration"></a>
+
+#### Per-entry expiration in the JWT `access` claim
+
+As a zot extension to the [Distribution token authentication specification](https://distribution.github.io/distribution/spec/auth/jwt/), each entry in the JWT `access` claim can carry its own `exp` (expiration) field. When present, zot checks this per-entry expiration in addition to the standard top-level `exp` claim. If a specific access entry has expired, it is skipped during authorization even though the overall token is still valid.
+
+This is useful when a single token grants access to multiple repositories with different lifetimes — for example, a long-lived subscription alongside a time-limited trial.
+
+```json
+{
+  "access": [
+    {
+      "type": "repository",
+      "name": "product-a",
+      "actions": ["pull"],
+      "exp": 1893456000
+    },
+    {
+      "type": "repository",
+      "name": "product-b-trial",
+      "actions": ["pull"],
+      "exp": 1705258800
+    }
+  ]
+}
+```
+
+In the example above, once the `product-b-trial` entry expires the token still grants pull access to `product-a` (assuming the top-level `exp` has not expired). If the per-entry `exp` is omitted, the entry inherits the token-level expiration as usual.
+
+<a name="bearer-authentication-with-aws-secrets-manager"></a>
+
+#### Bearer authentication with AWS Secrets Manager
+
+You can store JWT verification keys in AWS Secrets Manager and have zot load them dynamically. This allows key rotation without restarting zot and centralizes key management across multiple zot instances.
+
+Configure `awsSecretsManager` under `auth.bearer`:
+
+```json
+    "http": {
+      ...
+      "auth": {
+        "bearer": {
+          "realm": "https://auth.myreg.io/auth/token",
+          "service": "myauth",
+          "awsSecretsManager": {
+            "region": "us-east-1",
+            "secretName": "zot/jwt-verification-keys",
+            "refreshInterval": "5m"
+          }
+        }
+      }
+    }
+```
+
+| Attribute | Description |
+|-----------|-------------|
+| `region` | (Required) The AWS region where the secret is stored. |
+| `secretName` | (Required) The name or ARN of the secret in AWS Secrets Manager. |
+| `refreshInterval` | (Optional) How often to refresh keys from AWS. Default: `1m`. |
+
+The secret must be a JSON object mapping key IDs (`kid` values) to verification keys. Each value can be either a PEM-encoded public key string or a JWKS (JSON Web Key Set) JSON string containing a single key.
+
+**Example: PEM-encoded keys**
+
+```json
+{
+  "key-id-1": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA...\n-----END PUBLIC KEY-----\n",
+  "key-id-2": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG...\n-----END PUBLIC KEY-----\n"
+}
+```
+
+**Example: JWKS-encoded keys**
+
+```json
+{
+  "key-id-1": "{\"keys\":[{\"kty\":\"OKP\",\"crv\":\"Ed25519\",\"x\":\"...\"}]}"
+}
+```
+
+Supported key types include Ed25519 (EdDSA), RSA (`RS*`/`PS*`), and ECDSA (`ES*`). During verification, zot selects the appropriate key based on the `kid` in the JWT header and uses the corresponding public key (from PEM or JWKS) to verify the signature.
+
+**JWT token requirements**
+
+JWTs presented to zot must include a `kid` (Key ID) header that matches one of the key IDs in the secret. This is how zot selects the correct public key for verification.
+
+Example header:
+
+```json
+{
+  "alg": "EdDSA",
+  "kid": "key-id-1",
+  "typ": "JWT"
+}
+```
+
+Example payload:
+
+```json
+{
+  "iss": "https://auth.example.com",
+  "sub": "service-account-1",
+  "aud": ["zot"],
+  "exp": 1705258800,
+  "iat": 1705255200,
+  "access": [
+    {
+      "type": "repository",
+      "name": "my-app",
+      "actions": ["pull", "push"]
+    }
+  ]
+}
+```
+
+**Key rotation**
+
+To rotate keys without downtime:
+
+1. Add the new key to the secret in AWS Secrets Manager alongside the existing key(s).
+2. Update your token issuer to sign new tokens with the new key ID.
+3. Wait for the `refreshInterval` to elapse so zot picks up the new key.
+4. Remove the old key from the secret once tokens signed with the old key have expired.
+
+**Compatibility and constraints**
+
+- AWS Secrets Manager bearer authentication can coexist with OIDC workload identity: you can configure both sets of credentials, and zot will accept bearer tokens validated either via OIDC or via keys loaded from AWS Secrets Manager.
+- The static `cert` option and `awsSecretsManager` are mutually exclusive; zot will refuse to start if both are configured for the same `bearer` block.
+
+**AWS authentication and IAM permissions**
+
+zot uses the default AWS credential chain to authenticate with AWS Secrets Manager, so you can use:
+
+- Environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN` (optional)
+- Shared credentials file: `~/.aws/credentials`
+- IAM roles (EC2/ECS/EKS)
+- Web identity tokens (for example, EKS with IRSA)
+
+The IAM principal used by zot must be allowed to read the secret, for example:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "secretsmanager:GetSecretValue",
+      "Resource": "arn:aws:secretsmanager:us-east-1:123456789012:secret:zot/jwt-verification-keys-*"
+    }
+  ]
+}
+```
+
+**Troubleshooting and security considerations**
+
+- Ensure `region` and `secretName` are set; both are required.
+- Check AWS credentials and IAM policy if zot cannot fetch or parse the secret.
+- JWTs must include a `kid` header that matches a key in the secret.
+- Use least privilege on IAM (only `secretsmanager:GetSecretValue` for the specific secret ARN) and prefer short refresh intervals (1–5 minutes) so rotations are picked up quickly.
+
+<a name="oidc-bearer-workload-identity"></a>
+
+#### OIDC Bearer (Workload Identity)
+
+Workloads (e.g. Kubernetes pods, CI/CD pipelines) can authenticate to zot using **OIDC ID tokens** in the `Authorization: Bearer` header, with no static credentials. zot validates the token with the configured OIDC issuer and maps claims to identities used for [access control](#authorization). This is often called *workload identity federation*.
+
+Unlike traditional bearer tokens (which carry repository permissions in the JWT `access` claim and bypass `accessControl`), OIDC tokens carry **identity only** — authorization is enforced entirely through [`accessControl`](#authorization) policies. If an OIDC-authenticated user is not listed in any policy, the request is rejected with 403.
+
+You can configure one or more OIDC issuers under `auth.bearer.oidc`. When multiple issuers are configured, zot tries each in order until one validates the token. Neither `cert` nor `awsSecretsManager` is required when using only OIDC workload identity. OIDC can also coexist with traditional bearer authentication (`cert` or `awsSecretsManager`); in that case, zot tries OIDC first, then falls back to traditional bearer verification.
+
+zot lazily initializes OIDC providers on first authentication, so startup is not blocked if an issuer is temporarily unreachable.
+
+**Basic configuration**
+
+```json
+    "http": {
+      ...
+      "auth": {
+        "bearer": {
+          "realm": "zot",
+          "service": "zot-service",
+          "oidc": [
+            {
+              "issuer": "https://kubernetes.default.svc.cluster.local",
+              "audiences": ["zot", "https://zot.example.com"]
+            }
+          ]
+        }
+      }
+    }
+```
+
+| Attribute | Description |
+|-----------|-------------|
+| `issuer` | (Required) OIDC issuer URL that signs the tokens (e.g. Kubernetes API server, GitHub OIDC). |
+| `audiences` | (Required) List of acceptable token audiences. At least one must be specified. |
+| `claimMapping` | (Optional) [CEL](https://github.com/google/cel-spec) expressions to validate claims and map them to username and groups. See [Claim mapping with CEL](#oidc-claim-mapping). Default username: `claims.iss + '/' + claims.sub`. |
+| `certificateAuthority` | (Optional) PEM-encoded CA used to validate the issuer's TLS. Mutually exclusive with `certificateAuthorityFile`. |
+| `certificateAuthorityFile` | (Optional) Path to a PEM file for the issuer's TLS CA. Mutually exclusive with `certificateAuthority`. |
+| `skipIssuerVerification` | (Optional) Skip issuer verification; for testing only. Default: `false`. |
+
+Use `accessControl.repositories` to grant access to the identities produced by the CEL username (for example, a Kubernetes ServiceAccount username such as `system:serviceaccount:<namespace>:<name>` or the default `claims.iss + '/' + claims.sub`). A minimal configuration that ties OIDC workload identities to a repository might look like:
+
+```json
+    "http": {
+      ...
+      "auth": {
+        "bearer": {
+          "realm": "zot",
+          "service": "zot-service",
+          "oidc": [
+            {
+              "issuer": "https://kubernetes.default.svc.cluster.local",
+              "audiences": ["zot"],
+              "claimMapping": {
+                "username": "claims.iss + '/' + claims.sub"
+              }
+            }
+          ]
+        }
+      },
+      "accessControl": {
+        "repositories": {
+          "**": {
+            "policies": [
+              {
+                "users": [
+                  "https://kubernetes.default.svc.cluster.local/system:serviceaccount:flux-system:source-controller"
+                ],
+                "actions": ["read", "create", "update", "delete"]
+              }
+            ]
+          }
+        }
+      }
+    }
+```
+
+<a name="oidc-claim-mapping"></a>
+
+**Claim mapping with CEL**
+
+The optional `claimMapping` object controls how OIDC token claims are validated and mapped to zot identities. CEL expressions have access to:
+
+- **`claims`**: The OIDC token claims as a map (e.g. `claims.sub`, `claims.email`, `claims['kubernetes.io/serviceaccount/namespace']`).
+- **`vars`**: Previously extracted variables (available in `validations`, `username`, and `groups` expressions).
+
+| Sub-attribute | Description |
+|---------------|-------------|
+| `username` | CEL expression that evaluates to a string used as the zot username. Default: `claims.iss + '/' + claims.sub`. |
+| `groups` | CEL expression that evaluates to a list of strings used as group membership. Default: none. |
+| `variables` | List of intermediate variables extracted from claims. Each entry has a `name` and a CEL `expression`. Variables are evaluated in order and later entries can reference earlier ones via `vars.<name>`. |
+| `validations` | List of rules that must pass for the token to be accepted. Each entry has a boolean CEL `expression` and a `message` returned when the expression evaluates to `false`. |
+
+Example: restricting GitHub Actions tokens to a specific organization and mapping the repository name as the zot username:
+
+```json
+          "oidc": [
+            {
+              "issuer": "https://token.actions.githubusercontent.com",
+              "audiences": ["zot"],
+              "claimMapping": {
+                "variables": [
+                  { "name": "owner", "expression": "claims.repository_owner" },
+                  { "name": "repo",  "expression": "claims.repository" }
+                ],
+                "validations": [
+                  {
+                    "expression": "vars.owner == 'my-org'",
+                    "message": "only my-org repositories are allowed"
+                  }
+                ],
+                "username": "vars.repo",
+                "groups": "['github-actions', 'ci']"
+              }
+            }
+          ]
+```
 
 <a name="mtls-authentication"></a>
 ## Mutual TLS authentication
@@ -524,15 +804,15 @@ The following table lists the configurable attributes of the oidc credentials fi
 
 #### Using Google, GitHub, or GitLab
 
-A client logging into zot by social login must specify a supported OpenID/OAuth2 provider as a URL query parameter.  A client logging in using Google, GitHub, or GitLab must additionally specify a callback URL for redirection to a zot page after a successful authentication. 
+A client logging into zot by social login must specify a supported OpenID/OAuth2 provider as a URL query parameter. A client logging in using Google, GitHub, or GitLab must additionally supply a `callback_ui` value that tells zot where to redirect after a successful authentication. In the typical (and recommended) configuration this value is a same-origin **relative path**; only when its origin is explicitly allowlisted can `callback_ui` be an absolute URL.
 
 The login URL using Google, GitHub, or GitLab uses the following format:
 
-    http://<zot-server>/auth/login?provider=<provider>&callback_ui=<zot-server>/<page>
+    http://<zot-server>/auth/login?provider=<provider>&callback_ui=<path>
 
 For example, a user logging in to the zot home page using GitHub as the authentication provider sends this URL:
 
-    http://zot.example.com:8080/auth/login?provider=github&callback_ui=http://zot.example.com:8080/home
+    http://zot.example.com:8080/auth/login?provider=github&callback_ui=/home
 
 Based on the specified provider, zot redirects the login to a provider service with the following URL:
 
@@ -544,13 +824,36 @@ For the GitHub authentication example:
 
 :pencil2: If your network policy doesn't allow inbound connections, the callback will not work and this authentication method will fail.
 
+For security, zot restricts the `callback_ui` parameter to prevent open redirects.
+
+- By default, `callback_ui` must be a **same-origin relative path** (for example, `/v2/` or `/home`).
+- If you want to use an **absolute URL** in `callback_ui` (for example, redirect to a custom UI on a different origin), you must add that URL origin to `auth.openid.callbackAllowOrigins`. Absolute URLs are rejected unless their origin is explicitly allowlisted.
+
+Example allowlist configuration:
+
+```json
+  "http": {
+    ...
+    "auth": {
+      "openid": {
+        "callbackAllowOrigins": ["https://ui.example.com", "http://localhost:3000"],
+        "providers": {
+          ...
+        }
+      }
+    }
+  }
+```
+
 ### Using GitHub Enterprise
 
 Some self-hosted applications such as GitHub Enterprise require custom auth url,
 token url and username claim mapping.
 
 ```json
-  "auth": {
+  "http": {
+    ...
+    "auth": {
       "openid": {
         "providers": {
           "github": {
@@ -565,6 +868,8 @@ token url and username claim mapping.
           }
         }
       }
+    }
+  }
 ```
 
 #### Using dex
