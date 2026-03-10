@@ -68,6 +68,35 @@ The following table lists the configurable attributes.
 | `awsSecretsManager` | (Required for *traditional* JWT bearer verification unless `cert` or `oidc` is used.) Load JWT verification keys from AWS Secrets Manager. Mutually exclusive with `cert`. See [Bearer authentication with AWS Secrets Manager](#bearer-authentication-with-aws-secrets-manager). Omit when using only OIDC workload identity. |
 | `oidc`    | (Optional) OIDC workload identity: validate Bearer tokens as OIDC ID tokens (e.g. Kubernetes ServiceAccount, GitHub Actions). No `cert` or `awsSecretsManager` needed when using only OIDC. See [OIDC Bearer (Workload Identity)](#oidc-bearer-workload-identity). |
 
+<a name="per-entry-expiration"></a>
+
+#### Per-entry expiration in the JWT `access` claim
+
+As a zot extension to the [Distribution token authentication specification](https://distribution.github.io/distribution/spec/auth/jwt/), each entry in the JWT `access` claim can carry its own `exp` (expiration) field. When present, zot checks this per-entry expiration in addition to the standard top-level `exp` claim. If a specific access entry has expired, it is skipped during authorization even though the overall token is still valid.
+
+This is useful when a single token grants access to multiple repositories with different lifetimes — for example, a long-lived subscription alongside a time-limited trial.
+
+```json
+{
+  "access": [
+    {
+      "type": "repository",
+      "name": "product-a",
+      "actions": ["pull"],
+      "exp": 1893456000
+    },
+    {
+      "type": "repository",
+      "name": "product-b-trial",
+      "actions": ["pull"],
+      "exp": 1705258800
+    }
+  ]
+}
+```
+
+In the example above, once the `product-b-trial` entry expires the token still grants pull access to `product-a` (assuming the top-level `exp` has not expired). If the per-entry `exp` is omitted, the entry inherits the token-level expiration as usual.
+
 <a name="bearer-authentication-with-aws-secrets-manager"></a>
 
 #### Bearer authentication with AWS Secrets Manager
@@ -204,7 +233,11 @@ The IAM principal used by zot must be allowed to read the secret, for example:
 
 Workloads (e.g. Kubernetes pods, CI/CD pipelines) can authenticate to zot using **OIDC ID tokens** in the `Authorization: Bearer` header, with no static credentials. zot validates the token with the configured OIDC issuer and maps claims to identities used for [access control](#authorization). This is often called *workload identity federation*.
 
-You can configure one or more OIDC issuers under `auth.bearer.oidc`. Neither `cert` nor `awsSecretsManager` is required when using only OIDC workload identity.
+Unlike traditional bearer tokens (which carry repository permissions in the JWT `access` claim and bypass `accessControl`), OIDC tokens carry **identity only** — authorization is enforced entirely through [`accessControl`](#authorization) policies. If an OIDC-authenticated user is not listed in any policy, the request is rejected with 403.
+
+You can configure one or more OIDC issuers under `auth.bearer.oidc`. When multiple issuers are configured, zot tries each in order until one validates the token. Neither `cert` nor `awsSecretsManager` is required when using only OIDC workload identity. OIDC can also coexist with traditional bearer authentication (`cert` or `awsSecretsManager`); in that case, zot tries OIDC first, then falls back to traditional bearer verification.
+
+zot lazily initializes OIDC providers on first authentication, so startup is not blocked if an issuer is temporarily unreachable.
 
 **Basic configuration**
 
@@ -230,7 +263,7 @@ You can configure one or more OIDC issuers under `auth.bearer.oidc`. Neither `ce
 |-----------|-------------|
 | `issuer` | (Required) OIDC issuer URL that signs the tokens (e.g. Kubernetes API server, GitHub OIDC). |
 | `audiences` | (Required) List of acceptable token audiences. At least one must be specified. |
-| `claimMapping` | (Optional) [CEL](https://github.com/google/cel-spec) expressions to map claims to username and groups. Default username: `claims.iss + '/' + claims.sub`. |
+| `claimMapping` | (Optional) [CEL](https://github.com/google/cel-spec) expressions to validate claims and map them to username and groups. See [Claim mapping with CEL](#oidc-claim-mapping). Default username: `claims.iss + '/' + claims.sub`. |
 | `certificateAuthority` | (Optional) PEM-encoded CA used to validate the issuer's TLS. Mutually exclusive with `certificateAuthorityFile`. |
 | `certificateAuthorityFile` | (Optional) Path to a PEM file for the issuer's TLS CA. Mutually exclusive with `certificateAuthority`. |
 | `skipIssuerVerification` | (Optional) Skip issuer verification; for testing only. Default: `false`. |
@@ -270,6 +303,47 @@ Use `accessControl.repositories` to grant access to the identities produced by t
         }
       }
     }
+```
+
+<a name="oidc-claim-mapping"></a>
+
+**Claim mapping with CEL**
+
+The optional `claimMapping` object controls how OIDC token claims are validated and mapped to zot identities. CEL expressions have access to:
+
+- **`claims`**: The OIDC token claims as a map (e.g. `claims.sub`, `claims.email`, `claims['kubernetes.io/serviceaccount/namespace']`).
+- **`vars`**: Previously extracted variables (available in `validations`, `username`, and `groups` expressions).
+
+| Sub-attribute | Description |
+|---------------|-------------|
+| `username` | CEL expression that evaluates to a string used as the zot username. Default: `claims.iss + '/' + claims.sub`. |
+| `groups` | CEL expression that evaluates to a list of strings used as group membership. Default: none. |
+| `variables` | List of intermediate variables extracted from claims. Each entry has a `name` and a CEL `expression`. Variables are evaluated in order and later entries can reference earlier ones via `vars.<name>`. |
+| `validations` | List of rules that must pass for the token to be accepted. Each entry has a boolean CEL `expression` and a `message` returned when the expression evaluates to `false`. |
+
+Example: restricting GitHub Actions tokens to a specific organization and mapping the repository name as the zot username:
+
+```json
+          "oidc": [
+            {
+              "issuer": "https://token.actions.githubusercontent.com",
+              "audiences": ["zot"],
+              "claimMapping": {
+                "variables": [
+                  { "name": "owner", "expression": "claims.repository_owner" },
+                  { "name": "repo",  "expression": "claims.repository" }
+                ],
+                "validations": [
+                  {
+                    "expression": "vars.owner == 'my-org'",
+                    "message": "only my-org repositories are allowed"
+                  }
+                ],
+                "username": "vars.repo",
+                "groups": "['github-actions', 'ci']"
+              }
+            }
+          ]
 ```
 
 <a name="mtls-authentication"></a>
