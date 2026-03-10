@@ -38,6 +38,7 @@ Bugfixes
 busybox
 caching
 CD
+CEL
 certDir
 checksum
 checksums

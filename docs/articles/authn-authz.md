@@ -64,8 +64,9 @@ The following table lists the configurable attributes.
 |-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `realm`   | A string typically related to the authentication scheme (*BASIC* and *BEARER*).                                                                                                                |
 | `service` | The name of the authentication service.                                                                                                                                                        |
-| `cert`    | (Required for traditional bearer authentication unless `awsSecretsManager` is configured) The path and filename containing the public key to use to verify tokens. This file can either contain the public key directly, or an SSL/TLS certificate from which the key will be extracted. Mutually exclusive with `awsSecretsManager`. |
-| `awsSecretsManager` | (Required for traditional bearer authentication unless `cert` is configured) Configuration to load JWT verification keys from AWS Secrets Manager instead of a static certificate file. Mutually exclusive with `cert`. See [Bearer authentication with AWS Secrets Manager](#bearer-authentication-with-aws-secrets-manager). |
+| `cert`    | (Required for *traditional* JWT bearer verification unless `awsSecretsManager` or `oidc` is used.) Path to the public key or certificate used to verify tokens. Mutually exclusive with `awsSecretsManager`. Omit when using only [OIDC workload identity](#oidc-bearer-workload-identity). |
+| `awsSecretsManager` | (Required for *traditional* JWT bearer verification unless `cert` or `oidc` is used.) Load JWT verification keys from AWS Secrets Manager. Mutually exclusive with `cert`. See [Bearer authentication with AWS Secrets Manager](#bearer-authentication-with-aws-secrets-manager). Omit when using only OIDC workload identity. |
+| `oidc`    | (Optional) OIDC workload identity: validate Bearer tokens as OIDC ID tokens (e.g. Kubernetes ServiceAccount, GitHub Actions). No `cert` or `awsSecretsManager` needed when using only OIDC. See [OIDC Bearer (Workload Identity)](#oidc-bearer-workload-identity). |
 
 <a name="bearer-authentication-with-aws-secrets-manager"></a>
 
@@ -196,6 +197,80 @@ The IAM principal used by zot must be allowed to read the secret, for example:
 - Check AWS credentials and IAM policy if zot cannot fetch or parse the secret.
 - JWTs must include a `kid` header that matches a key in the secret.
 - Use least privilege on IAM (only `secretsmanager:GetSecretValue` for the specific secret ARN) and prefer short refresh intervals (1–5 minutes) so rotations are picked up quickly.
+
+<a name="oidc-bearer-workload-identity"></a>
+
+#### OIDC Bearer (Workload Identity)
+
+Workloads (e.g. Kubernetes pods, CI/CD pipelines) can authenticate to zot using **OIDC ID tokens** in the `Authorization: Bearer` header, with no static credentials. zot validates the token with the configured OIDC issuer and maps claims to identities used for [access control](#authorization). This is often called *workload identity federation*.
+
+You can configure one or more OIDC issuers under `auth.bearer.oidc`. Neither `cert` nor `awsSecretsManager` is required when using only OIDC workload identity.
+
+**Basic configuration**
+
+```json
+    "http": {
+      ...
+      "auth": {
+        "bearer": {
+          "realm": "zot",
+          "service": "zot-service",
+          "oidc": [
+            {
+              "issuer": "https://kubernetes.default.svc.cluster.local",
+              "audiences": ["zot", "https://zot.example.com"]
+            }
+          ]
+        }
+      }
+    }
+```
+
+| Attribute | Description |
+|-----------|-------------|
+| `issuer` | (Required) OIDC issuer URL that signs the tokens (e.g. Kubernetes API server, GitHub OIDC). |
+| `audiences` | (Required) List of acceptable token audiences. At least one must be specified. |
+| `claimMapping` | (Optional) [CEL](https://github.com/google/cel-spec) expressions to map claims to username and groups. Default username: `claims.iss + '/' + claims.sub`. |
+| `certificateAuthority` | (Optional) PEM-encoded CA used to validate the issuer's TLS. Mutually exclusive with `certificateAuthorityFile`. |
+| `certificateAuthorityFile` | (Optional) Path to a PEM file for the issuer's TLS CA. Mutually exclusive with `certificateAuthority`. |
+| `skipIssuerVerification` | (Optional) Skip issuer verification; for testing only. Default: `false`. |
+
+Use `accessControl.repositories` to grant access to the identities produced by the CEL username (for example, a Kubernetes ServiceAccount username such as `system:serviceaccount:<namespace>:<name>` or the default `claims.iss + '/' + claims.sub`). A minimal configuration that ties OIDC workload identities to a repository might look like:
+
+```json
+    "http": {
+      ...
+      "auth": {
+        "bearer": {
+          "realm": "zot",
+          "service": "zot-service",
+          "oidc": [
+            {
+              "issuer": "https://kubernetes.default.svc.cluster.local",
+              "audiences": ["zot"],
+              "claimMapping": {
+                "username": "claims.iss + '/' + claims.sub"
+              }
+            }
+          ]
+        }
+      },
+      "accessControl": {
+        "repositories": {
+          "**": {
+            "policies": [
+              {
+                "users": [
+                  "https://kubernetes.default.svc.cluster.local/system:serviceaccount:flux-system:source-controller"
+                ],
+                "actions": ["read", "create", "update", "delete"]
+              }
+            ]
+          }
+        }
+      }
+    }
+```
 
 <a name="mtls-authentication"></a>
 ## Mutual TLS authentication
