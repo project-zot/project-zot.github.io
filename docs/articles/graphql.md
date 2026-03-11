@@ -727,19 +727,170 @@ The query structures shown in these examples request all fields allowed by the s
 
 ### Get details of a specific image
 
+This query returns an `ImageSummary` for a specific `<repo>:<tag>` reference and can include image-level details (metadata, timestamps, security posture) as well as per-manifest details for multi-arch indexes.
+
 **Sample query**
 
 ```graphql
 {
-  Image(image: "mariadb:latest") {
+  Image(image: "alpine:latest") {
     RepoName
     Tag
-    LastUpdated
     Digest
+    MediaType
+    Size
+    DownloadCount
+    LastPullTimestamp
+    PushTimestamp
+    TaggedTimestamp
+    LastUpdated
     Description
+    Title
+    Documentation
+    Licenses
+    Labels
+    Source
+    Vendor
+    Authors
+    IsSigned
+    IsDeletable
+    Vulnerabilities {
+      MaxSeverity
+      Count
+      UnknownCount
+      LowCount
+      MediumCount
+      HighCount
+      CriticalCount
+    }
+    SignatureInfo {
+      Tool
+      IsTrusted
+      Author
+    }
+    Referrers {
+      MediaType
+      ArtifactType
+      Size
+      Digest
+      Annotations {
+        Key
+        Value
+      }
+    }
+    Manifests {
+      Digest
+      ConfigDigest
+      LastUpdated
+      Size
+      IsSigned
+      DownloadCount
+      ArtifactType
+      Platform {
+        Os
+        Arch
+      }
+      SignatureInfo {
+        Tool
+        IsTrusted
+        Author
+      }
+      Vulnerabilities {
+        MaxSeverity
+        Count
+        UnknownCount
+        LowCount
+        MediumCount
+        HighCount
+        CriticalCount
+      }
+      Layers {
+        Size
+        Digest
+      }
+      History {
+        Layer {
+          Size
+          Digest
+        }
+        HistoryDescription {
+          Created
+          CreatedBy
+          Author
+          Comment
+          EmptyLayer
+        }
+      }
+      Referrers {
+        MediaType
+        ArtifactType
+        Size
+        Digest
+        Annotations {
+          Key
+          Value
+        }
+      }
+    }
   }
 }
 ```
+
+#### Field significance
+
+**Top-level identity and shape**
+
+- **`RepoName`**: Repository name for the resolved image reference.
+- **`Tag`**: Tag requested.
+- **`Digest`**: Content digest of the resolved image manifest or index.
+- **`MediaType`**: Media type of the resolved object (for example, manifest vs index).
+
+**Sizes and popularity**
+
+- **`Size`**: Size (bytes, as a string) of the resolved object. For an index, this reflects the index "total" computed by zot's search metadata.
+- **`DownloadCount`**: Pull/download counter tracked by zot for the resolved image.
+
+**Timestamps**
+
+- **`LastPullTimestamp`**: Last time the image/tag was pulled (from zot's tracked statistics). If the image was never pulled (or pull stats are not available), zot may return the Unix epoch (`1970-01-01T00:00:00Z`) as a sentinel value.
+- **`PushTimestamp`**: Time the manifest or index was pushed to the registry (from zot's tracked statistics).
+- **`TaggedTimestamp`**: Time the **tag** was created or first observed for this digest. This differs from push time: a tag can be created later by re-tagging an existing digest. For older repositories created before zot persisted tag timestamps, zot may fall back to using `PushTimestamp`.
+- **`LastUpdated`**: Effective "last updated" time for the image as seen by zot's search metadata. zot derives this from the image "created" timestamp when available (for example via the `org.opencontainers.image.created` annotation/label), and otherwise falls back to the OCI image config timestamps (`config.Created`, then the last entry in `config.History`).
+
+**Descriptive metadata (from image annotations/labels when available)**
+
+- **`Description`**, **`Title`**, **`Documentation`**, **`Licenses`**, **`Source`**, **`Vendor`**, **`Authors`**: Optional descriptive fields derived from image or index annotations/labels. These are useful for UI display and discovery.
+- **`Labels`**: A string representing label "categories" derived from image and index metadata. It is populated from a dedicated label key (not individual label keys) and its exact formatting is defined by the image publisher (often a comma-separated list). When the image has no such categories, this value is an empty string (`""`), as shown in the sample response.
+
+**Security and policy**
+
+- **`IsSigned`**: Whether zot considers the image signed (based on discovered signatures or referrers).
+- **`IsDeletable`**: Whether the image is eligible for deletion by the current user (subject to zot policy and internal constraints). This can be `null` when delete permission is not evaluated for the current query context.
+- **`Vulnerabilities{...}`**: Aggregated vulnerability counts and severity for the image, when vulnerability scanning is enabled and data is available.
+- **`SignatureInfo{Tool, IsTrusted, Author}`**: Signature tool and trust metadata for the resolved image, when available.
+
+**Artifacts and referrers**
+
+- **`Referrers{...}`**: Artifacts that refer to this image (SBOMs, signatures, attestations, etc.).
+  - **`MediaType`**: Media type of the referrer manifest.
+  - **`ArtifactType`**: OCI artifact type describing what the referrer is (for example, a signature or SBOM type).
+  - **`Size`**, **`Digest`**: Referrer object size and digest.
+  - **`Annotations{Key,Value}`**: OCI annotations on the referrer.
+
+**Per-manifest details (`Manifests`)**
+
+`Manifests` provides manifest-level details for the resolved image. For multi-arch images (OCI index), it contains one entry per platform. For single-arch images (OCI manifest), it typically contains a single entry describing that manifest (see the sample response below).
+
+- **`Digest`**: Digest of the platform manifest.
+- **`ConfigDigest`**: Digest of the image config referenced by the manifest.
+- **`LastUpdated`**: Effective "last updated" time for this manifest summary. zot derives this from the manifest's "created" timestamp when available (for example via the `org.opencontainers.image.created` annotation/label), and otherwise falls back to the OCI image config timestamps (`config.Created`, then the last entry in `config.History`).
+- **`Size`**: Size (bytes, as a string) of the manifest summary's content.
+- **`Platform{Os, Arch}`**: Target platform for the manifest.
+- **`ArtifactType`**: Artifact type associated with the manifest. For OCI artifacts, this is the OCI artifact type. For normal image manifests, this may be empty or derived from the config media type, as shown in the sample response.
+- **`IsSigned`**, **`DownloadCount`**, **`SignatureInfo{...}`**, **`Vulnerabilities{...}`**: Same meaning as top-level fields, scoped to this manifest.
+- **`Layers{Size, Digest}`**: Layer list and sizes (useful for troubleshooting size bloat and caching behavior).
+- **`History{...}` / `HistoryDescription{...}`**: Image history entries (when present), including creation metadata and whether a layer is "empty".
+- **`Referrers{...}`**: Referrers scoped to the specific manifest digest (can differ from index-level referrers).
 
 **Sample response**
 
@@ -747,11 +898,94 @@ The query structures shown in these examples request all fields allowed by the s
 {
   "data": {
     "Image": {
-      "RepoName": "mariadb",
+      "RepoName": "alpine",
       "Tag": "latest",
-      "LastUpdated": "2022-10-18T14:56:33.1993083+03:00",
-      "Digest": "sha256:49a299f5c4b1af5bc2aa6cf8e50ab5bad85db4d0095745369acfc1934ece99d0",
-      "Description": "MariaDB Server is a high performing open source relational database, forked from MySQL."
+      "Digest": "sha256:85f2b723e106c34644cd5851d7e81ee87da98ac54672b29947c052a45d31dc2f",
+      "MediaType": "application/vnd.oci.image.manifest.v1+json",
+      "Size": "3804055",
+      "DownloadCount": 0,
+      "LastPullTimestamp": "1970-01-01T00:00:00Z",
+      "PushTimestamp": "2026-02-02T14:42:05.849482664Z",
+      "TaggedTimestamp": "2026-02-02T14:42:05.849482232Z",
+      "LastUpdated": "2025-10-08T11:04:56Z",
+      "Description": "",
+      "Title": "",
+      "Documentation": "",
+      "Licenses": "",
+      "Labels": "",
+      "Source": "https://github.com/alpinelinux/docker-alpine.git#4dc13cbc7caffe03c98aa99f28e27c2fb6f7e74d:x86_64",
+      "Vendor": "",
+      "Authors": "",
+      "IsSigned": false,
+      "IsDeletable": null,
+      "Vulnerabilities": {
+        "MaxSeverity": "UNKNOWN",
+        "Count": 14,
+        "UnknownCount": 14,
+        "LowCount": 0,
+        "MediumCount": 0,
+        "HighCount": 0,
+        "CriticalCount": 0
+      },
+      "SignatureInfo": [],
+      "Referrers": [],
+      "Manifests": [
+        {
+          "Digest": "sha256:85f2b723e106c34644cd5851d7e81ee87da98ac54672b29947c052a45d31dc2f",
+          "ConfigDigest": "sha256:706db57fb2063f39f69632c5b5c9c439633fda35110e65587c5d85553fd1cc38",
+          "LastUpdated": "2025-10-08T11:04:56Z",
+          "Size": "3804055",
+          "IsSigned": false,
+          "DownloadCount": 0,
+          "ArtifactType": "application/vnd.oci.image.config.v1+json",
+          "Platform": {
+            "Os": "linux",
+            "Arch": "amd64"
+          },
+          "SignatureInfo": [],
+          "Vulnerabilities": {
+            "MaxSeverity": "UNKNOWN",
+            "Count": 14,
+            "UnknownCount": 14,
+            "LowCount": 0,
+            "MediumCount": 0,
+            "HighCount": 0,
+            "CriticalCount": 0
+          },
+          "Layers": [
+            {
+              "Size": "3802452",
+              "Digest": "sha256:2d35ebdb57d9971fea0cac1582aa78935adf8058b2cc32db163c98822e5dfa1b"
+            }
+          ],
+          "History": [
+            {
+              "Layer": {
+                "Size": "3802452",
+                "Digest": "sha256:2d35ebdb57d9971fea0cac1582aa78935adf8058b2cc32db163c98822e5dfa1b"
+              },
+              "HistoryDescription": {
+                "Created": "2025-10-08T11:04:56Z",
+                "CreatedBy": "ADD alpine-minirootfs-3.22.2-x86_64.tar.gz / # buildkit",
+                "Author": "",
+                "Comment": "buildkit.dockerfile.v0",
+                "EmptyLayer": false
+              }
+            },
+            {
+              "Layer": null,
+              "HistoryDescription": {
+                "Created": "2025-10-08T11:04:56Z",
+                "CreatedBy": "CMD [\"/bin/sh\"]",
+                "Author": "",
+                "Comment": "buildkit.dockerfile.v0",
+                "EmptyLayer": true
+              }
+            }
+          ],
+          "Referrers": []
+        }
+      ]
     }
   }
 }
