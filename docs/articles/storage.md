@@ -53,7 +53,7 @@ zot can store and serve files from one or more local directories. A minimum of o
 
 ### Remote filesystem
 
-zot can also store data remotely in the cloud, using the storage APIs of the cloud service. Currently, zot supports only the AWS s3 storage service. S3 storage is not supported on Windows; see [Configuring remote storage with s3](#config-s3) for details.
+zot can also store data remotely in the cloud, using the storage APIs of the cloud service. Currently, zot supports the AWS S3 storage service and Google Cloud Storage (GCS). S3 storage is not supported on Windows; see [Configuring remote storage with s3](#config-s3) for details. For GCS, see [Configuring remote storage with GCS](#config-gcs).
 
 #### Example: configuration for remote (s3) storage
 
@@ -195,11 +195,11 @@ class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="
 </tr>
 <tr class="even">
 <td style="text-align: left;"><p><code>storageDriver</code></p></td>
-<td style="text-align: left;"><p>(Remote storage only) Contains settings for a remote storage service. See <a href="#config-s3"><i>Configuring remote storage with s3</i></a> for details.</p></td>
+<td style="text-align: left;"><p>(Remote storage only) Contains settings for a remote storage service. See <a href="#config-s3"><i>Configuring remote storage with s3</i></a> and <a href="#config-gcs"><i>Configuring remote storage with GCS</i></a> for details.</p></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"><p><code>cacheDriver</code></p></td>
-<td style="text-align: left;"><p>Specifies which database is used to store duplicate blobs when deduplication is enabled. See <a href="#config-cache"><i>Cache drivers</i></a> for details.</p></td></p></td>
+<td style="text-align: left;"><p>Specifies which database is used to store duplicate blobs when deduplication is enabled. See <a href="#config-cache"><i>Cache drivers</i></a> for details.</p></td>
 </tr>
 </tbody>
 </table>
@@ -249,7 +249,7 @@ The following table lists the attributes of `storageDriver` when configuring s3 
 
 | Attribute                   | Required | Description                                                                                                                        |
 |-----------------------------|----------|------------------------------------------------------------------------------------------------------------------------------------|
-| name                        | yes      | Name of storage driver. Only `s3` is supported for now.                                                                            |
+| name                        | yes      | Name of storage driver. Use `s3` for Amazon S3 and S3-compatible object storage.                                                    |
 | accesskey                   | no       | Your AWS Access Key. If you use IAM roles, omit to fetch temporary credentials from IAM.                                           |
 | secretkey                   | no       | Your AWS Secret Key. If you use IAM roles, omit to fetch temporary credentials from IAM.                                           |
 | region                      | yes      | The AWS region in which your bucket exists.                                                                                        |
@@ -358,6 +358,33 @@ The following AWS policy is required by zot for push and pull.
 ```
 
 For more details about configuring AWS policies, see the [AWS documentation](https://docs.aws.amazon.com/index.html).
+
+<a name="config-gcs"></a>
+
+## Configuring remote storage with GCS
+
+To configure a Google Cloud Storage bucket for zot, use the `storageDriver` attribute in the zot configuration file, as shown in the following example:
+
+``` json
+    "storage": {
+        "rootDirectory": "/tmp/zot",
+        "storageDriver": {
+            "name": "gcs",
+            "bucket": "zot-storage",
+            "keyfile": "/path/to/gcs-credentials.json"
+        }
+    }
+```
+
+The following table lists the main attributes of `storageDriver` when configuring GCS for remote storage:
+
+| Attribute         | Required | Description                                                                 |
+|-------------------|----------|-----------------------------------------------------------------------------|
+| name              | yes      | Name of storage driver. Use `gcs` for Google Cloud Storage.                 |
+| bucket            | yes      | The GCS bucket name in which you want to store the registry's data.         |
+| keyfile           | no       | Path to a JSON key file for GCS authentication. Omit when using Application Default Credentials (for example, workload identity or `GOOGLE_APPLICATION_CREDENTIALS`). |
+
+For more details, see the [distribution GCS storage driver documentation](https://distribution.github.io/distribution/storage-drivers/gcs/).
 
 <a name="config-cache"></a>
 

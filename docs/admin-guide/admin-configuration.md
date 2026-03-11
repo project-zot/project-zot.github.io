@@ -193,9 +193,9 @@ zot can store and serve files from one or more local directories (folders). A mi
 
 ### Remote storage
 
-zot can also store data remotely in the cloud, using the storage APIs of the cloud service. Currently, zot supports only the AWS S3 storage service.
+zot can also store data remotely in the cloud, using the storage APIs of the cloud service. zot supports Amazon S3 and S3-compatible object storage (for example Minio), and Google Cloud Storage (GCS).
 
-For detailed information about configuring S3 storage, see the [AWS S3 documentation](https://docs.aws.amazon.com/s3/?icmpid=docs_homepage_featuredsvcs) and [Storage Planning with zot](../articles/storage.md).
+For detailed information about configuring S3 or GCS storage, see [Storage Planning with zot](../articles/storage.md) and, depending on your storage backend, either the [AWS S3](https://docs.aws.amazon.com/s3/?icmpid=docs_homepage_featuredsvcs) documentation (for S3 and S3-compatible storage) or the [distribution GCS](https://distribution.github.io/distribution/storage-drivers/gcs/) documentation.
 
 ### Storage features
 
