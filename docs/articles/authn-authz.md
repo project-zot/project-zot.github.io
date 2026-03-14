@@ -617,6 +617,40 @@ configuration file, as shown in the following example.
 
     The `path` attribute specifies the path and filename of the `htpasswd` file, which contains user names and hashed passwords. 
 
+### Docker client compatibility
+
+When using basic authentication (htpasswd or LDAP) with mixed access policies (some repositories allow anonymous access, others require authentication), the Docker client may fail to authenticate to protected repositories.
+
+This occurs because Docker determines whether to send credentials based on the response to `/v2/`. If `/v2/` returns 200 (which happens when anonymous policies exist), Docker assumes no authentication is needed and won't send stored credentials for subsequent requests. Podman and other OCI-compliant clients do not have this limitation.
+
+To work around this Docker client behavior, enable `forceDockerClientAuth`:
+
+```json
+    "http": {
+      ...
+      "auth": {
+        "htpasswd": {
+          "path": "/etc/zot/htpasswd"
+        },
+        "forceDockerClientAuth": true
+      }
+    }
+```
+
+When enabled, zot returns a `401 Unauthorized` response with a `WWW-Authenticate: Basic realm="..."` header on `/v2/` for Docker clients, triggering the Docker-specific credential flow. Zot identifies Docker clients by checking for `Docker-Client` in the `User-Agent` header.
+
+| Attribute | Description |
+|-----------|-------------|
+| `forceDockerClientAuth` | When `true`, forces Docker clients to authenticate on `/v2/` even when anonymous policies exist. Default: `false`. |
+
+> :pencil2:
+> This workaround affects anonymous Docker users who will no longer be able to access the registry without logging in. Podman and other OCI-compliant clients are unaffected as they handle per-resource authentication challenges correctly.
+
+**Alternatives:**
+
+- Use bearer token authentication instead of basic auth
+- Use Podman or other compliant OCI clients
+
 ## Authorization
 
 With an access scheme that relies solely on authentication, any authenticated user would be given complete access to the registry. To better control access, zot supports identity-based repository-level access control (authorization) policies. The access control policy is a function of _repository_, _user_, and the _action_ being performed on that repository.
