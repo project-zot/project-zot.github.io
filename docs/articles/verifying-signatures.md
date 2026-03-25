@@ -48,7 +48,7 @@ Upload these files using an extension of the zot API, as shown in the following 
     ```
     *Example request*
     ```
-    curl --data-binary @file.pub -X POST "http://localhost:8080/v2/_zot/ext/cosign"
+    curl --data-binary @file.pub "http://localhost:8080/v2/_zot/ext/cosign"
     ```
     *Result*
 
@@ -65,7 +65,7 @@ Upload these files using an extension of the zot API, as shown in the following 
 
     *Example request*
     ```
-    curl --data-binary @certificate.crt -X POST "http://localhost:8080/v2/_zot/ext/notation?truststoreType=ca"
+    curl --data-binary @certificate.crt "http://localhost:8080/v2/_zot/ext/notation?truststoreType=ca"
     ```
     *Result*
 
