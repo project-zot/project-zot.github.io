@@ -371,6 +371,7 @@ To configure a Google Cloud Storage bucket for zot, use the `storageDriver` attr
         "storageDriver": {
             "name": "gcs",
             "bucket": "zot-storage",
+            "rootdirectory": "/zot",
             "keyfile": "/path/to/gcs-credentials.json"
         }
     }
@@ -378,11 +379,12 @@ To configure a Google Cloud Storage bucket for zot, use the `storageDriver` attr
 
 The following table lists the main attributes of `storageDriver` when configuring GCS for remote storage:
 
-| Attribute         | Required | Description                                                                 |
-|-------------------|----------|-----------------------------------------------------------------------------|
-| name              | yes      | Name of storage driver. Use `gcs` for Google Cloud Storage.                 |
-| bucket            | yes      | The GCS bucket name in which you want to store the registry's data.         |
-| keyfile           | no       | Path to a JSON key file for GCS authentication. Omit when using Application Default Credentials (for example, workload identity or `GOOGLE_APPLICATION_CREDENTIALS`). |
+| Attribute     | Required | Description                                                                                                                                                                   |
+|---------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| name          | yes      | Name of storage driver. Use `gcs` for Google Cloud Storage.                                                                                                                   |
+| bucket        | yes      | The GCS bucket name in which you want to store the registry's data.                                                                                                           |
+| rootdirectory | no       | The GCS bucket root directory which zot uses to write files to. defaults to "/zot", if not given. ("/" is overridden with default as this is technically not valid as of now) |
+| keyfile       | no       | Path to a JSON key file for GCS authentication. Omit when using Application Default Credentials (for example, workload identity or `GOOGLE_APPLICATION_CREDENTIALS`).         |
 
 For more details, see the [distribution GCS storage driver documentation](https://distribution.github.io/distribution/storage-drivers/gcs/).
 
