@@ -619,32 +619,15 @@ configuration file, as shown in the following example.
 
 ### Docker client compatibility
 
-When using basic authentication (htpasswd or LDAP) with mixed access policies (some repositories allow anonymous access, others require authentication), the Docker client may fail to authenticate to protected repositories.
+With basic authentication enabled (htpasswd or LDAP), zot applies a Docker compatibility workaround on the `/v2/` “ping” endpoint:
 
-This occurs because Docker determines whether to send credentials based on the response to `/v2/`. If `/v2/` returns 200 (which happens when anonymous policies exist), Docker assumes no authentication is needed and won't send stored credentials for subsequent requests. Podman and other OCI-compliant clients do not have this limitation.
+- If your access control configuration is **mixed** (you have at least one anonymous repository policy *and* separate policies that require authenticated users, such as default policies, admin policies, or repository `policies` with users), zot returns `401 Unauthorized` with `WWW-Authenticate: Basic realm="..."` on `/v2/` for Docker clients. This triggers the credential flow specific to the Docker client, so the Docker client will send stored credentials on subsequent requests to protected repositories.
+- If every configured repository is **anonymous-only** (no authenticated-only rules), `/v2/` continues to return `200` without credentials for Docker.
 
-To work around this Docker client behavior, enable `forceDockerClientAuth`:
-
-```json
-    "http": {
-      ...
-      "auth": {
-        "htpasswd": {
-          "path": "/etc/zot/htpasswd"
-        },
-        "forceDockerClientAuth": true
-      }
-    }
-```
-
-When enabled, zot returns a `401 Unauthorized` response with a `WWW-Authenticate: Basic realm="..."` header on `/v2/` for Docker clients, triggering the Docker-specific credential flow. Zot identifies Docker clients by checking for `Docker-Client` in the `User-Agent` header.
-
-| Attribute | Description |
-|-----------|-------------|
-| `forceDockerClientAuth` | When `true`, forces Docker clients to authenticate on `/v2/` even when anonymous policies exist. Default: `false`. |
+zot identifies Docker clients by checking for `Docker-Client` in the `User-Agent` header. Podman and other OCI-compliant clients handle per-resource authentication challenges correctly and do not require this `/v2/`-level workaround.
 
 > :pencil2:
-> This workaround affects anonymous Docker users who will no longer be able to access the registry without logging in. Podman and other OCI-compliant clients are unaffected as they handle per-resource authentication challenges correctly.
+> When this automatic workaround applies, anonymous Docker users must `docker login` before using the registry, even for repositories that allow anonymous access. Podman and other OCI-compliant clients are unaffected as they handle per-resource authentication challenges correctly.
 
 **Alternatives:**
 
