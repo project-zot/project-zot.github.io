@@ -1,5 +1,43 @@
 # What's New
 
+## [v2.1.16](https://github.com/project-zot/zot/releases/tag/v2.1.16)
+
+### Repository Quota Enforcement
+
+zot now includes repository quota enforcement middleware in the API layer, helping limit repository growth according to configured quota policies.
+
+### Multi-tag Push Support
+
+zot now supports pushing multiple tags for a single manifest, improving tag management workflows and reducing duplicate push operations.
+
+### Configuration Schema Export
+
+A new schema command can now dump the JSON Schema for zot configuration, making validation and tooling integration easier.
+
+### Storage and Authentication Fixes
+
+- Fixed GCS storage handling for root directory prefixing and EOF behavior during walk operations
+- Added workaround for Docker client authentication in mixed anonymous-policy setups
+- Prevented repository update flows from corrupting `index.json` when disk space is exhausted
+
+### Security Hardening
+
+Several hardening fixes were included in this release:
+
+- Limited manifest PUT request bodies to 4 MiB
+- Limited API key creation request bodies to 4 KiB
+- Suppressed `Allow-Credentials` when CORS origin is wildcard
+- Removed `InsecureSkipVerify` usage from metrics client TLS
+
+### UI and Search Metadata Enhancements
+
+- Added `LastPullTimestamp` and `PushedBy` fields to search/index `ImageSummary`
+- Updated UI dependencies (`zui`) and related integration improvements
+
+### Bug fixes
+
+Many bug fixes around security, storage, CI workflows, and other miscellaneous features.
+
 ## [v2.1.15](https://github.com/project-zot/zot/releases/tag/v2.1.15)
 
 ### GCS Storage Support
