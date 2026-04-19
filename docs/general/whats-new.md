@@ -6,13 +6,25 @@
 
 zot now includes repository quota enforcement middleware in the API layer, helping limit repository growth according to configured quota policies.
 
+Configuration summary (from PR #3923): set `storage.maxRepos` to cap how many repositories can be created. When the limit is reached, pushes that create a new repository are rejected (HTTP 429), while pushes to existing repositories continue to work. Setting `maxRepos` to `0` (or omitting it) disables enforcement.
+
+```json
+{
+  "storage": {
+    "maxRepos": 10
+  }
+}
+```
+
 ### Multi-tag Push Support
 
 zot now supports pushing multiple tags for a single manifest, improving tag management workflows and reducing duplicate push operations.
 
+`PUT /v2/<name>/manifests/<digest>?tag=1.2.3&tag=1.2&tag=1&tag=latest`
+
 ### Configuration Schema Export
 
-A new schema command can now dump the JSON Schema for zot configuration, making validation and tooling integration easier.
+A new schema command (`zot schema`) can now dump the [JSON Schema](https://github.com/project-zot/zot/releases/download/v2.1.16/zot-schema.json) for zot configuration, making validation and tooling integration easier.
 
 ### Storage and Authentication Fixes
 
