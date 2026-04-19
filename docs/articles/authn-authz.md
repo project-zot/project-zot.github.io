@@ -617,6 +617,23 @@ configuration file, as shown in the following example.
 
     The `path` attribute specifies the path and filename of the `htpasswd` file, which contains user names and hashed passwords. 
 
+### Docker client compatibility
+
+With basic authentication enabled (htpasswd or LDAP), zot applies a Docker compatibility workaround on the `/v2/` “ping” endpoint:
+
+- If your access control configuration is **mixed** (you have at least one anonymous repository policy *and* separate policies that require authenticated users, such as default policies, admin policies, or repository `policies` with users), zot returns `401 Unauthorized` with `WWW-Authenticate: Basic realm="..."` on `/v2/` for Docker clients. This triggers the credential flow specific to the Docker client, so the Docker client will send stored credentials on subsequent requests to protected repositories.
+- If every configured repository is **anonymous-only** (no authenticated-only rules), `/v2/` continues to return `200` without credentials for Docker.
+
+zot identifies Docker clients by checking for `Docker-Client` in the `User-Agent` header. Podman and other OCI-compliant clients handle per-resource authentication challenges correctly and do not require this `/v2/`-level workaround.
+
+> :pencil2:
+> When this automatic workaround applies, anonymous Docker users must `docker login` before using the registry, even for repositories that allow anonymous access. Podman and other OCI-compliant clients are unaffected as they handle per-resource authentication challenges correctly.
+
+**Alternatives:**
+
+- Use bearer token authentication instead of basic auth
+- Use Podman or other compliant OCI clients
+
 ## Authorization
 
 With an access scheme that relies solely on authentication, any authenticated user would be given complete access to the registry. To better control access, zot supports identity-based repository-level access control (authorization) policies. The access control policy is a function of _repository_, _user_, and the _action_ being performed on that repository.
