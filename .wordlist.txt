@@ -35,6 +35,7 @@ Blowfish
 BoltDB
 boolean
 Bugfixes
+Buildx
 busybox
 caching
 CD
@@ -234,6 +235,7 @@ onboarding
 onDemand
 onlySigned
 OpenAPI
+Observability
 OpenBSD
 OpenID
 openjdk
@@ -337,6 +339,7 @@ tunable
 twemoji
 UI
 ui
+UX
 unrecovered
 unreviewed
 unscanned
