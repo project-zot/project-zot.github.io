@@ -1,5 +1,70 @@
 # What's New
 
+## [v2.1.17](https://github.com/project-zot/zot/releases/tag/v2.1.17)
+
+### OIDC Logout and Identity Mapping
+
+zot now supports OpenID Connect RP-Initiated Logout and includes improvements to identity handling and claim-mapping logs.
+
+```json
+{
+  "issuer": "https://iam.example.com",
+  "scopes": ["openid", "profile", "email", "groups"]
+}
+```
+
+Authentication mapping also adds support for OpenID groups claims, making it easier to align external identity providers with zot access policies.
+
+```json
+{
+  "claimMapping": {
+    "username": "preferred_username",
+    "groups": "groups"
+  }
+}
+```
+
+### Conditional Authorization via CEL
+
+Authorization policies can now use conditional expressions through CEL (Common Expression Language), enabling more context-aware access control decisions.
+
+```json
+{
+  "conditions": [
+    {
+      "expression": "req.time < timestamp(\"2099-12-31T23:59:59Z\")",
+      "message": "alice's prod access expires end of 2099"
+    }
+  ]
+}
+```
+
+### Blob Transfer and Upload Handling Improvements
+
+This release includes multiple API and distribution improvements:
+
+- Added support for multipart range blob pulls and multipart download enhancements
+- Improved upload range handling (including proper `416` responses for invalid ranges)
+- Recognized Docker Compose/Buildx user agents in the v2 auth challenge workaround
+
+### zli and Configuration UX Enhancements
+
+Several usability updates were added to `zli`:
+
+- Improved CVE diff output
+- Added a typed `~/.zot` config layer with strict validation
+- Added config management commands: `list`, `show`, `get`, `set`, and `reset`
+
+### Observability, Signing, and UI Updates
+
+- Added Prometheus metrics for garbage collection
+- Added support for cosign bundle metadata
+- Updated UI dependencies (`zui`) and related integration pieces
+
+### Bug fixes
+
+Many bug fixes around authentication, sync filtering, transfer reliability, lint/CI, dependency updates, and other miscellaneous improvements.
+
 ## [v2.1.16](https://github.com/project-zot/zot/releases/tag/v2.1.16)
 
 ### Repository Quota Enforcement
