@@ -65,6 +65,37 @@ All interactions with zot are over HTTP APIs, and `htpasswd`-based local authent
 
 Following authentication, it is further possible to allow or deny actions by a user on a particular repository stored on the zot registry. See the provided [access control examples](https://github.com/project-zot/zot/tree/main/examples).
 
+### HTTP read/write timeout configuration
+
+zot supports configurable HTTP read and write timeouts for the API server and metrics exporter. These timeouts help prevent slow-client and stalled-connection scenarios from consuming server resources indefinitely.
+
+By default, read and write timeouts are set to `30s`.
+
+To configure custom values, set the timeout fields in your configuration file as shown below:
+
+```json
+{
+    "http": {
+        "readTimeout": "30s",
+        "writeTimeout": "30s"
+    },
+    "extensions": {
+        "metrics": {
+            "prometheus": {
+                "readTimeout": "30s",
+                "writeTimeout": "30s"
+            }
+        }
+    }
+}
+```
+
+Behavior notes:
+
+- Set larger timeout values when handling large image pushes or pulls over slower networks.
+- Set timeout values to `0` to disable the timeout (infinite timeout).
+- Keep in mind that infinite timeouts can increase exposure to stalled or abusive connections.
+
 ## Vulnerability scans
 
 Apart from hardening the deployment itself, zot also supports security
