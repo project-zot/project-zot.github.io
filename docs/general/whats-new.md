@@ -47,6 +47,14 @@ This release includes multiple API and distribution improvements:
 - Improved upload range handling (including proper `416` responses for invalid ranges)
 - Recognized Docker Compose/Buildx user agents in the v2 auth challenge workaround
 
+### HTTP Read/Write Timeout Configuration
+
+HTTP read and write timeouts are now configurable for both the API server and metrics exporter, with defaults set to `30s`.
+
+Use larger values for environments that handle large images or slower client/network paths. You can also set the timeout values to `0` to disable timeouts (infinite timeout) when required.
+
+For configuration examples and behavior details, see [Security Posture: HTTP read/write timeout configuration](../articles/security-posture.md#http-readwrite-timeout-configuration).
+
 ### zli and Configuration UX Enhancements
 
 Several usability updates were added to `zli`:
