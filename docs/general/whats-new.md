@@ -49,7 +49,7 @@ This release includes multiple API and distribution improvements:
 
 ### HTTP Read/Write Timeout Configuration
 
-HTTP read and write timeouts are now configurable for both the API server and metrics exporter, with defaults set to `30s`.
+HTTP read and write timeouts are now configurable for both the API server and metrics exporter, with defaults set to `60s`.
 
 Use larger values for environments that handle large images or slower client/network paths. You can also set the timeout values to `0` to disable timeouts (infinite timeout) when required.
 

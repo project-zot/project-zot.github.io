@@ -69,21 +69,21 @@ Following authentication, it is further possible to allow or deny actions by a u
 
 zot supports configurable HTTP read and write timeouts for the API server and metrics exporter. These timeouts help prevent slow-client and stalled-connection scenarios from consuming server resources indefinitely.
 
-By default, read and write timeouts are set to `30s`.
+By default, read and write timeouts are set to `60s`.
 
 To configure custom values, set the timeout fields in your configuration file as shown below:
 
 ```json
 {
     "http": {
-        "readTimeout": "30s",
-        "writeTimeout": "30s"
+        "readTimeout": "60s",
+        "writeTimeout": "60s"
     },
     "extensions": {
         "metrics": {
             "prometheus": {
-                "readTimeout": "30s",
-                "writeTimeout": "30s"
+                "readTimeout": "60s",
+                "writeTimeout": "60s"
             }
         }
     }
