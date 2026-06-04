@@ -52,3 +52,39 @@ server = "http://localhost:8080"
 ```
 
 More information about various mirror registry configuration options is available [here](https://github.com/containerd/containerd/blob/main/docs/hosts.md#registry-configuration---examples).
+
+## _Docker_ with _containerd_ v2.x
+
+```
+$ tree /etc/docker/certs.d/
+/etc/docker/certs.d/
+├── docker.io
+│   └── hosts.toml
+├── gcr.io
+│   └── hosts.toml
+├── ghcr.io
+│   └── hosts.toml
+├── mcr.microsoft.com
+│   └── hosts.toml
+├── public.ecr.aws
+│   └── hosts.toml
+├── quay.io
+│   ├── hosts.toml
+├── registry.gitlab.com
+│   └── hosts.toml
+└── registry.k8s.io
+    └── hosts.toml
+```
+
+Assuming your zot is running on https://registry.domain.tld and _destination_ for quay.io is set to  _/quay_
+
+```
+# cat /etc/docker/certs.d/quay.io/hosts.toml
+server = "https://quay.io"
+
+[host."https://registry.domain.tld/v2/quay"]
+  capabilities = ["pull", "resolve"]
+  override_path = true
+```
+
+Please note that _/v2_ is required for this to work.
