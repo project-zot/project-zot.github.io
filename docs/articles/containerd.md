@@ -69,20 +69,20 @@ $ tree /etc/docker/certs.d/
 ├── public.ecr.aws
 │   └── hosts.toml
 ├── quay.io
-│   ├── hosts.toml
+│   └── hosts.toml
 ├── registry.gitlab.com
 │   └── hosts.toml
 └── registry.k8s.io
     └── hosts.toml
 ```
 
-Assuming your zot is running on https://registry.domain.tld and _destination_ for quay.io is set to  _/quay_
+Assuming your zot is running on https://registry.domain.tld and _destination_ for quay.io is set to _/quay_.
 
 ```
-# cat /etc/docker/certs.d/quay.io/hosts.toml
+$ cat /etc/docker/certs.d/quay.io/hosts.toml
 server = "https://quay.io"
 
-[host."https://registry.domain.tld/v2/quay"]
+[host."https://registry.domain.com/v2/quay"]
   capabilities = ["pull", "resolve"]
   override_path = true
 ```
