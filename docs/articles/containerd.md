@@ -76,7 +76,7 @@ $ tree /etc/docker/certs.d/
     └── hosts.toml
 ```
 
-Assuming your zot is running on https://registry.domain.tld and _destination_ for quay.io is set to _/quay_.
+Assuming your zot is running on https://registry.domain.com and _destination_ for quay.io is set to _/quay_.
 
 ```
 $ cat /etc/docker/certs.d/quay.io/hosts.toml
