@@ -18,6 +18,7 @@ architected
 artifacthub
 artifactType
 ASLR
+assertionFile
 auth
 authn
 authz
@@ -47,6 +48,8 @@ chunksize
 CI
 CLI
 cli
+clientID
+clientSecretFile
 ClusterIP
 cmdline
 CNAME
@@ -60,6 +63,8 @@ containerd
 CORS
 cpu
 CPUs
+credentialHelper
+credentialHelperConfig
 credentialsFile
 CRI
 cri
@@ -132,6 +137,7 @@ golang's
 goroutine
 goroutines
 GPG
+grantType
 graphQL
 graphql
 gui
@@ -325,6 +331,7 @@ tlsVerify
 tmp
 toggleBookmark
 toggleStar
+tokenURL
 toolchain
 tooltips
 transactional
@@ -351,6 +358,7 @@ url
 urls
 usedualstack
 useragent
+username
 userprefs
 usr
 UUID

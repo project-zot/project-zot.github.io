@@ -105,6 +105,10 @@ The following table lists the configurable attributes for the `sync` feature:
 <td style="text-align: left;"><p>The location of a local file containing credentials for other registries, as in the following example: <pre>{<br/>&nbsp;&nbsp;"127.0.0.1:8080": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;"username": "user",<br/>&nbsp;&nbsp;&nbsp;&nbsp;"password": "pass"<br/>&nbsp;&nbsp;},<br/>&nbsp;&nbsp;"registry2:5000": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;"username": "user2",<br/>&nbsp;&nbsp;&nbsp;&nbsp;"password": "pass2"<br/>&nbsp;&nbsp;}<br/>}</pre></p></td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;"><p><strong>credentialHelper</strong></p></td>
+<td style="text-align: left;"><p>Selects a built-in credential helper that obtains upstream credentials dynamically instead of reading them from <strong>credentialsFile</strong>. Supported values are <code>ecr</code> (AWS ECR auth token) and <code>oauth2</code> (exchange a JWT assertion for a short-lived registry access token). The helper-specific options are provided in the generic <strong>credentialHelperConfig</strong> dictionary, which is decoded according to this value (see <a href="#example-support-for-oauth2-jwt-assertion-exchange">Example: Support for OAuth2</a>).</p></td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;"><p><strong>urls</strong></p></td>
 <td style="text-align: left;"><p>A list of one or more URLs to an upstream image registry. If the main URL fails, the sync process will try the next URLs in the listed order.</p></td>
 </tr>
@@ -538,3 +542,84 @@ This is an example configuration demonstrating how to use the sync extension wit
         }
     }
 ```
+
+### Example: Support for OAuth2 (JWT assertion exchange)
+
+This is an example configuration demonstrating how to use the sync extension with the `oauth2` credential helper. The helper exchanges a JWT assertion (for example, a Kubernetes projected service account token) for a short-lived registry access token through an OAuth2 token endpoint, and refreshes the token before it expires. It is selected with `"credentialHelper": "oauth2"` and configured through the generic `credentialHelperConfig` dictionary, which is decoded according to the `credentialHelper` value.
+
+```json
+"extensions": {
+        "sync": {
+            "credentialsFile": "",
+            "downloadDir": "/tmp/zot",
+            "registries": [
+                {
+                    "urls": [
+                        "https://registry.example.com"
+                    ],
+                    "onDemand": true,
+                    "maxRetries": 5,
+                    "retryDelay": "2m",
+                    "credentialHelper": "oauth2",
+                    "credentialHelperConfig": {
+                        "tokenURL": "https://idp.example.com/oauth2/token",
+                        "assertionFile": "/var/run/secrets/tokens/sync-token",
+                        "grantType": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+                        "clientID": "zot-sync",
+                        "clientSecretFile": "/etc/zot/sync-oauth2-client-secret",
+                        "scopes": [
+                            "repository:pull"
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+```
+
+When `credentialHelper` is `oauth2`, the `credentialHelperConfig` dictionary accepts the following attributes:
+
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Attribute</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="even">
+<td style="text-align: left;"><p><strong>tokenURL</strong></p></td>
+<td style="text-align: left;"><p>(Required) The OAuth2 token endpoint that issues the access token.</p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><strong>assertionFile</strong></p></td>
+<td style="text-align: left;"><p>(Required) Path to the file holding the JWT assertion. The file is re-read on every token request, so a periodically refreshed token (such as a Kubernetes projected service account token) is picked up automatically.</p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><strong>grantType</strong></p></td>
+<td style="text-align: left;"><p>(Optional, default <code>client_credentials</code>) The OAuth2 grant type sent as <code>grant_type</code>. When set to the JWT bearer grant <code>urn:ietf:params:oauth:grant-type:jwt-bearer</code>, the assertion is sent in the <code>assertion</code> parameter. For any other value (including the default), the assertion is sent as a client assertion: <code>client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer</code> together with <code>client_assertion</code>.</p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><strong>clientID</strong></p></td>
+<td style="text-align: left;"><p>(Optional) OAuth2 client identifier, sent as <code>client_id</code> when set.</p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><strong>clientSecretFile</strong></p></td>
+<td style="text-align: left;"><p>(Optional) Path to a file holding an OAuth2 client secret. When set, the file contents (trimmed of surrounding whitespace) are sent as <code>client_secret</code>.</p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><strong>scopes</strong></p></td>
+<td style="text-align: left;"><p>(Optional) A list of OAuth2 scopes, sent as a single space-separated <code>scope</code> value.</p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><strong>username</strong></p></td>
+<td style="text-align: left;"><p>(Optional, default <code>&lt;token&gt;</code>) The registry username paired with the issued access token (the token is used as the password).</p></td>
+</tr>
+</tbody>
+</table>
+
+**Token caching and refresh:** tokens are cached per upstream registry. The lifetime is taken from the `expires_in` field of the token response, or defaults to 5 minutes when the endpoint omits it. A cached token is considered invalid and refreshed once its remaining validity drops below 1 minute.
