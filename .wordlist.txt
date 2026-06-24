@@ -236,6 +236,7 @@ onDemand
 onlySigned
 OpenAPI
 Observability
+observability
 OpenBSD
 OpenID
 openjdk
@@ -256,6 +257,7 @@ preimage
 prepended
 preserveDigest
 prometheus
+proxying
 PRs
 pulledWithin
 pullPolicy

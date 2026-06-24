@@ -750,6 +750,8 @@ In this example, five policies are defined:
 
 -   A metrics policy (`metrics`) gives the user "john" permissions to read data from the metrics endpoint for monitoring purposes.
 
+:pencil2: If `metrics.anonymousPolicy` allows read access, unauthenticated requests can read metrics. Authenticated users not listed by the metrics ACL are still denied.
+
 :pencil2:  In case of LDAP groups, the group FQDN must be used in the zot configuration. For example ` "groups": ["cn=ldap-group,ou=Groups,dc=example,dc=org"],`.
 
 :pencil2:  In releases prior to zot v2.0.0, authorization policies were defined directly under the `accessControl` key in the zot configuration file.  Beginning with v2.0.0, the set of authorization policies are now defined under a new `repositories` key.
@@ -801,6 +803,50 @@ The following example shows the zot configuration for these providers:
   }
 }
 ```
+
+#### Using GitHub teams in authorization policies
+
+When GitHub OpenID login is enabled with `read:org` scope, zot can fetch team memberships and expose them as authorization groups.
+
+GitHub team groups use the form:
+
+`<org>/<team-slug>`
+
+You can reference these values in repository policies through `groups`.
+
+Example:
+
+```json
+{
+  "http": {
+    "auth": {
+      "openid": {
+        "providers": {
+          "github": {
+            "credentialsFile": "examples/github-oidc-credentials.json",
+            "scopes": ["read:org", "user", "repo"]
+          }
+        }
+      }
+    },
+    "accessControl": {
+      "repositories": {
+        "infra/**": {
+          "policies": [
+            {
+              "groups": ["MyOrg/platform-team"],
+              "actions": ["read", "create", "update"]
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+> :pencil2:
+> Group names preserve GitHub login casing and team slug values. If organization/team fetch is forbidden (for example, missing scope), zot continues authentication but team groups may be unavailable.
 
 To allow for separation of configuration and credentials, the credentials for oidc are specified in a separate file, as shown in the following example.
 

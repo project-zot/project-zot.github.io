@@ -53,7 +53,7 @@ zot can store and serve files from one or more local directories. A minimum of o
 
 ### Remote filesystem
 
-zot can also store data remotely in the cloud, using the storage APIs of the cloud service. Currently, zot supports the AWS S3 storage service and Google Cloud Storage (GCS). S3 storage is not supported on Windows; see [Configuring remote storage with s3](#config-s3) for details. For GCS, see [Configuring remote storage with GCS](#config-gcs).
+zot can also store data remotely in the cloud, using the storage APIs of the cloud service. Currently, zot supports AWS S3, Google Cloud Storage (GCS), and Azure Blob Storage. S3 storage is not supported on Windows; see [Configuring remote storage with s3](#config-s3) for details. For GCS, see [Configuring remote storage with GCS](#config-gcs). For Azure, see [Configuring remote storage with Azure Blob Storage](#config-azure).
 
 #### Example: configuration for remote (s3) storage
 
@@ -195,7 +195,15 @@ class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="
 </tr>
 <tr class="even">
 <td style="text-align: left;"><p><code>storageDriver</code></p></td>
-<td style="text-align: left;"><p>(Remote storage only) Contains settings for a remote storage service. See <a href="#config-s3"><i>Configuring remote storage with s3</i></a> and <a href="#config-gcs"><i>Configuring remote storage with GCS</i></a> for details.</p></td>
+<td style="text-align: left;"><p>(Remote storage only) Contains settings for a remote storage service. See <a href="#config-s3"><i>Configuring remote storage with s3</i></a>, <a href="#config-gcs"><i>Configuring remote storage with GCS</i></a>, and <a href="#config-azure"><i>Configuring remote storage with Azure Blob Storage</i></a> for details.</p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><code>fastRestart</code></p></td>
+<td style="text-align: left;"><p>(Optional) When set to <code>true</code>, zot can skip the startup storage walk if an internal fast-restart stamp matches the running binary identity and storage configuration. This can significantly reduce restart times for large registries. Trade-off: out-of-band storage changes made while zot is down will not be discovered at startup when the walk is skipped. The default is <code>false</code>.</p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><code>redirectBlobURL</code></p></td>
+<td style="text-align: left;"><p>(Optional, remote storage) When set to <code>true</code>, blob pull requests can be redirected (HTTP 307) to signed backend URLs from the configured storage driver, reducing proxy traffic through zot. If URL generation is unavailable or invalid, zot falls back to normal proxying. Can be configured globally and per-subpath.</p></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"><p><code>cacheDriver</code></p></td>
@@ -387,6 +395,73 @@ The following table lists the main attributes of `storageDriver` when configurin
 | keyfile       | no       | Path to a JSON key file for GCS authentication. Omit when using Application Default Credentials (for example, workload identity or `GOOGLE_APPLICATION_CREDENTIALS`).         |
 
 For more details, see the [distribution GCS storage driver documentation](https://distribution.github.io/distribution/storage-drivers/gcs/).
+
+<a name="config-azure"></a>
+
+## Configuring remote storage with Azure Blob Storage
+
+To configure Azure Blob Storage for zot, use the `storageDriver` attribute in the zot configuration file, as shown in the following example:
+
+``` json
+    "storage": {
+        "rootDirectory": "/tmp/zot",
+        "storageDriver": {
+            "name": "azure",
+            "accountname": "myaccount",
+            "container": "zot-storage",
+            "rootdirectory": "/zot",
+            "credentials": {
+                "type": "default_credentials"
+            }
+        }
+    }
+```
+
+The following table lists the main attributes of `storageDriver` when configuring Azure Blob Storage:
+
+| Attribute | Required | Description |
+|-----------|----------|-------------|
+| `name` | yes | Name of storage driver. Use `azure` for Azure Blob Storage. |
+| `accountname` | yes | Azure storage account name. |
+| `container` | yes | Azure Blob container name used for registry data. |
+| `rootdirectory` | no | Optional prefix applied to blob keys. If not provided, zot defaults to `/zot` semantics similar to other remote drivers. |
+| `credentials.type` | yes | Authentication method. Supported values: `shared_key`, `client_secret`, `default_credentials`. |
+
+For `credentials.type`:
+
+- `shared_key` uses account key-based authentication.
+- `client_secret` uses a service principal.
+- `default_credentials` uses Azure default credential resolution (for example, managed identity or Azure Workload Identity).
+
+> :pencil2:
+> Azure Blob Storage support is based on the distribution v3 storage driver and follows the same remote-storage behavior model as S3 and GCS.
+
+## Redirecting Blob Pulls to Backend URLs
+
+When `storage.redirectBlobURL` is enabled for a remote backend, zot can return `307 Temporary Redirect` for blob pull requests and direct clients to backend signed URLs.
+
+Typical use cases:
+
+- Reduce load and egress through zot for large blob downloads
+- Let cloud object storage serve blob payloads directly
+
+Example:
+
+```json
+{
+    "storage": {
+        "rootDirectory": "/tmp/zot",
+        "storageDriver": {
+            "name": "s3",
+            "region": "us-east-2",
+            "bucket": "zot-storage"
+        },
+        "redirectBlobURL": true
+    }
+}
+```
+
+If the storage driver cannot generate a valid redirect URL for a request, zot automatically falls back to proxying the blob through the registry.
 
 <a name="config-cache"></a>
 

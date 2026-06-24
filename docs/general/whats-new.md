@@ -1,5 +1,47 @@
 # What's New
 
+## [v2.1.18](https://github.com/project-zot/zot/releases/tag/v2.1.18)
+
+### Trivy-Based SBOM Artifact Generation
+
+zot now supports generating SBOM artifacts during Trivy CVE scans and publishing them as OCI referrers for scanned images.
+
+For configuration and usage details, see [CVE scanning](../articles/cve-scanning.md#sbom-artifact-generation-with-trivy).
+
+### Storage: Azure Backend, Fast Restart, and Blob Redirects
+
+This release adds multiple storage improvements:
+
+- Added Azure Blob Storage support as a remote `storageDriver` backend (`name: "azure"`)
+- Added optional `storage.fastRestart` to reduce startup time by skipping storage walk when safe
+- Added optional `storage.redirectBlobURL` for redirecting blob pulls to backend signed URLs
+
+For details and examples, see [Storage](../articles/storage.md).
+
+### Authentication and Authorization Enhancements
+
+- Added authorization support for GitHub team memberships in OpenID login flows
+- Added metrics endpoint anonymous access controls with stricter authz behavior for authenticated users not in metrics ACL
+- Added metrics path validation hardening for safer configuration
+
+See [Authentication and authorization](../articles/authn-authz.md) and [Monitoring](../articles/monitoring.md).
+
+### Event Payload Metadata Improvements
+
+The events extension now includes actor and request metadata in webhook payloads when request context is available.
+
+See [Events](../articles/events.md#webhook-payload-metadata).
+
+### zli Configuration UX
+
+`zli` now supports default named configurations so commands can run without explicitly passing `--config` or `--url` when a default is set.
+
+See [zli user guide](../user-guides/zli.md#default-configurations).
+
+### Bug fixes
+
+Many bug fixes around storage behavior, authentication and authorization flows, metrics, CVE reference links, and dependency updates.
+
 ## [v2.1.17](https://github.com/project-zot/zot/releases/tag/v2.1.17)
 
 ### OIDC Logout and Identity Mapping

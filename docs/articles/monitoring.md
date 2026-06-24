@@ -74,7 +74,7 @@ The following table lists the configurable attributes for metrics collection.
 |--------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
 | `enable`     | If this attribute is missing, metrics collection is enabled by default. Metrics collection can be disabled by setting this attribute to `false`. |
 | `prometheus` | Attributes under `prometheus` contain configuration settings for the Prometheus node exporter.                                                   |
-| `path`       | The server path on which metrics will be exposed.                                                                                                |
+| `path`       | The server path on which metrics will be exposed. Must be a clean absolute path (starts with `/`). Reserved and unsafe broad paths such as `/` and `/v2` are rejected by config validation. |
 
 ### Collecting metrics from a minimal zot image using a node exporter
 
@@ -123,3 +123,41 @@ The configuration file of zxp contains connection details for the zot server fro
 
 The server supports configuring authorization for the endpoint used for metrics, in both the zot minimal image, and the image including the metrics extension.
 For more details see the authentication and authorization article.
+
+#### Anonymous access for `/metrics`
+
+You can allow unauthenticated scrapers (for example, Prometheus) to read metrics by configuring `accessControl.metrics.anonymousPolicy: ["read"]`.
+
+Example:
+
+```json
+{
+    "http": {
+        "accessControl": {
+            "metrics": {
+                "users": ["prometheus"],
+                "anonymousPolicy": ["read"]
+            },
+            "repositories": {
+                "**": {
+                    "defaultPolicy": ["read"]
+                }
+            }
+        }
+    },
+    "extensions": {
+        "metrics": {
+            "enable": true,
+            "prometheus": {
+                "path": "/metrics"
+            }
+        }
+    }
+}
+```
+
+Behavior summary:
+
+- Unauthenticated requests to `/metrics` are allowed when `anonymousPolicy` includes `read`.
+- Authenticated users listed in `accessControl.metrics.users` are allowed.
+- Authenticated users not listed in metrics ACL are denied, even when anonymous read is enabled.
