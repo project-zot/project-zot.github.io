@@ -68,6 +68,26 @@ Use the [`zli config`](#_zli-config) command to list all configured URLs with th
     remote-zot   https://server-example:8080
     local        http://localhost:8080
 
+<a name="default-configurations"></a>
+
+### Default configurations
+
+You can set one named config as the default so most commands work without explicitly passing `--config` or `--url`.
+
+Examples:
+
+    $ bin/zli config set-default local
+    $ bin/zli image list
+
+To clear the default and require explicit selection again:
+
+    $ bin/zli config clear-default
+
+Resolution behavior:
+
+- If both `--config` and `--url` are omitted, zli uses the default config (when set).
+- If either `--config` or `--url` is provided, that explicit input takes precedence.
+
 ### Listing images
 
 You can list all images hosted on a zot server using the [`zli image list`](#_zli-image) command with the server’s alias:
@@ -318,10 +338,14 @@ This command configures zot registry parameters for CLI.
       zli config main url
       zli config main --list
       zli config remove main
+      zli config set-default main
+      zli config clear-default
 
     Available Commands:
       add         Add configuration for a zot registry
+      clear-default Clear default configuration name
       remove      Remove configuration for a zot registry
+      set-default Set default configuration name
 
     Flags:
       -h, --help    help for config
