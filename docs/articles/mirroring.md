@@ -4,9 +4,9 @@
 
 A key use case for zot is to act as a mirror for upstream registries. If an upstream registry is OCI distribution-spec conformant for pulling images, you can use zot's `sync` feature to implement a downstream mirror, synchronizing OCI images and corresponding artifacts. Because synchronized images are stored in zot's local storage, registry mirroring allows for a fully distributed disconnected container image build pipeline. Container image operations terminate in local zot storage, which may reduce network latency and costs.
 
-> :warning: Because zot is a OCI-only registry, any upstream image stored in the Docker image format is converted to OCI format when downloading to zot. In the conversion, some non-OCI attributes may be lost and the image digest will change. Pulling with <tag>@<digest> will not work as expected. Signatures, for example, are removed due to the mismatch between the old and the new digests.
+> :warning: By default, zot stores images in OCI format. When syncing Docker-format images (`application/vnd.docker.distribution.manifest.v2+json`), zot converts them to OCI unless you opt out. Conversion changes the manifest digest, so digest-pinned pulls (for example, `repo@sha256:<digest>`) and verifiable signatures will not work as expected.
 
-> :pencil2: If Docker compatibility is enabled using the `compat` attribute under `http` in the zot configuration, Docker image format conversion to OCI image format can be disabled using the `preserveDigest` setting.
+> :pencil2: To store Docker-format images unchanged, enable [`http.compat`](../admin-guide/admin-configuration.md#compatibility-with-other-image-schema-types) as `["docker2s2"]` (the array must contain the exact string `docker2s2`) and set `preserveDigest`: `true` on the sync registry. See [When to enable compat](#when-to-enable-compat) below.
 
 ## Mirroring modes
 
@@ -18,6 +18,25 @@ For a pull through cache mirrored registry, configure zot for on-demand synchron
 
 > :pencil2:
 > Because Docker Hub rate-limits pulls and does not support catalog listing, do not use polled mirroring with Docker Hub. Use only on-demand mirroring with Docker Hub.
+
+## When to enable compat
+
+Enable `http.compat: ["docker2s2"]` when any of the following apply:
+
+- Clients pull by digest (`repo@sha256:<digest>`) and must match the upstream digest
+- Upstream images use [Docker Image Manifest v2, Schema 2](https://distribution.github.io/distribution/spec/manifest-v2-2/) and you need to store them unchanged (common on Docker Hub and operator/catalog images)
+- You need cosign or notation signatures and referrers to remain valid after mirroring
+- You set `preserveDigest`: `true` in sync (required — zot refuses to start without `http.compat` when `preserveDigest` is enabled)
+
+You can omit `compat` when all upstream content is already OCI-formatted and clients pull by tag only, accepting digest changes from OCI conversion (`preserveDigest`: `false`, the default).
+
+| Workload | `http.compat` | `preserveDigest` |
+|----------|---------------|------------------|
+| Tag-only pulls, OCI upstream | omit | `false` |
+| Digest-pinned pulls, mixed Docker/OCI | `["docker2s2"]` | `true` |
+| On-demand pull-through cache for all image types | `["docker2s2"]` | `true` |
+
+> :pencil2: `onDemand` and `preserveDigest` are **not** mutually exclusive. Use them together for on-demand pull-through caching with digest preservation.
 
 ## Migrating or updating a registry using mirroring
 
@@ -50,7 +69,9 @@ To ensure a complete migration of the registry contents, set a polling interval 
 
 ## Basic configuration for mirroring with sync
 
-The `sync` feature of zot is an [extension](https://github.com/opencontainers/distribution-spec/tree/main/extensions) of the OCI-compliant registry implementation. You can configure the `sync` feature under the `extensions` section of the zot configuration file, as shown in this example:
+The `sync` feature of zot is an [extension](https://github.com/opencontainers/distribution-spec/tree/main/extensions) of the OCI-compliant registry implementation. You can configure the `sync` feature under the `extensions` section of the zot configuration file, as shown in this example.
+
+When `preserveDigest` is `true`, you must also configure `http.compat: ["docker2s2"]` in the same configuration file. See [When to enable compat](#when-to-enable-compat).
 
 ```json
   "extensions": {
@@ -150,38 +171,39 @@ error occurs during either an on-demand or periodic synchronization. If no value
 <li><p><code>false</code>: Synchronize signed or unsigned images.</p></li>
 <li><p><code>true</code>: Synchronize only signed images (either notary or cosign).</p></li>
 </ul></td>
-<tr class="odd">
-<td style="text-align: left;"><p><strong>preserveDigest</strong></p></td>
-<td style="text-align: left;"><ul>
-<li><p><code>false</code>: Convert remote compatible media types to OCI media types locally.</p></li>
-<li><p><code>true</code>: Keep remote media types as they are.</p></li>
-<div class="note">
-<p><strong>Note:</strong> For Docker media types support, set this setting to <code>false</code> to keep signatures and other referrers in working condition</p>
-</div></li>
-</ul></td>
 </tr>
 <tr class="even">
+<td style="text-align: left;"><p><strong>preserveDigest</strong></p></td>
+<td style="text-align: left;"><ul>
+<li><p><code>false</code> (default): Convert remote compatible media types to OCI media types locally. Upstream digests change after sync.</p></li>
+<li><p><code>true</code>: Keep remote media types and digests as they are. Requires <code>http.compat: [&quot;docker2s2&quot;]</code> for Docker-format images.</p></li>
+</ul>
+<div class="note">
+<p><strong>Note:</strong> To preserve upstream digests, signatures, and referrers, set <code>preserveDigest</code> to <code>true</code> and enable <code>http.compat</code> with <code>docker2s2</code>. Setting <code>preserveDigest</code> to <code>false</code> converts Docker images to OCI and breaks digest-pinned pulls and signature verification against the original digest.</p>
+</div></td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;"><p><strong>syncLegacyCosignTags</strong></p></td>
 <td style="text-align: left;"><p>When <code>true</code> (default), sync legacy cosign/SBOM tags (for example, tag names derived from the image digest such as <code>sha256-&lt;digest&gt;.sig</code> or <code>sha256-&lt;digest&gt;.sbom</code>). Set to <code>false</code> to skip syncing these tags and reduce synced content.</p></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;"><p><strong>content</strong></p></td>
 <td style="text-align: left;"><p>The included attributes in this section specify which content will be pulled. If this section is not populated, periodic polling will not occur. The included attributes can also filter which on-demand images are pulled.</p></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;"><p>&emsp;&emsp;<strong>prefix</strong></p></td>
 <td style="text-align: left;"><p>On the remote registry, the path from which images will be pulled. This path can be a string that exactly matches the remote path, or it can be a <a href="https://en.wikipedia.org/wiki/Glob_(programming)">glob</a> pattern. For example, the path can include a wildcard (<strong>*</strong>) or a recursive wildcard (<strong>**</strong>).</p></td>
 </tr>
 
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;"><p>&emsp;&emsp;<strong>tags</strong></p></td>
 <td style="text-align: left;"><p>The included attributes in this optional section specify how remote images will be selected for synchronization based on image tags.</p></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;"><p>&emsp;&emsp;<strong>tags.regex</strong></p></td>
 <td style="text-align: left;"><p>Specifies a regular expression for matching image tags. Images whose tags do not match the expression are not pulled.</p></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;"><p>&emsp;&emsp;<strong>tags.semver</strong></p></td>
 <td style="text-align: left;"><p>Specifies whether image tags are to be filtered by semantic versioning (<a href="https://semver.org/">semver</a>) compliance.</p>
 <ul>
@@ -230,7 +252,7 @@ These two modes can be configured, separately or together, using specific settin
 
 ### Example: Multiple repositories with polled mirroring
 
-The following is an example of sync configuration for mirroring multiple repositories with polled mirroring.
+The following is an example of sync configuration for mirroring multiple repositories with polled mirroring. Because this example uses `preserveDigest`: `true`, the configuration file must also include `http.compat: ["docker2s2"]` (see [When to enable compat](#when-to-enable-compat)).
 
 ```json
 "sync": {
@@ -279,7 +301,7 @@ The configuration in this example will result in the following behavior:
 - Only signed images (notation and cosign) are synchronized.
 - The sync communication is secured using certificates in `certDir`.
 - This registry synchronizes with upstream registry every 6 hours.
-- This registry preserves upstream digests instead of converting them to OCI images.
+- This registry preserves upstream digests instead of converting them to OCI images (requires `http.compat: ["docker2s2"]` in the full configuration file).
 - On-demand mirroring is disabled.
 - Based on the content filtering options, this registry synchronizes these images:
     - From /repo1/repo, images with tags that begin with "4." and are semver compliant but excluding some tag patterns <br/>Files are stored locally in /repo1/repo on localhost.

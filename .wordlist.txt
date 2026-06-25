@@ -60,6 +60,8 @@ containerd
 CORS
 cpu
 CPUs
+compat
+cosign
 credentialsFile
 CRI
 cri
@@ -89,6 +91,7 @@ distributions
 distSpecVersion
 DN
 DNS
+docker2s2
 Dockerfile
 dropdown
 dryRun
@@ -221,6 +224,7 @@ nats
 NATS
 ng
 nginx
+notation
 npm
 NodePort
 OAuth
@@ -269,6 +273,7 @@ redis
 regclient
 rescanned
 regctl
+referrers
 regionendpoint
 replicaCount
 repo
