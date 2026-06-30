@@ -1,79 +1,22 @@
-# Using Docker with zot
+# Docker Users Guide to zot
 
-> :point_right: The Docker client has specific behaviors that differ from OCI-compliant clients. This article explains how to configure zot for Docker client compatibility, enable HTTPS, and troubleshoot Docker authentication issues.
+> :point_right: This guide is for users coming from the Docker ecosystem. It covers everything you need to know to push images, pull images, configure mirrors, and handle authentication with a zot registry using the Docker CLI.
 
-zot is a pure OCI-native registry. The Docker client (`docker`) implements the OCI Distribution Specification but with several quirks that require extra configuration steps compared to fully OCI-compliant clients such as Podman or skopeo.
+zot is a pure OCI-native registry built entirely on the [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec). The Docker CLI (`docker`) can push and pull images to and from zot, but the Docker client has several quirks and assumptions that differ from fully OCI-compliant clients such as Podman or skopeo. This guide explains those differences and how to configure zot to work well with Docker.
 
-## Docker image format compatibility (compat mode)
+## Quick start
 
-By default, zot stores and serves images in [OCI Image Format](https://github.com/opencontainers/image-spec). When you push Docker-format manifests (`application/vnd.docker.distribution.manifest.v2+json`) to zot without compatibility mode, zot **rejects** the push unless `http.compat` is enabled.
+The steps below get you from zero to `docker pull` from a zot registry:
 
-When `http.compat` is **not** enabled, Docker-format images synced from upstream registries (Docker Hub, etc.) are automatically converted to OCI format during sync. Conversion changes the manifest digest, so digest-pinned pulls (`image@sha256:<digest>`) and verifiable signatures will not work as expected.
+1. **Deploy zot** — see [Installing zot on Bare Metal Linux](../install-guides/install-guide-linux.md) or [Installing zot with Kubernetes and Helm](../install-guides/install-guide-k8s.md).
+2. **Enable TLS** — the Docker client requires HTTPS for any remote registry. See [HTTPS and TLS](#https-and-tls).
+3. **Enable Docker image format support** if you intend to push Docker-format images or use zot as a mirror for Docker Hub. See [Docker image format compatibility](#docker-image-format-compatibility-compat-mode).
+4. **Log in** — run `docker login <registry>`. See [Authentication](#authentication).
+5. **Push and pull** — use standard `docker push` and `docker pull` commands.
 
-### When to enable compat mode
+## HTTPS and TLS
 
-Enable `http.compat: ["docker2s2"]` in the zot configuration when any of the following apply:
-
-- Clients push Docker-format manifests directly to zot and must be stored unchanged.
-- Clients pull by digest (`image@sha256:<digest>`) and the digest must match the upstream registry.
-- You mirror Docker-format images from upstream registries and need to keep manifests and digests unchanged (typically when using the `sync` extension with `preserveDigest: true`).
-- You need cosign or notation signatures and referrers to remain valid after mirroring.
-
-You can omit `compat` when:
-
-- All images are already in OCI format.
-- Clients pull by tag only and do not depend on digest stability.
-- You use the `sync` extension with `preserveDigest: false` (the default) and accept that converted images will have different digests than upstream.
-
-### Configuring compat mode
-
-Add the `compat` attribute under `http` in the zot configuration file. The array must contain the exact string `docker2s2` (not `docker` or other aliases):
-
-```json
-"http": {
-    "address": "0.0.0.0",
-    "port": "5000",
-    "compat": ["docker2s2"]
-}
-```
-
-> :warning:
-> If you enable `preserveDigest: true` in the `sync` extension, you **must** also set `http.compat: ["docker2s2"]`. zot refuses to start if `preserveDigest` is set without `http.compat`.
-
-For mirroring use cases, combine `compat` with `onDemand: true` and `preserveDigest: true` in the sync extension:
-
-```json
-{
-    "http": {
-        "address": "0.0.0.0",
-        "port": "5000",
-        "compat": ["docker2s2"]
-    },
-    "extensions": {
-        "sync": {
-            "registries": [
-                {
-                    "urls": ["https://registry-1.docker.io"],
-                    "onDemand": true,
-                    "preserveDigest": true,
-                    "content": [
-                        {
-                            "prefix": "**",
-                            "destination": "/docker"
-                        }
-                    ]
-                }
-            ]
-        }
-    }
-}
-```
-
-See [OCI Registry Mirroring With zot](mirroring.md) for a full mirroring configuration guide.
-
-## HTTPS (TLS)
-
-The Docker client requires HTTPS for any registry that is not `localhost` (or `127.0.0.1`). Attempting to use plain HTTP with a remote host results in an error such as:
+The Docker daemon requires HTTPS for any registry that is not `localhost` (or `127.0.0.1`). Using plain HTTP results in an error such as:
 
 ```
 Error response from daemon: Get "https://myreg.example.com/v2/": http: server gave HTTP response to HTTPS client
@@ -94,11 +37,11 @@ Configure TLS in the `http` section of the zot configuration file:
 }
 ```
 
-The certificate must be trusted by the Docker daemon. For production use, obtain a certificate from a public CA. For testing, you can use a self-signed certificate, but you must add it to Docker's trusted CA list (see [Docker documentation](https://docs.docker.com/engine/security/certificates/)) or add the registry to Docker's insecure registries.
+The certificate must be trusted by the Docker daemon on the client machine. For production use, obtain a certificate from a public CA or your organization's internal CA. See [User Authentication and Authorization with zot](authn-authz.md#tls-authentication) for more detail.
 
-### Insecure registries (testing only)
+### Insecure registries (local testing only)
 
-For local testing with plain HTTP or self-signed certificates, add the registry to Docker's `insecure-registries` list in `/etc/docker/daemon.json`:
+For local testing with a plain-HTTP registry or a self-signed certificate, add the registry address to Docker's `insecure-registries` list in `/etc/docker/daemon.json` on the client machine, then restart the Docker daemon:
 
 ```json
 {
@@ -106,79 +49,125 @@ For local testing with plain HTTP or self-signed certificates, add the registry 
 }
 ```
 
-Then restart the Docker daemon. This is **not recommended for production**.
+> :warning: Do not use insecure registries in production.
 
 ## Authentication
 
 ### How Docker authentication works
 
-The Docker client determines whether to send credentials based on the response from the `/v2/` "ping" endpoint:
+The Docker client decides whether to send credentials based on the `/v2/` "ping" response from the registry:
 
-- If `/v2/` returns `200 OK`, Docker assumes the registry requires no authentication and does **not** send credentials on subsequent requests.
-- If `/v2/` returns `401 Unauthorized` with a `WWW-Authenticate` header, Docker prompts for credentials or uses stored credentials from a prior `docker login`.
+- `200 OK` → Docker assumes no authentication is required and sends no credentials on subsequent requests.
+- `401 Unauthorized` with `WWW-Authenticate` → Docker retrieves stored credentials (from a previous `docker login`) and sends them on subsequent requests.
 
-OCI-compliant clients such as Podman and skopeo handle per-resource authentication challenges correctly: they attempt the request first and then respond to the `401` challenge with credentials. Docker does not do this — it decides at `/v2/` ping time whether to send credentials at all.
+OCI-compliant clients (Podman, skopeo) handle per-resource `401` challenges inline — they attempt a request, receive a `401`, and retry with credentials. Docker does not do this, so it must have credentials stored at login time for protected repositories.
 
 ### docker login
 
-Before pushing or pulling from a zot registry that requires authentication, run:
+Before pushing to or pulling from a protected zot registry, log in:
 
 ```bash
 docker login myreg.example.com
 ```
 
-You will be prompted for a username and password. Docker stores the credentials and sends them on subsequent requests to that registry.
+You will be prompted for your username and password. Docker stores the credentials in `~/.docker/config.json` and sends them automatically on subsequent requests.
 
-### Using API keys with docker login
+To log out and remove the stored credentials:
 
-When zot is configured with OpenID/OAuth2 authentication (`auth.openid`), interactive browser-based login is not available to the Docker CLI. Instead, use a **zot API key** as the password for `docker login`:
+```bash
+docker logout myreg.example.com
+```
 
-1. Log in to the zot web UI or API to generate an API key.
-2. Use the API key as the password for `docker login`:
+### htpasswd and LDAP (basic authentication)
+
+When zot is configured with `htpasswd` or LDAP authentication, use your configured username and password directly with `docker login`:
+
+```bash
+docker login myreg.example.com -u alice -p mypassword
+```
+
+For information on configuring htpasswd or LDAP in zot, see [User Authentication and Authorization with zot](authn-authz.md#server-side-authentication).
+
+### OpenID/OAuth2 with API keys
+
+When zot is configured with OpenID/OAuth2 authentication (`auth.openid`), browser-based login is not available to the Docker CLI. Instead, enable API keys in zot and use an API key as the password for `docker login`:
+
+1. Enable API keys in zot configuration:
+
+    ```json
+    "http": {
+        "auth": {
+            "apikey": true,
+            "openid": { ... }
+        }
+    }
+    ```
+
+2. Log in to the zot web UI (`https://myreg.example.com`) with your OpenID provider and generate an API key.
+
+3. Use the API key as the password for `docker login`:
 
     ```bash
     docker login myreg.example.com -u <username> -p <api-key>
     ```
 
-This stores the credentials so that subsequent `docker pull` and `docker push` commands work without re-authentication. See [User Authentication and Authorization with zot](authn-authz.md) for more information about API keys.
+After this, `docker push` and `docker pull` work as normal with the stored credentials. See [User Authentication and Authorization with zot](authn-authz.md) for full details on OpenID and API key configuration.
 
-### Basic authentication (htpasswd or LDAP)
+## Docker image format compatibility (compat mode)
 
-When zot is configured with `htpasswd` or `LDAP` authentication, use the configured username and password directly:
+By default, zot stores images in [OCI Image Format](https://github.com/opencontainers/image-spec). Pushing a Docker-format manifest (`application/vnd.docker.distribution.manifest.v2+json`) without compatibility mode enabled is rejected by zot.
 
-```bash
-docker login myreg.example.com -u <username> -p <password>
+### When to enable compat mode
+
+Enable `http.compat: ["docker2s2"]` when any of the following apply:
+
+- You push Docker-format images directly to zot (for example, `docker push` without buildx OCI mode).
+- You mirror Docker Hub or other Docker-format registries and need to preserve the original manifests and digests (required when using `preserveDigest: true` in the `sync` extension).
+- Clients pull by digest (`image@sha256:<digest>`) and the digest must match the upstream registry.
+- You need cosign or notation signatures tied to the original digest to remain valid after mirroring.
+
+You can omit `compat` when all images are OCI-formatted and clients pull by tag only, accepting that converted images may have different digests than the upstream source.
+
+### Configuring compat mode
+
+Add the `compat` attribute under `http` in the zot configuration file. The array must contain the exact string `docker2s2`:
+
+```json
+"http": {
+    "address": "0.0.0.0",
+    "port": "5000",
+    "compat": ["docker2s2"]
+}
 ```
+
+> :warning:
+> If you use `preserveDigest: true` in the `sync` extension, you **must** also set `http.compat: ["docker2s2"]`. zot refuses to start if `preserveDigest` is configured without `http.compat`.
+
+See [Configuring zot](../admin-guide/admin-configuration.md#compat_config) and [OCI Registry Mirroring With zot](mirroring.md) for more detail.
 
 ## Mixed anonymous and authenticated access
 
-A common configuration pattern is to allow unauthenticated (anonymous) read access to some repositories while requiring authentication to push or access private repositories. This is configured in zot using `anonymousPolicy` for some repositories and `defaultPolicy` or `adminPolicy` for others.
+A common configuration is to allow unauthenticated read access for public repositories while requiring authentication to push or access private ones. In zot this is done with `anonymousPolicy` on some repositories alongside `defaultPolicy` or `adminPolicy` for others.
 
-### The problem: Docker fails with "no basic auth credentials"
+### The problem
 
-When a zot registry uses **basic authentication** (htpasswd or LDAP) **and** has a **mixed** access-control setup (at least one repository with `anonymousPolicy` alongside policies that require authentication, such as `defaultPolicy`, `adminPolicy`, or user-specific policies), unauthenticated Docker clients fail with:
+When zot uses **basic authentication** (htpasswd or LDAP) **and** has a **mixed** access-control setup — at least one repository with `anonymousPolicy` alongside any policy that requires authentication — Docker clients that have not run `docker login` fail with:
 
 ```
 Error response from daemon: Head "https://myreg.example.com/v2/repo/image/manifests/tag": no basic auth credentials
 ```
 
-This happens because:
+**Why this happens:** With a mixed access-control setup, zot returns `401 Unauthorized` on the `/v2/` ping for Docker clients so they use their stored credentials on protected repositories. The Docker client sees the `401` on `/v2/` and looks for stored credentials — but if `docker login` has not been run, it has none and fails.
 
-1. zot detects the mixed access-control configuration and returns `401 Unauthorized` on `/v2/` for Docker clients, to force them through the credential flow.
-2. The Docker client, having received a `401` on `/v2/`, then sends all subsequent requests with credentials — but since it has none stored (from `docker login`), the request fails.
+> :pencil2: This behavior only affects the Docker client. Podman, skopeo, and other OCI-compliant clients handle per-resource `401` challenges natively and are not affected.
 
-This behavior was introduced intentionally to fix a separate issue: without this workaround, Docker clients could not access protected repositories at all when any anonymous repository existed.
-
-> :pencil2: This behavior only affects the Docker client. Podman, skopeo, and other OCI-compliant clients handle per-resource `401` challenges correctly and are not affected.
-
-### Example: configuration that triggers this behavior
+### Example configuration that triggers this behavior
 
 ```json
 {
     "http": {
         "address": "0.0.0.0",
         "port": "5000",
-        "compat": ["docker2s2"],
         "realm": "zot",
         "auth": {
             "apikey": true,
@@ -208,54 +197,146 @@ This behavior was introduced intentionally to fix a separate issue: without this
 }
 ```
 
-In this configuration, any Docker client that has not previously run `docker login` will fail to pull, even for repositories that are marked as anonymous-readable.
+In this configuration, any Docker client that has not previously run `docker login` will fail to pull even from repositories that allow anonymous reads.
 
-### Solutions and workarounds
+### Solutions
 
 **Option 1: `docker login` with an API key (recommended)**
 
-The simplest workaround is to log in with a zot API key before using the Docker client:
+Run `docker login` once with a zot API key:
 
 ```bash
 docker login myreg.example.com -u <username> -p <api-key>
 ```
 
-After login, the Docker client stores the credentials and sends them automatically. Repositories with `anonymousPolicy` that allow read access continue to work; protected repositories are also accessible with the provided credentials.
+After storing credentials, `docker pull` works for both public and private repositories. No further login steps are needed unless the API key expires.
 
 **Option 2: Use Podman or skopeo**
 
-[Podman](https://podman.io/) and [skopeo](https://github.com/containers/skopeo) handle per-resource authentication challenges natively and work correctly with mixed anonymous/authenticated zot configurations without requiring `podman login` first:
+Podman and skopeo handle per-resource authentication challenges natively:
 
 ```bash
 podman pull myreg.example.com/public-repo/image:tag
 skopeo copy docker://myreg.example.com/public-repo/image:tag dir:/tmp/image
 ```
 
+These clients work with anonymous-readable repositories without requiring a login step.
+
 **Option 3: Use zot-docker-proxy**
 
-[zot-docker-proxy](https://github.com/project-zot/zot-docker-proxy) is a proxy that sits in front of zot and handles Docker client quirks automatically, including proper anonymous access.
+[zot-docker-proxy](https://github.com/project-zot/zot-docker-proxy) is a proxy that sits in front of zot and transparently handles Docker client quirks including anonymous access.
 
-**Option 4: Avoid mixed access policies with basic auth**
+**Option 4: Avoid basic auth for mixed policies**
 
-Restructure the access control to avoid mixing anonymous policies with authenticated policies when using basic auth. For example:
+The mixed-policy workaround only applies to basic authentication (htpasswd and LDAP). Switching to bearer token authentication avoids the issue, since `/v2/` returns `200 OK` and Docker uses per-resource authentication challenges normally.
 
-- Use a fully public registry (all repositories `anonymousPolicy: ["read"]`) — Docker receives `200` on `/v2/` and can pull without credentials.
-- Use a fully private registry (no `anonymousPolicy`) with bearer token authentication, which does not trigger the Docker compatibility workaround.
+## Using zot as a Docker pull-through cache
 
-**Option 5: Switch to bearer token authentication**
+zot can serve as a pull-through cache (on-demand mirror) for Docker Hub and other upstream registries. This reduces external network traffic and speeds up image pulls in your environment.
 
-The Docker compatibility workaround is only triggered with **basic** authentication (htpasswd or LDAP). If you use bearer token authentication, the `/v2/` endpoint behaves normally and Docker can use standard per-resource auth challenges.
+### Docker daemon registry mirror configuration
 
-## Summary: Docker client checklist
+Configure the Docker daemon to use zot as a mirror for `docker.io` by editing `/etc/docker/daemon.json` on each Docker host:
 
-| Requirement | zot Configuration |
-|-------------|-------------------|
+```json
+{
+    "registry-mirrors": ["https://myreg.example.com"]
+}
+```
+
+Restart the Docker daemon after saving the file:
+
+```bash
+sudo systemctl restart docker
+```
+
+After this, `docker pull ubuntu:22.04` first checks zot for a cached copy; if not present, zot fetches it from Docker Hub and caches it for subsequent pulls.
+
+> :pencil2: For zot to serve as a pull-through cache for Docker Hub images, configure the `sync` extension with `onDemand: true`. Enable `http.compat: ["docker2s2"]` and `preserveDigest: true` if you need to preserve Docker image digests.
+
+For a full zot mirror configuration, see [OCI Registry Mirroring With zot](mirroring.md).
+
+### Docker with containerd image store (Docker Engine 25+ / containerd v2.x)
+
+Docker Engine 25 and later can use the containerd image store (`containerd-snapshotter`), which supports the same `hosts.toml`-based registry mirror configuration as containerd itself. When this feature is enabled, Docker reads registry mirror configuration from `/etc/docker/certs.d/` rather than from `daemon.json`.
+
+> :pencil2: Check whether the containerd image store is enabled on your Docker host:
+> ```bash
+> docker info | grep "Storage Driver"
+> ```
+> If the output shows `overlayfs` (containerd image store), `hosts.toml` configuration applies.
+
+For each upstream registry you want to mirror through zot, create a directory under `/etc/docker/certs.d/` named after the upstream registry and place a `hosts.toml` file inside it.
+
+**Example directory structure** for mirroring several public registries:
+
+```
+/etc/docker/certs.d/
+├── docker.io
+│   └── hosts.toml
+├── gcr.io
+│   └── hosts.toml
+├── ghcr.io
+│   └── hosts.toml
+├── mcr.microsoft.com
+│   └── hosts.toml
+├── public.ecr.aws
+│   └── hosts.toml
+├── quay.io
+│   └── hosts.toml
+├── registry.gitlab.com
+│   └── hosts.toml
+└── registry.k8s.io
+    └── hosts.toml
+```
+
+**Example: mirroring `quay.io` through zot**
+
+Assume zot is running at `https://myreg.example.com` and the zot `sync` extension mirrors `quay.io` images into the `/quay` repository prefix (that is, `destination: "/quay"` in the sync configuration).
+
+Create `/etc/docker/certs.d/quay.io/hosts.toml`:
+
+```toml
+server = "https://quay.io"
+
+[host."https://myreg.example.com/v2/quay"]
+  capabilities = ["pull", "resolve"]
+  override_path = true
+```
+
+Key points:
+
+- The `server` field is the canonical upstream registry URL. Docker falls back to it if the mirror is unavailable.
+- The host key uses the full path including `/v2/<destination-prefix>` because the zot OCI Distribution API is rooted at `/v2/`.
+- `override_path = true` is required when the mirror path differs from the upstream path (that is, when `destination` is set to something other than `/`).
+- `capabilities` should include `pull` and `resolve`; add `push` only if you also want `docker push` to go to zot.
+
+For the `docker.io` mirror, if you sync Docker Hub images to a `/docker` prefix in zot:
+
+```toml
+server = "https://registry-1.docker.io"
+
+[host."https://myreg.example.com/v2/docker"]
+  capabilities = ["pull", "resolve"]
+  override_path = true
+```
+
+No Docker daemon restart is required when you add or modify `hosts.toml` files — changes take effect on the next pull.
+
+For more information about `hosts.toml` configuration options, see the [containerd registry configuration documentation](https://github.com/containerd/containerd/blob/main/docs/hosts.md#registry-configuration---examples).
+
+## Summary: Docker client configuration checklist
+
+| Goal | Configuration |
+|------|---------------|
 | Push/pull Docker-format images | `"http": { "compat": ["docker2s2"] }` |
-| Mirror from Docker Hub with digest preservation | `http.compat` + `sync.preserveDigest: true` |
-| HTTPS for remote registry | `http.tls.cert` and `http.tls.key` |
-| Docker push/pull with username/password | `auth.htpasswd` or `auth.ldap` + `docker login` |
-| Docker push/pull with OpenID/OIDC | `auth.openid` + `auth.apikey: true` + `docker login` with API key |
-| Anonymous pull + protected push (Docker) | `docker login` with credentials, or use Podman/skopeo |
+| Use HTTPS (required for non-localhost) | `http.tls.cert` and `http.tls.key` |
+| Authenticate with username/password | `auth.htpasswd` or `auth.ldap` + `docker login` |
+| Authenticate with OpenID/OIDC | `auth.openid` + `auth.apikey: true` + `docker login` with API key |
+| Pull anonymous repos when mixed auth is enabled | `docker login` first, or use Podman/skopeo |
+| Mirror Docker Hub with digest preservation | `http.compat: ["docker2s2"]` + `sync.preserveDigest: true` |
+| Docker daemon pull-through cache | `registry-mirrors` in `/etc/docker/daemon.json` |
+| Docker+containerd image store mirrors | `hosts.toml` in `/etc/docker/certs.d/<registry>/` |
 
 ## Related documentation
 
@@ -263,3 +344,4 @@ The Docker compatibility workaround is only triggered with **basic** authenticat
 - [Configuring zot](../admin-guide/admin-configuration.md)
 - [OCI Registry Mirroring With zot](mirroring.md)
 - [_containerd_ Mirroring From _zot_](containerd.md)
+- [Push and Pull Image Content](../user-guides/user-guide-datapath.md)
