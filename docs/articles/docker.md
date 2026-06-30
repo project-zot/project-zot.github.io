@@ -41,7 +41,7 @@ The certificate must be trusted by the Docker daemon on the client machine. For 
 
 ### Insecure registries (local testing only)
 
-For local testing with a plain-HTTP registry or a self-signed certificate, add the registry address to Docker's `insecure-registries` list in `/etc/docker/daemon.json` on the client machine, then restart the Docker daemon:
+For local testing with a plain-HTTP registry or a self-signed certificate, add the registry address to the Docker `insecure-registries` list in `/etc/docker/daemon.json` on the client machine, then restart the Docker daemon:
 
 ```json
 {
