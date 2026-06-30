@@ -134,5 +134,6 @@ nav:
     - Performance Profiling: articles/pprofiling.md
     - Using kind for Deployment Testing: articles/kind-deploy.md
     - _containerd_ Mirroring From _zot_: articles/containerd.md
+    - Using Docker with zot: articles/docker.md
 extra_css:
   - stylesheets/custom.css
