@@ -35,6 +35,7 @@ Blowfish
 BoltDB
 boolean
 Bugfixes
+buildx
 Buildx
 busybox
 caching
@@ -91,6 +92,7 @@ distributions
 distSpecVersion
 DN
 DNS
+Docker
 docker2s2
 Dockerfile
 dropdown

@@ -83,7 +83,13 @@ docker logout myreg.example.com
 When zot is configured with `htpasswd` or LDAP authentication, use your configured username and password directly with `docker login`:
 
 ```bash
-docker login myreg.example.com -u alice -p mypassword
+docker login myreg.example.com -u alice
+```
+
+Docker prompts for a password. For non-interactive use, pipe the password via `--password-stdin` instead of passing it on the command line to avoid exposing it in shell history:
+
+```bash
+echo "mypassword" | docker login myreg.example.com -u alice --password-stdin
 ```
 
 For information on configuring htpasswd or LDAP in zot, see [User Authentication and Authorization with zot](authn-authz.md#server-side-authentication).
@@ -105,10 +111,10 @@ When zot is configured with OpenID/OAuth2 authentication (`auth.openid`), browse
 
 2. Log in to the zot web UI (`https://myreg.example.com`) with your OpenID provider and generate an API key.
 
-3. Use the API key as the password for `docker login`:
+3. Use the API key as the password for `docker login`. Pass it via `--password-stdin` to avoid exposing it in shell history:
 
     ```bash
-    docker login myreg.example.com -u <username> -p <api-key>
+    echo "<api-key>" | docker login myreg.example.com -u <username> --password-stdin
     ```
 
 After this, `docker push` and `docker pull` work as normal with the stored credentials. See [User Authentication and Authorization with zot](authn-authz.md) for full details on OpenID and API key configuration.
@@ -151,7 +157,7 @@ A common configuration is to allow unauthenticated read access for public reposi
 
 ### The problem
 
-When zot uses **basic authentication** (htpasswd or LDAP) **and** has a **mixed** access-control setup — at least one repository with `anonymousPolicy` alongside any policy that requires authentication — Docker clients that have not run `docker login` fail with:
+When zot uses **basic authentication** (htpasswd, LDAP, or API keys) **and** has a **mixed** access-control setup — at least one repository with `anonymousPolicy` alongside any policy that requires authentication — Docker clients that have not run `docker login` fail with:
 
 ```
 Error response from daemon: Head "https://myreg.example.com/v2/repo/image/manifests/tag": no basic auth credentials
@@ -203,10 +209,10 @@ In this configuration, any Docker client that has not previously run `docker log
 
 **Option 1: `docker login` with an API key (recommended)**
 
-Run `docker login` once with a zot API key:
+Run `docker login` once with a zot API key. Pass the key via `--password-stdin` to avoid exposing it in shell history:
 
 ```bash
-docker login myreg.example.com -u <username> -p <api-key>
+echo "<api-key>" | docker login myreg.example.com -u <username> --password-stdin
 ```
 
 After storing credentials, `docker pull` works for both public and private repositories. No further login steps are needed unless the API key expires.
@@ -226,9 +232,9 @@ These clients work with anonymous-readable repositories without requiring a logi
 
 [zot-docker-proxy](https://github.com/project-zot/zot-docker-proxy) is a proxy that sits in front of zot and transparently handles Docker client quirks including anonymous access.
 
-**Option 4: Avoid basic auth for mixed policies**
+**Option 4: Avoid mixed policies**
 
-The mixed-policy workaround only applies to basic authentication (htpasswd and LDAP). Switching to bearer token authentication avoids the issue, since `/v2/` returns `200 OK` and Docker uses per-resource authentication challenges normally.
+The mixed-policy issue affects all basic-authentication setups (htpasswd, LDAP, and API keys). Avoiding `anonymousPolicy` entirely — or running separate zot instances for public and private content — eliminates the issue without requiring a login step.
 
 ## Using zot as a Docker pull-through cache
 
