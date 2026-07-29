@@ -276,6 +276,7 @@ regclient
 rescanned
 regctl
 referrers
+RFC
 regionendpoint
 replicaCount
 repo

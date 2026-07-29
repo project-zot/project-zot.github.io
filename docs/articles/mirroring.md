@@ -560,3 +560,118 @@ This is an example configuration demonstrating how to use the sync extension wit
         }
     }
 ```
+
+### Example: Support for the OAuth2 credential helper
+
+The `oauth2` credential helper obtains a short-lived access token from an OAuth2 token endpoint and presents it to the upstream registry as the password. The token is fetched while zot runs and refreshed before it expires, so no long-lived registry password has to be stored in the zot configuration.
+
+Select the helper with `"credentialHelper": "oauth2"` and configure it in the `oauth2CredentialHelper` block of the same registry entry.
+
+#### Proving the identity of zot
+
+zot authenticates to the token endpoint with a signed JWT. That JWT comes from exactly one of two mutually exclusive sources:
+
+| Attribute | Description |
+| --- | --- |
+| `assertionFile` | The path to a JWT that an external platform issues and rotates, such as a Kubernetes projected service account token or a workload identity token. zot re-reads the file on every refresh, so a token that the platform rotates in place is picked up without a restart, and zot never holds a private key. |
+| `signingFile` | The path to a JSON file holding a private key and claims. zot signs a fresh, single-use assertion on every refresh. |
+
+The file referenced by `signingFile` has the following form. The `issuer` and `subject` claims default to `clientId`, and `audience` defaults to `tokenURL`.
+
+```json
+{
+  "privateKeyFile": "/run/secrets/oauth2-signing-key.pem",
+  "algorithm": "RS256",
+  "keyId": "my-key-id",
+  "issuer": "my-client-id",
+  "subject": "my-client-id",
+  "audience": "https://idp.example.com/token"
+}
+```
+
+#### Grant types
+
+The `grantType` attribute selects how the assertion is presented to the token endpoint:
+
+| `grantType` | The assertion is sent as |
+| --- | --- |
+| omitted, or `client_credentials` | `client_assertion`, accompanied by `client_assertion_type` |
+| `urn:ietf:params:oauth:grant-type:jwt-bearer` | `assertion` |
+| `urn:ietf:params:oauth:grant-type:token-exchange` | `subject_token`, accompanied by `subject_token_type`, `requested_token_type` and `audience` |
+
+The token exchange grant follows RFC 8693 and is what a security token service expects when it federates an external workload identity. It requires `audience`. The `subjectTokenType` and `requestedTokenType` attributes are optional there, and all three are rejected with the other grant types.
+
+#### Attributes
+
+| Attribute | Description |
+| --- | --- |
+| `tokenURL` | Required. The OAuth2 token endpoint. |
+| `assertionFile` | The path to a JWT signed by an external platform. Mutually exclusive with `signingFile`. |
+| `signingFile` | The path to the signing key and claims used to mint assertions. Mutually exclusive with `assertionFile`. |
+| `grantType` | See the grant types above. Defaults to `client_credentials`. |
+| `clientId` | Optional. Sent to the token endpoint as `client_id`. |
+| `clientSecretFile` | Optional. The path to a file holding a client secret, sent as `client_secret`. |
+| `scopes` | Optional. A list of scopes, joined with spaces and sent as `scope`. |
+| `username` | The username paired with the access token when authenticating to the upstream registry. Defaults to `<token>`. |
+| `audience` | Token exchange only, where it is required. Identifies the target of the exchange. |
+| `subjectTokenType` | Token exchange only. Defaults to `urn:ietf:params:oauth:token-type:jwt`. |
+| `requestedTokenType` | Token exchange only. Defaults to `urn:ietf:params:oauth:token-type:access_token`. |
+
+zot refreshes the access token once less than a minute of its validity remains. If the token endpoint does not return `expires_in`, the token is assumed to last five minutes.
+
+#### Example: Google Artifact Registry with workload identity federation
+
+This configuration mirrors from Google Artifact Registry with no Google service account key on disk. zot exchanges a JWT issued by an external identity provider for a federated access token, which Artifact Registry accepts directly.
+
+```json
+"extensions": {
+    "sync": {
+        "downloadDir": "/tmp/zot",
+        "registries": [
+            {
+                "urls": [
+                    "https://REGION-docker.pkg.dev"
+                ],
+                "onDemand": true,
+                "maxRetries": 5,
+                "retryDelay": "2m",
+                "credentialHelper": "oauth2",
+                "oauth2CredentialHelper": {
+                    "tokenURL": "https://sts.googleapis.com/v1/token",
+                    "assertionFile": "/var/run/secrets/tokens/zot-token",
+                    "grantType": "urn:ietf:params:oauth:grant-type:token-exchange",
+                    "audience": "//iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL/providers/PROVIDER",
+                    "subjectTokenType": "urn:ietf:params:oauth:token-type:jwt",
+                    "requestedTokenType": "urn:ietf:params:oauth:token-type:access_token",
+                    "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                    ],
+                    "username": "oauth2accesstoken"
+                }
+            }
+        ]
+    }
+}
+```
+
+Two details are specific to Artifact Registry:
+
+- The `username` attribute must be `oauth2accesstoken`. Artifact Registry expects that fixed username with an access token as the password, rather than the `<token>` default.
+- The workload identity principal needs the `roles/artifactregistry.reader` role on the repository. The federated token is accepted as an authenticated principal on its own, so impersonating a service account is not required.
+
+The pool and the provider named in `audience` are created once, and the principal is granted read access on the repository:
+
+```
+gcloud iam workload-identity-pools create POOL --location=global
+
+gcloud iam workload-identity-pools providers create-oidc PROVIDER \
+    --location=global --workload-identity-pool=POOL \
+    --issuer-uri=https://issuer.example.com \
+    --attribute-mapping=google.subject=assertion.sub
+
+gcloud artifacts repositories add-iam-policy-binding REPOSITORY \
+    --location=REGION --role=roles/artifactregistry.reader \
+    --member=principal://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL/subject/SUBJECT
+```
+
+The `assertionFile` attribute points at the JWT that the identity provider issues for the workload, for example a Kubernetes projected service account token. Because zot re-reads that file on every refresh, the rotation performed by the platform is picked up automatically.
