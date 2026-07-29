@@ -561,6 +561,55 @@ This is an example configuration demonstrating how to use the sync extension wit
     }
 ```
 
+### Example: Support for Google Artifact Registry
+
+The `gcp` credential helper obtains a short-lived access token from Google application default credentials and pairs it with the username Artifact Registry expects, so no service account key has to be kept in the zot configuration.
+
+```json
+"extensions": {
+        "sync": {
+            "credentialsFile": "",
+            "downloadDir": "/tmp/zot",
+            "registries": [
+                {
+                    "urls": [
+                        "https://REGION-docker.pkg.dev"
+                    ],
+                    "onDemand": true,
+                    "maxRetries": 5,
+                    "retryDelay": "2m",
+                    "credentialHelper": "gcp"
+                }
+            ]
+        }
+    }
+```
+
+The helper takes whatever application default credentials resolve to: the metadata server when zot runs on Compute Engine or Kubernetes Engine, a key file named by `GOOGLE_APPLICATION_CREDENTIALS`, an external account file for workload identity federation, or the credentials left behind by `gcloud auth application-default login`. The same token also works for the `gcr.io` hostnames.
+
+The principal that the credentials resolve to needs the `roles/artifactregistry.reader` role on the repository.
+
+#### Mirroring without a key on disk
+
+To reach Artifact Registry with no service account key anywhere, point `GOOGLE_APPLICATION_CREDENTIALS` at an external account file. The registry entry above does not change; the token exchange is performed by the Google client library.
+
+```json
+{
+  "type": "external_account",
+  "audience": "//iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL/providers/PROVIDER",
+  "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
+  "token_url": "https://sts.googleapis.com/v1/token",
+  "credential_source": {
+    "file": "/var/run/secrets/tokens/gcp-token",
+    "format": { "type": "text" }
+  }
+}
+```
+
+The file named by `credential_source` holds the token the identity provider issues for the workload, such as a Kubernetes projected service account token. It is read again on every exchange, so a token that the platform rotates in place is picked up without restarting zot.
+
+On Kubernetes Engine with workload identity none of this is needed, because the metadata server serves the token directly and `credentialHelper` is the only setting involved.
+
 ### Example: Support for the OAuth2 credential helper
 
 The `oauth2` credential helper obtains a short-lived access token from an OAuth2 token endpoint and presents it to the upstream registry as the password. The token is fetched while zot runs and refreshed before it expires, so no long-lived registry password has to be stored in the zot configuration.
@@ -619,59 +668,34 @@ The token exchange grant follows RFC 8693 and is what a security token service e
 
 zot refreshes the access token once less than a minute of its validity remains. If the token endpoint does not return `expires_in`, the token is assumed to last five minutes.
 
-#### Example: Google Artifact Registry with workload identity federation
+#### Example: Token exchange with a security token service
 
-This configuration mirrors from Google Artifact Registry with no Google service account key on disk. zot exchanges a JWT issued by an external identity provider for a federated access token, which Artifact Registry accepts directly.
+The token exchange grant reaches any service that implements RFC 8693. For Google Artifact Registry prefer the `gcp` helper above, which does the same thing with less configuration; this grant is for the cases it does not cover.
 
 ```json
 "extensions": {
-    "sync": {
-        "downloadDir": "/tmp/zot",
-        "registries": [
-            {
-                "urls": [
-                    "https://REGION-docker.pkg.dev"
-                ],
-                "onDemand": true,
-                "maxRetries": 5,
-                "retryDelay": "2m",
-                "credentialHelper": "oauth2",
-                "oauth2CredentialHelper": {
-                    "tokenURL": "https://sts.googleapis.com/v1/token",
-                    "assertionFile": "/var/run/secrets/tokens/zot-token",
-                    "grantType": "urn:ietf:params:oauth:grant-type:token-exchange",
-                    "audience": "//iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL/providers/PROVIDER",
-                    "subjectTokenType": "urn:ietf:params:oauth:token-type:jwt",
-                    "requestedTokenType": "urn:ietf:params:oauth:token-type:access_token",
-                    "scopes": [
-                        "https://www.googleapis.com/auth/cloud-platform"
+        "sync": {
+            "downloadDir": "/tmp/zot",
+            "registries": [
+                {
+                    "urls": [
+                        "https://registry.example.com"
                     ],
-                    "username": "oauth2accesstoken"
+                    "onDemand": true,
+                    "credentialHelper": "oauth2",
+                    "oauth2CredentialHelper": {
+                        "tokenURL": "https://sts.example.com/v1/token",
+                        "assertionFile": "/var/run/secrets/tokens/registry-token",
+                        "grantType": "urn:ietf:params:oauth:grant-type:token-exchange",
+                        "audience": "//sts.example.com/pools/the-pool/providers/the-provider",
+                        "subjectTokenType": "urn:ietf:params:oauth:token-type:jwt",
+                        "requestedTokenType": "urn:ietf:params:oauth:token-type:access_token",
+                        "username": "<token>"
+                    }
                 }
-            }
-        ]
+            ]
+        }
     }
-}
 ```
 
-Two details are specific to Artifact Registry:
-
-- The `username` attribute must be `oauth2accesstoken`. Artifact Registry expects that fixed username with an access token as the password, rather than the `<token>` default.
-- The workload identity principal needs the `roles/artifactregistry.reader` role on the repository. The federated token is accepted as an authenticated principal on its own, so impersonating a service account is not required.
-
-The pool and the provider named in `audience` are created once, and the principal is granted read access on the repository:
-
-```
-gcloud iam workload-identity-pools create POOL --location=global
-
-gcloud iam workload-identity-pools providers create-oidc PROVIDER \
-    --location=global --workload-identity-pool=POOL \
-    --issuer-uri=https://issuer.example.com \
-    --attribute-mapping=google.subject=assertion.sub
-
-gcloud artifacts repositories add-iam-policy-binding REPOSITORY \
-    --location=REGION --role=roles/artifactregistry.reader \
-    --member=principal://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL/subject/SUBJECT
-```
-
-The `assertionFile` attribute points at the JWT that the identity provider issues for the workload, for example a Kubernetes projected service account token. Because zot re-reads that file on every refresh, the rotation performed by the platform is picked up automatically.
+The `assertionFile` attribute points at the token the identity provider issues for the workload. Because zot re-reads it on every refresh, the rotation performed by the platform is picked up automatically. Set `username` to whatever the upstream registry expects alongside an access token.
