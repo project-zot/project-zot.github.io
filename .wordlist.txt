@@ -336,6 +336,7 @@ subtrees
 syncLegacyCosignTags
 syncTimeout
 systemd
+TCP
 threadcreate
 TLS
 tlsVerify
@@ -362,6 +363,7 @@ unrecovered
 unreviewed
 unscanned
 untagged
+untrusted
 URI
 uri
 URL

@@ -696,6 +696,38 @@ Note that `**` effectively defines the default policy, as it matches any path no
 > :pencil2:
 > Always include the read action in any policy that you define. The create, update, and delete actions cannot be used without the read action.
 
+#### Network conditions and trusted proxies
+
+CEL access control policy conditions, configured under `accessControl.repositories.<pattern>.policies[].conditions[].expression`, can inspect the client network information in the request context:
+
+- `req.client.ip` is derived from the TCP peer address. For direct connections, use this field for IP-based authorization.
+- `req.client.forwardedFor` contains the values supplied in the `X-Forwarded-For` HTTP header. These values are untrusted because any client can set or spoof this header.
+
+> :warning:
+> Never grant access based only on `req.client.forwardedFor`. A client that can reach zot directly can satisfy such a condition by sending a forged `X-Forwarded-For` header.
+
+For example, this condition is insecure:
+
+```cel
+// INSECURE: bypassable with a spoofed X-Forwarded-For header.
+req.client.forwardedFor.exists(ip, ip.startsWith("10."))
+```
+
+When zot is not behind a reverse proxy, check the TCP peer instead:
+
+```cel
+req.client.ip.startsWith("10.")
+```
+
+When zot is behind a reverse proxy, first verify that `req.client.ip` is the address of a known, trusted proxy. Only then inspect the forwarded client chain:
+
+```cel
+req.client.ip == "10.0.0.5" &&
+req.client.forwardedFor.size() > 0 &&
+req.client.forwardedFor[0].startsWith("192.0.2.")
+```
+
+The trusted proxy must overwrite client-supplied `X-Forwarded-For` values rather than append to an untrusted chain. Restrict direct access to zot at the network layer so clients cannot bypass the proxy.
 
 #### Example: Access control configuration
 
