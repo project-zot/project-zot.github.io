@@ -2,7 +2,7 @@
 
 ## [v2.1.20](https://github.com/project-zot/zot/releases/tag/v2.1.20)
 
-This release primarily restores the downloadable binaries that were not published with v2.1.19. It also includes UI improvements from an updated `zui` version.
+This release primarily restores the downloadable binaries that were not published with v2.1.19. Download the binaries from the [v2.1.20 GitHub release](https://github.com/project-zot/zot/releases/tag/v2.1.20). This release also includes UI improvements from an updated `zui` version.
 
 ## [v2.1.19](https://github.com/project-zot/zot/releases/tag/v2.1.19)
 
