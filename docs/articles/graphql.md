@@ -738,6 +738,7 @@ This query returns an `ImageSummary` for a specific `<repo>:<tag>` reference and
     Tag
     Digest
     MediaType
+    ArtifactType
     Size
     DownloadCount
     LastPullTimestamp
@@ -844,6 +845,7 @@ This query returns an `ImageSummary` for a specific `<repo>:<tag>` reference and
 - **`Tag`**: Tag requested.
 - **`Digest`**: Content digest of the resolved image manifest or index.
 - **`MediaType`**: Media type of the resolved object (for example, manifest vs index).
+- **`ArtifactType`**: For image manifests, the OCI `artifactType` when present, otherwise the config media type. For image indexes, the index `artifactType` when present. This is the top-level `ImageSummary` field; per-platform values are also available under `Manifests`.
 
 **Sizes and popularity**
 
@@ -902,6 +904,7 @@ This query returns an `ImageSummary` for a specific `<repo>:<tag>` reference and
       "Tag": "latest",
       "Digest": "sha256:85f2b723e106c34644cd5851d7e81ee87da98ac54672b29947c052a45d31dc2f",
       "MediaType": "application/vnd.oci.image.manifest.v1+json",
+      "ArtifactType": "application/vnd.oci.image.config.v1+json",
       "Size": "3804055",
       "DownloadCount": 0,
       "LastPullTimestamp": "1970-01-01T00:00:00Z",

@@ -28,7 +28,12 @@ See [Verifying image signatures](../articles/verifying-signatures.md), [CVE scan
 
 ### Reliability, Conformance, and Security Fixes
 
-This release improves OCI conformance for malformed manifest references, referrers responses, and blob digest errors. It also fixes digest multi-tag overwrite authorization, cosign verification binding, garbage collection of incomplete content, storage integrity checks, sync diagnostics and credential refresh, Windows repository paths, and metadata robustness.
+- Hardened the OIDC UI callback redirect against open redirects that used a backslash in the target URL.
+- Sync registries can set `maxRetryDelay` for exponential HTTP retry backoff (when greater than `retryDelay`).
+- Improved OCI conformance for malformed manifest references, referrers responses, and blob digest errors.
+- Additional fixes cover digest multi-tag overwrite authorization, cosign verification binding, garbage collection of incomplete content, storage integrity checks, sync diagnostics and credential refresh, Windows repository paths, and metadata robustness.
+
+See [OCI registry mirroring](../articles/mirroring.md) and [Events](../articles/events.md).
 
 ## [v2.1.18](https://github.com/project-zot/zot/releases/tag/v2.1.18)
 
