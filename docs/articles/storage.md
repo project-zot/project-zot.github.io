@@ -170,6 +170,16 @@ there is no periodic collection. Requires the <code>gc</code> attribute
 to be <code>true</code>.</p></td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;"><p><code>gcTimeWindow</code></p></td>
+<td style="text-align: left;"><p>(Optional) Restricts when periodic GC
+sweeps may start to a daily UTC <code>HH:MM-HH:MM</code> window (start
+inclusive, end exclusive; may cross midnight). Applies only when
+periodic GC is enabled (<code>gcInterval</code> greater than zero).
+Once a sweep starts inside the window, it runs to completion even if the
+window ends. Changes require a zot restart. Available for the top-level
+storage configuration and individual subpaths.</p></td>
+</tr>
+<tr class="even">
 <td style="text-align: left;"><p><code>subpaths</code></p></td>
 <td style="text-align: left;"><p>You can store and serve images from
 multiple filesystems, each with their own repository paths and settings.
@@ -193,15 +203,15 @@ class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;"><p><code>storageDriver</code></p></td>
 <td style="text-align: left;"><p>(Remote storage only) Contains settings for a remote storage service. See <a href="#config-s3"><i>Configuring remote storage with s3</i></a>, <a href="#config-gcs"><i>Configuring remote storage with GCS</i></a>, and <a href="#config-azure"><i>Configuring remote storage with Azure Blob Storage</i></a> for details.</p></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;"><p><code>fastRestart</code></p></td>
 <td style="text-align: left;"><p>(Optional) When set to <code>true</code>, zot can skip the startup storage walk if an internal fast-restart stamp matches the running binary identity and storage configuration. This can significantly reduce restart times for large registries. Trade-off: out-of-band storage changes made while zot is down will not be discovered at startup when the walk is skipped. The default is <code>false</code>.</p></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;"><p><code>redirectBlobURL</code></p></td>
 <td style="text-align: left;"><p>(Optional, remote storage) When set to <code>true</code>, blob pull requests can be redirected (HTTP 307) to signed backend URLs from the configured storage driver, reducing proxy traffic through zot. If URL generation is unavailable or invalid, zot falls back to normal proxying. Can be configured globally and per-subpath.</p></td>
 </tr>
@@ -226,6 +236,8 @@ The zot configuration model allows for enabling and disabling garbage collection
 | true      | omitted      | GC enabled with 1 hour interval |
 | true      |  0           | GC runs only once |
 | true      |  >0          | GC enabled with specified interval |
+
+Optional `gcTimeWindow` further restricts when those periodic sweeps may *start*. It has no effect when GC is disabled or when `gcInterval` is `0`.
 
 The configuration model also allows the configuration of a tunable delay (`gcDelay`), which can be set depending on client network speeds and the size of blobs. The `gcDelay` attribute causes collection to run once after the specified delay time.  This attribute has a default value of one hour (`1h`).
 
