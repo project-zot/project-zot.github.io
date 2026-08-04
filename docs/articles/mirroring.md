@@ -88,6 +88,7 @@ When `preserveDigest` is `true`, you must also configure `http.compat: ["docker2
           "certDir": "/home/user/certs",
           "maxRetries": 3,
           "retryDelay": "5m",
+          "maxRetryDelay": "30m",
           "onlySigned": true,
           "preserveDigest": true,
           "content": [
@@ -162,6 +163,10 @@ error occurs during either an on-demand or periodic synchronization. If no value
 <td style="text-align: left;"><p>The interval in seconds between retries. This attribute is mandatory when maxRetries is configured.</p></td>
 </tr>
 <tr class="even">
+<td style="text-align: left;"><p><strong>maxRetryDelay</strong></p></td>
+<td style="text-align: left;"><p>Optional maximum HTTP retry delay. When greater than <strong>retryDelay</strong>, retry delays use exponential backoff up to this value. It requires <strong>retryDelay</strong> and cannot be smaller than it. When omitted, it defaults to <strong>retryDelay</strong>, preserving a fixed retry interval.</p></td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;"><p><strong>syncTimeout</strong></p></td>
 <td style="text-align: left;"><p>The timeout duration for on-demand sync operations. This timeout applies to the entire image sync operation, including downloading the manifest and all associated blobs (layers, config, referrers, etc.). If the requesting client disconnects, the sync operation will continue in the background until this timeout is reached. If not specified or set to zero, the default timeout of 3 hours is used. This prevents sync operations from being cancelled when HTTP clients disconnect (e.g., Kubernetes timeout/retries).</p></td>
 </tr>
@@ -560,3 +565,66 @@ This is an example configuration demonstrating how to use the sync extension wit
         }
     }
 ```
+
+### Example: Google registry authentication
+
+Use the `gcp` credential helper to obtain a read-only access token from [Google Application Default Credentials](https://cloud.google.com/docs/authentication/application-default-credentials). It supports GCE/GKE metadata credentials, `GOOGLE_APPLICATION_CREDENTIALS`, workload identity federation external-account files, and gcloud user credentials. The principal still needs permission to read the upstream repository, such as `roles/artifactregistry.reader`.
+
+```json
+"extensions": {
+  "sync": {
+    "registries": [{
+      "urls": ["https://REGION-docker.pkg.dev"],
+      "onDemand": true,
+      "credentialHelper": "gcp"
+    }]
+  }
+}
+```
+
+The helper also works with Google Container Registry hostnames that accept Google access tokens. It requests the `cloud-platform.read-only` scope and refreshes the short-lived token through the configured ADC token source.
+
+### Example: OAuth2 credential helper
+
+The `oauth2` helper exchanges an assertion for a short-lived registry access token and refreshes it before expiry. Configure exactly one assertion source: `assertionFile` for an externally issued token that can rotate on disk, or `signingFile` for a JSON configuration that lets zot mint a fresh single-use JWT for each exchange.
+
+This RFC 8693 example exchanges a rotating workload identity token with a security token service:
+
+```json
+"extensions": {
+  "sync": {
+    "registries": [{
+      "urls": ["https://registry.example.com"],
+      "onDemand": true,
+      "credentialHelper": "oauth2",
+      "oauth2CredentialHelper": {
+        "tokenURL": "https://sts.example.com/v1/token",
+        "assertionFile": "/run/secrets/subject-token",
+        "grantType": "urn:ietf:params:oauth:grant-type:token-exchange",
+        "audience": "//sts.example.com/pools/example/providers/workload",
+        "subjectTokenType": "urn:ietf:params:oauth:token-type:jwt",
+        "requestedTokenType": "urn:ietf:params:oauth:token-type:access_token",
+        "username": "oauth2accesstoken"
+      }
+    }]
+  }
+}
+```
+
+The `oauth2CredentialHelper` attributes are:
+
+| Attribute | Description |
+|-----------|-------------|
+| `tokenURL` | Required OAuth2 token endpoint. |
+| `assertionFile` | Path to a pre-signed assertion. Required unless `signingFile` is set and mutually exclusive with it. The file is re-read on every refresh. |
+| `signingFile` | Path to a JSON signing configuration used to mint assertions. Required unless `assertionFile` is set and mutually exclusive with it. |
+| `grantType` | Grant type. Defaults to `client_credentials`; also supports `urn:ietf:params:oauth:grant-type:jwt-bearer` and `urn:ietf:params:oauth:grant-type:token-exchange`. |
+| `clientID` | Optional OAuth2 client identifier. |
+| `clientSecretFile` | Optional file containing the OAuth2 client secret. |
+| `scopes` | Optional list of OAuth2 scopes, sent as a space-separated `scope` value. |
+| `username` | Registry username paired with the access token. Defaults to `<token>`. |
+| `audience` | Required for RFC 8693 token exchange and rejected for other grant types. |
+| `subjectTokenType` | RFC 8693 subject token type URI. Defaults to `urn:ietf:params:oauth:token-type:jwt`. |
+| `requestedTokenType` | RFC 8693 requested token type URI. Defaults to `urn:ietf:params:oauth:token-type:access_token`. |
+
+A `signingFile` contains `privateKeyFile` and `algorithm`, plus optional `keyId`, `issuer`, `subject`, and `audience` values. The issuer and subject default to `clientID`; the audience defaults to `tokenURL`.

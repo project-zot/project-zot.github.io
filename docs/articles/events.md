@@ -59,7 +59,7 @@ Currently supported sink types:
 |-----------|-------------|
 | `type` | Sink type. Supported values: `http`, `nats`. |
 | `address` | Sink endpoint address. |
-| `timeout` | Sink delivery timeout duration. |
+| `timeout` | Sink delivery timeout duration. HTTP sinks default to `30s` when this value is omitted or non-positive. |
 | `credentials` | Optional credentials block for HTTP sink authentication. |
 | `headers` | Optional custom headers for HTTP sink delivery. |
 | `channel` | NATS subject/channel used for publishing events. |
@@ -101,3 +101,30 @@ Example payload data:
 
 > :pencil2:
 > For internally triggered operations where no incoming request context exists, `actor` and `request` fields are omitted.
+
+## Image scanned events
+
+When CVE scanning and the events extension are enabled, each successful scan that was not served from the scan cache emits a `zotregistry.image.scanned` CloudEvent. Both scheduled and on-demand scans can emit this event. Re-reading an already cached result does not emit a duplicate event.
+
+The event data includes the repository name, requested tag or digest, resolved digest, media type, and a vulnerability summary:
+
+```json
+{
+  "name": "space/my-image",
+  "reference": "latest",
+  "digest": "sha256:abc...",
+  "mediaType": "application/vnd.oci.image.manifest.v1+json",
+  "summary": {
+    "count": 4,
+    "fixableCount": 2,
+    "unknownCount": 0,
+    "lowCount": 1,
+    "mediumCount": 1,
+    "highCount": 2,
+    "criticalCount": 0,
+    "maxSeverity": "HIGH"
+  }
+}
+```
+
+For HTTP sinks, the CloudEvent `type` is also available in the `ce-type` header.

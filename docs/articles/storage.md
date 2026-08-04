@@ -217,7 +217,7 @@ class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="
 
 ### Configuring garbage collection
 
-The zot configuration model allows for enabling and disabling garbage collection (`gc`) and specifying a periodic interval (`gcInterval`) for collection.
+The zot configuration model allows for enabling and disabling garbage collection (`gc`), specifying a periodic interval (`gcInterval`), and restricting periodic collection to a daily UTC window (`gcTimeWindow`).
 
 | `gc`      | `gcInterval` | Result  |
 | --------- | ------------ | ------ |
@@ -228,6 +228,19 @@ The zot configuration model allows for enabling and disabling garbage collection
 | true      |  >0          | GC enabled with specified interval |
 
 The configuration model also allows the configuration of a tunable delay (`gcDelay`), which can be set depending on client network speeds and the size of blobs. The `gcDelay` attribute causes collection to run once after the specified delay time.  This attribute has a default value of one hour (`1h`).
+
+Set `gcTimeWindow` to an `HH:MM-HH:MM` UTC range to start periodic GC sweeps only during off-peak hours. The start is inclusive and the end is exclusive. Windows can cross midnight, for example `22:00-06:00`. Once a sweep starts inside the window, it runs to completion even if the window ends. The setting is available for both the top-level storage configuration and individual subpaths.
+
+```json
+"storage": {
+    "rootDirectory": "/var/lib/zot",
+    "gc": true,
+    "gcInterval": "1h",
+    "gcTimeWindow": "01:00-08:00"
+}
+```
+
+Changes to `gcTimeWindow` require a zot restart because already-running periodic GC tasks retain the value with which they were started.
 
 By default, if `retention` is not configured, garbage collection deletes all untagged manifests which are not referenced by indexes or artifacts after the `gcDelay` passes.
 This delay can be overwritten using a separate setting if `retention` is configured, for more details see the retention configuration article.

@@ -1,5 +1,35 @@
 # What's New
 
+## [v2.1.19](https://github.com/project-zot/zot/releases/tag/v2.1.19)
+
+### Workload Identity and Sync Authentication
+
+- OIDC workload identity tokens can now complete the registry token-service login flow, including Kubernetes `imagePullSecret` authentication.
+- Sync adds OAuth2 JWT assertion and RFC 8693 token-exchange credential helpers for short-lived upstream credentials.
+- A new `gcp` credential helper uses Google Application Default Credentials to mirror from Google Artifact Registry and compatible registries.
+
+See [Authentication and authorization](../articles/authn-authz.md#oidc-bearer-workload-identity) and [OCI registry mirroring](../articles/mirroring.md).
+
+### Retention and Garbage Collection Controls
+
+- Retention policies can protect actively used untagged manifests, such as digest-only pull-through cache entries, with `keepUntagged`.
+- Periodic garbage collection can be restricted to a daily UTC `gcTimeWindow`, including windows that cross midnight.
+
+See [Tag retention policies](../articles/retention.md) and [Storage](../articles/storage.md#configuring-garbage-collection).
+
+### Signing, Scanning, Events, and GraphQL
+
+- Generated notation trust policies now support the `tsa:default` trust store for timestamped signatures.
+- Trivy scanning now accepts OCI zstd-compressed layers.
+- Successful, non-cached image scans emit `zotregistry.image.scanned` events with vulnerability summaries.
+- GraphQL `ImageSummary` now exposes `ArtifactType`.
+
+See [Verifying image signatures](../articles/verifying-signatures.md), [CVE scanning](../articles/cve-scanning.md), [Events](../articles/events.md), and [GraphQL](../articles/graphql.md).
+
+### Reliability, Conformance, and Security Fixes
+
+This release improves OCI conformance for malformed manifest references, referrers responses, and blob digest errors. It also fixes digest multi-tag overwrite authorization, cosign verification binding, garbage collection of incomplete content, storage integrity checks, sync diagnostics and credential refresh, Windows repository paths, and metadata robustness.
+
 ## [v2.1.18](https://github.com/project-zot/zot/releases/tag/v2.1.18)
 
 ### Trivy-Based SBOM Artifact Generation
