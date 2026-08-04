@@ -107,7 +107,7 @@ Upload these files using an extension of the zot API, as shown in the following 
           "signatureVerification": {
             "level" : "strict" 
           },
-          "trustStores": ["ca:default","signingAuthority:default"],
+          "trustStores": ["ca:default", "signingAuthority:default", "tsa:default"],
           "trustedIdentities": [
             "*"
           ]
@@ -118,7 +118,7 @@ Upload these files using an extension of the zot API, as shown in the following 
 
     - By default, the `trustpolicy.json` file sets the `signatureVerification.level` property to `strict`, which enforces all validations. For example, a signature is not trusted if its certificate has expired, even if the certificate verifies the signature.
 
-    - The `trustpolicy.json` file contains two default truststores, `ca:default` and `signingAuthority:default`. This list of truststores is not updated when a new certificate is uploaded.
+    - The `trustpolicy.json` file contains three default truststores: `ca:default`, `signingAuthority:default`, and `tsa:default`. The TSA truststore enables verification of signatures that use a trusted timestamp authority. This list of truststores is not updated when a new certificate is uploaded.
 
     - The content of the `trustStores` field will match the content of the `_notation/truststore` directory.
 

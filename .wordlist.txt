@@ -52,6 +52,7 @@ ClusterIP
 cmdline
 CNAME
 CNCF
+CloudEvent
 codebase
 colocated
 config
@@ -122,10 +123,13 @@ freebsd
 fullname
 Fullstack
 gc
+GCE
+gcloud
 gcInterval
 GCS
 gcr
 ghcr
+GKE
 GitHub
 github
 GitLab
@@ -140,6 +144,7 @@ GPG
 graphQL
 graphql
 gui
+gzip
 haproxy
 HAProxy
 hardcoded
@@ -175,6 +180,7 @@ JWKS
 JWTs
 json
 keepTags
+keepUntagged
 KEP
 keyfile
 keyid
@@ -203,6 +209,7 @@ localhost
 loglevel
 lookups
 MacOS
+maxRetryDelay
 maxRetries
 md
 MERCHANTABILITY
@@ -259,6 +266,7 @@ podman
 pollInterval
 pprof
 PR
+pre
 preimage
 prepended
 preserveDigest
@@ -339,6 +347,7 @@ tooltips
 transactional
 Trivy
 trivy
+TSA
 trustStore
 truststore
 trustStores
@@ -378,4 +387,5 @@ zot's
 zothub
 zotregistry
 zui
+zstd
 zxp

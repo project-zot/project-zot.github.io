@@ -268,6 +268,32 @@ zot lazily initializes OIDC providers on first authentication, so startup is not
 | `certificateAuthorityFile` | (Optional) Path to a PEM file for the issuer's TLS CA. Mutually exclusive with `certificateAuthority`. |
 | `skipIssuerVerification` | (Optional) Skip issuer verification; for testing only. Default: `false`. |
 
+**Registry token-service login**
+
+Clients that cannot send an OIDC token directly as a Bearer credential can use the registry token-service flow. This includes kubelet authentication through a Kubernetes `imagePullSecret`.
+
+When `auth.bearer.oidc` is configured, an unauthenticated registry request returns a Bearer challenge that points to `/zot/auth/token`. The client sends the OIDC token as the HTTP Basic password; the username is ignored and can be any non-empty value. zot validates the token and returns it as both `token` and `access_token`, after which the client retries the registry request with the token as a Bearer credential.
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: zot-oidc-pull-secret
+type: kubernetes.io/dockerconfigjson
+stringData:
+  .dockerconfigjson: |
+    {
+      "auths": {
+        "zot.example.com": {
+          "username": "zot",
+          "password": "<oidc-identity-token>"
+        }
+      }
+    }
+```
+
+The token-service endpoint supports `GET` and `POST`. In deployments that combine OIDC workload identity with traditional bearer authentication, non-OIDC credentials can be forwarded to the configured upstream token service.
+
 Use `accessControl.repositories` to grant access to the identities produced by the CEL username (for example, a Kubernetes ServiceAccount username such as `system:serviceaccount:<namespace>:<name>` or the default `claims.iss + '/' + claims.sub`). A minimal configuration that ties OIDC workload identities to a repository might look like:
 
 ```json

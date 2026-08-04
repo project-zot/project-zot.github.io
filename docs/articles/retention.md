@@ -41,6 +41,10 @@ _simple policy example_
           "repositories": ["infra/*", "tmp/**"],
           "deleteReferrers": false,
           "deleteUntagged": true,
+          "keepUntagged": {
+            "mostRecentlyPulledCount": 10,
+            "pulledWithin": "720h"
+          },
           "keepTags": [{
             "patterns": ["v2.*", ".*-prod"],
             "mostRecentlyPushedCount": 10,
@@ -71,6 +75,7 @@ The following table lists the attributes available in the retention policy confi
 | repositories | list | A list of glob patterns to match repositories. |
 | deleteReferrers | boolean | If true, delete manifests with a missing Subject.  Default is `false`. |
 | deleteUntagged | boolean | If true, delete untagged manifests.  Default is `true`. |
+| keepUntagged | object | Criteria for retaining untagged manifests. Supports `mostRecentlyPushedCount`, `mostRecentlyPulledCount`, `pushedWithin`, and `pulledWithin`. |
 | keepTags | list | Criteria for tags to retain always. |
 | mostRecentlyPushedCount | count | Retains the top <count\> most recently pushed tags. |
 | mostRecentlyPulledCount | count | Retains the top <count\> most recently pulled tags. |
@@ -87,6 +92,9 @@ The following table lists the attributes available in the retention policy confi
 - If at least one `keepTags` policy is defined for a repository, all tags not matching those policies are removed.
 - If `keepTags` is present but empty, all tags are retained.
 - In general, when multiple rules are configured, a tag is retained if it meets at least one rule.
+- `deleteUntagged` is the master switch for untagged cleanup. When it is `true`, `keepUntagged` protects untagged manifests that satisfy at least one configured activity rule.
+- Tagged and untagged manifests are evaluated independently. `keepUntagged` is useful for digest-only pull-through cache entries, which have no tag but can still be actively pulled.
+- Untagged activity rules require metadata statistics. If those statistics are unavailable, garbage collection falls back to the existing delay-based cleanup behavior.
 - When multiple entries are configured under the same `keepTags` list, there is a logical OR applied between them.
 - When a regex pattern is combined with one or more other rules inside a single `keepTags` entry, the rules apply only to those tags matching the regex. Given a `keepTags` entry, the retained tags are: `patterns` AND (`pulledWithin` OR `pushedWithin` OR `mostRecentlyPushedCount` OR `mostRecentlyPulledCount`).
 - When you specify a regex pattern with no rules other than the default, all tags matching the pattern are retained.
