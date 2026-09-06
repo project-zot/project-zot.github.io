@@ -104,6 +104,7 @@ Filesystem storage is configured with the `storage` attribute in the zot configu
         "rootDirectory":"/tmp/zot",
         "commit": true,
         "dedupe": true,
+        "hydrateBlobOnRead": false,
         "gc": true,
         "gcDelay": "1h",
         "gcInterval": "24h"
@@ -146,6 +147,10 @@ links, you can optimize storage space by enabling inline deduplication
 of layers and blobs that are shared among multiple container images.
 Deduplication is enabled by default. Set to <code>false</code> to
 disable deduplication.</p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><code>hydrateBlobOnRead</code></p></td>
+<td style="text-align: left;"><p>(Optional) When deduplication is enabled, set to <code>true</code> to materialize a repository-local hard link when a blob read finds the digest only in the global dedupe cache. The default is <code>false</code>, so blob <code>HEAD</code> and <code>GET</code> requests return <code>404</code> unless the blob already exists in the requested repository. Available for the top-level storage configuration and individual subpaths.</p></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"><p><code>gc</code></p></td>
@@ -221,6 +226,12 @@ class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="
 </tr>
 </tbody>
 </table>
+
+### Hydrating deduplicated blobs on read
+
+Beginning with zot v2.1.21, blob reads are repository-local by default. Even when the same digest exists in another repository and is present in the dedupe cache, a `HEAD` or `GET` request returns `404` until the blob is mounted or uploaded into the requested repository. This behavior preserves repository boundaries and avoids mutating storage during a read.
+
+Set `hydrateBlobOnRead` to `true` to retain the earlier behavior, in which a successful read creates a repository-local hard link from the dedupe cache. This setting affects full and ranged blob reads. Prefer explicit cross-repository blob mounts for new integrations.
 
 
 <a name="config-gc"></a>

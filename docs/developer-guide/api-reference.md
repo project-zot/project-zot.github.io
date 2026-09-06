@@ -306,6 +306,7 @@ Get current server configuration
   "distSpecVersion": "string",
   "http": {
     "auth": {
+      "allowAnonymousAccess": true,
       "bearer": {
         "realm": "string",
         "service": "string"
@@ -330,6 +331,8 @@ Get current server configuration
   }
 }
 ```
+
+`http.auth.allowAnonymousAccess` is derived from the access-control policy and is `true` when at least one repository rule defines an `anonymousPolicy`. It is response metadata for clients such as the zot UI, not a configuration attribute.
 
 *Responses*
 

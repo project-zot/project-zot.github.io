@@ -50,6 +50,12 @@ The configuration file contains the Distribution Specification version
 (`distSpecVersion`). The structure and content of other attributes are
 described in the later sections of this guide.
 
+### Hot reloading configuration
+
+zot watches its configuration file and applies supported changes while it is running. Kubernetes ConfigMap volumes update files by atomically replacing symlink targets; zot detects these replacements, so a ConfigMap-mounted configuration can be reloaded without restarting the pod.
+
+Not every setting is reloadable. zot logs warnings for changes that require a restart and continues using their previous values. Check the zot logs after updating the file to confirm that the intended settings were applied.
+
 
 ### Extensions
 

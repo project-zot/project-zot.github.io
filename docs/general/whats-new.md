@@ -1,5 +1,49 @@
 # What's New
 
+## [v2.1.21](https://github.com/project-zot/zot/releases/tag/v2.1.21)
+
+### Sync Throughput and Upstream Check Controls
+
+- On-demand sync can set `manifestCheckInterval` to serve a locally cached tag without checking the upstream registry again until the interval expires.
+- `reqConcurrent` and `reqPerSec` configure per-host upstream concurrency and request-rate limits.
+- `disableHTTP2` and `maxIdleConnsPerHost` can improve throughput on high-bandwidth links by using a pool of parallel HTTP/1.1 connections.
+- Concurrent on-demand requests for the same image are now coalesced into one upstream sync operation.
+
+See [OCI registry mirroring](../articles/mirroring.md#controlling-on-demand-upstream-requests).
+
+### Storage and Distribution Behavior
+
+- **Upgrade impact:** blob `HEAD` and ranged `GET` requests are repository-local by default. A digest that exists only in another repository's dedupe cache now returns `404` instead of being materialized into the requested repository. Set `storage.hydrateBlobOnRead` to `true` only when the previous behavior is required.
+- Cross-repository dedupe mounts now require read access to a source repository that contains the blob, as well as create access to the destination repository.
+- Garbage collection now correctly handles multi-tag manifests, shared cosign referrers, nested indexes, and Docker-compatible media types without repeated exponential index walks.
+- Dedupe and storage walks now cover nested repository namespaces and avoid redundant full-storage traversals.
+
+See [Storage](../articles/storage.md#hydrating-deduplicated-blobs-on-read).
+
+### Runtime and Deployment Improvements
+
+- zot supports systemd socket activation, including binding privileged ports without granting the zot process `CAP_NET_BIND_SERVICE`.
+- Configuration files mounted from Kubernetes ConfigMaps and `htpasswd` files mounted from Secrets are detected after atomic symlink replacement and reloaded without restarting the pod.
+- Event sink configuration can now be enabled, disabled, or changed by a configuration reload.
+
+See [Installing zot on bare metal Linux](../install-guides/install-guide-linux.md#systemd-socket-activation), [Configuring zot](../admin-guide/admin-configuration.md#hot-reloading-configuration), and [Authentication and authorization](../articles/authn-authz.md#htpasswd).
+
+### Scanning, Signing, Events, and Management
+
+- Trivy scans can use a configured ignore file through `extensions.search.cve.trivy.ignoreFile`.
+- Image trust recognizes and verifies the Sigstore bundle format produced by cosign v3 (`application/vnd.dev.sigstore.bundle.v0.3+json`).
+- Event publishers can override the CloudEvents `source` and event-type namespace with `source` and `typePrefix`.
+- The management endpoint reports `http.auth.allowAnonymousAccess: true` when any repository has an `anonymousPolicy`, allowing clients such as the zot UI to offer guest access without probing the registry.
+
+See [CVE scanning](../articles/cve-scanning.md#ignoring-vulnerabilities), [Verifying image signatures](../articles/verifying-signatures.md#cosign-v3-sigstore-bundles), and [Events](../articles/events.md#cloudevents-identity).
+
+### Reliability and Compatibility Fixes
+
+- Docker schema 2 media types are preserved through storage metadata, search, delete, prune, and scrub operations.
+- SBOM generation no longer broadens Trivy vulnerability detection or produces additional CVE results.
+- Repository quota slots are released when the final manifest is deleted from a repository.
+- Additional fixes improve Kubernetes-mounted authentication reloads, sync cleanup, event delivery logging, metrics lifecycle, download statistics, and storage locking under concurrent uploads.
+
 ## [v2.1.20](https://github.com/project-zot/zot/releases/tag/v2.1.20)
 
 This release primarily restores the downloadable binaries that were not published with v2.1.19. Download the binaries from the [v2.1.20 GitHub release](https://github.com/project-zot/zot/releases/tag/v2.1.20). This release also includes UI improvements from an updated `zui` version.

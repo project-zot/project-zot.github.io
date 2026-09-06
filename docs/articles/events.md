@@ -27,6 +27,8 @@ Currently supported sink types:
   "extensions": {
     "events": {
       "enable": true,
+      "source": "https://registry.example.com",
+      "typePrefix": "com.example.registry",
       "sinks": [
         {
           "type": "http",
@@ -63,6 +65,19 @@ Currently supported sink types:
 | `credentials` | Optional credentials block for HTTP sink authentication. |
 | `headers` | Optional custom headers for HTTP sink delivery. |
 | `channel` | NATS subject/channel used for publishing events. |
+
+## CloudEvents identity
+
+The optional `source` and `typePrefix` attributes customize the identity of every CloudEvent emitted by zot:
+
+| Attribute | Default | Description |
+|-----------|---------|-------------|
+| `source` | `zotregistry.dev` | Value of the CloudEvents `source` field. Set it to distinguish deployments or tenants at the receiver. |
+| `typePrefix` | `zotregistry` | Namespace prepended to event types. For example, the image-scanned event becomes `com.example.registry.image.scanned`. |
+
+`typePrefix` cannot start or end with a dot or contain two consecutive dots.
+
+The events extension and its recorder are updated when zot hot reloads its configuration. You can enable or disable events, change the CloudEvents identity, and replace sink settings without restarting zot.
 
 <a name="webhook-payload-metadata"></a>
 
