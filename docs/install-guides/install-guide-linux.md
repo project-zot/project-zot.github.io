@@ -79,6 +79,41 @@ The following is an example service file for zot:
 > the zot service definition. The 'zot' user ID in this example is created in
 > the next step.
 
+#### Systemd socket activation
+
+zot can inherit a listening socket from systemd instead of binding the configured HTTP address and port itself. This allows a non-root zot process to listen on a privileged port without `CAP_NET_BIND_SERVICE`.
+
+Create `/etc/systemd/system/zot.socket`:
+
+```ini
+[Unit]
+Description=OCI Distribution Registry socket
+
+[Socket]
+ListenStream=443
+NoDelay=true
+
+[Install]
+WantedBy=sockets.target
+```
+
+Add the following line to the `[Service]` section of `zot.service`:
+
+```ini
+Sockets=zot.socket
+```
+
+The socket unit must pass exactly one stream socket. Its address and port take precedence over `http.address` and `http.port`; the remaining HTTP configuration, including TLS settings, continues to apply. Socket activation is not supported when zot is configured with multiple HTTP listeners.
+
+After creating both units, enable the socket instead of starting the service directly:
+
+```shell
+sudo systemctl daemon-reload
+sudo systemctl enable --now zot.socket
+```
+
+systemd starts `zot.service` when the first connection reaches the socket.
+
 
 ### Step 5: Create a user ID to own the zot service
 

@@ -53,10 +53,12 @@ cmdline
 CNAME
 CNCF
 CloudEvent
+CloudEvents
 codebase
 colocated
 config
 ConfigMap
+ConfigMaps
 conformant
 containerd
 CORS
@@ -79,6 +81,9 @@ CVEs
 darwin
 datapath
 DCO
+dedupe
+Dedupe
+deduplicated
 deduplicates
 deduplication
 deleteReferrers
@@ -88,6 +93,7 @@ detectManifestCollision
 dev
 dex
 discoverable
+disableHTTP
 DistContentDigestKey
 distributions
 distSpecVersion
@@ -171,6 +177,7 @@ ImageTrust
 imagetrust
 in-place
 inlinehilite
+integrations
 io
 IoT
 IRSA
@@ -209,6 +216,8 @@ localhost
 loglevel
 lookups
 MacOS
+manifestCheckInterval
+maxIdleConnsPerHost
 maxRetryDelay
 maxRetries
 md
@@ -229,6 +238,9 @@ mutex
 mutexes
 myfile
 natively
+namespace
+Namespace
+namespaces
 nats
 NATS
 ng
@@ -285,6 +297,7 @@ rescanned
 regctl
 referrers
 regionendpoint
+reloadable
 replicaCount
 repo
 RepoListWithNewestImage
@@ -292,6 +305,10 @@ repoName
 repos
 RepositoryList
 requestor
+reqConcurrent
+reqPerSec
+rescan
+revalidates
 retryDelay
 roadmap
 rootdirectory
@@ -313,6 +330,7 @@ serviceAccount
 SHA
 sharding
 SipHash
+Sigstore
 skipverify
 skopeo
 SLI
@@ -335,6 +353,7 @@ subtree
 subtrees
 syncLegacyCosignTags
 syncTimeout
+symlink
 systemd
 TCP
 threadcreate
@@ -347,6 +366,7 @@ toolchain
 tooltips
 transactional
 Trivy
+Trivy's
 trivy
 TSA
 trustStore
@@ -369,6 +389,7 @@ uri
 URL
 url
 urls
+uncached
 usedualstack
 useragent
 userprefs

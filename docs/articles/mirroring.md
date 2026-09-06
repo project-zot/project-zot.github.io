@@ -138,6 +138,10 @@ The following table lists the configurable attributes for the `sync` feature:
 </ul></td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;"><p><strong>manifestCheckInterval</strong></p></td>
+<td style="text-align: left;"><p>For on-demand sync, the minimum interval between upstream manifest checks for a tag that is already cached locally. During this interval, zot serves the cached manifest without contacting the upstream registry. The default is <code>0s</code>, which checks upstream on every request. Digest-based requests are not affected.</p></td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;"><p><strong>pollInterval</strong></p></td>
 <td style="text-align: left;"><p>The period in seconds between polling of a remote registry. If no value is specified, no periodic polling will occur. If a value is set and the <strong>content</strong> attributes are configured, periodic synchronization is enabled and will run at the specified value.<br/><br/><strong>Note:</strong> Because Docker Hub rate-limits pulls and does not support catalog listing, do not use polled mirroring with Docker Hub. Use only onDemand mirroring with Docker Hub.</p></td>
 </tr>
@@ -192,6 +196,22 @@ error occurs during either an on-demand or periodic synchronization. If no value
 <td style="text-align: left;"><p>When <code>true</code> (default), sync legacy cosign/SBOM tags (for example, tag names derived from the image digest such as <code>sha256-&lt;digest&gt;.sig</code> or <code>sha256-&lt;digest&gt;.sbom</code>). Set to <code>false</code> to skip syncing these tags and reduce synced content.</p></td>
 </tr>
 <tr class="even">
+<td style="text-align: left;"><p><strong>reqConcurrent</strong></p></td>
+<td style="text-align: left;"><p>Maximum number of concurrent requests to each upstream host. The default is <code>3</code>. A configured value must be greater than zero.</p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><strong>reqPerSec</strong></p></td>
+<td style="text-align: left;"><p>Maximum request rate to each upstream host. Requests are unlimited by default. A configured value must be finite and greater than zero.</p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><strong>disableHTTP2</strong></p></td>
+<td style="text-align: left;"><p>Set to <code>true</code> to use HTTP/1.1 instead of HTTP/2 for upstream requests. This can improve throughput when multiple parallel connections perform better than one multiplexed HTTP/2 connection.</p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><strong>maxIdleConnsPerHost</strong></p></td>
+<td style="text-align: left;"><p>Maximum number of idle HTTP connections retained for each upstream host. A configured value must be greater than zero. When unset, the Go HTTP transport default is <code>2</code>; when <code>disableHTTP2</code> is <code>true</code>, zot instead defaults this pool to the effective <code>reqConcurrent</code> value.</p></td>
+</tr>
+<tr class="even">
 <td style="text-align: left;"><p><strong>content</strong></p></td>
 <td style="text-align: left;"><p>The included attributes in this section specify which content will be pulled. If this section is not populated, periodic polling will not occur. The included attributes can also filter which on-demand images are pulled.</p></td>
 </tr>
@@ -233,6 +253,32 @@ error occurs during either an on-demand or periodic synchronization. If no value
 </tr>
 </tbody>
 </table>
+
+### Controlling on-demand upstream requests
+
+The following example revalidates a cached tag at most once every five minutes and limits each upstream host to 20 concurrent requests and 100 requests per second. It also uses a larger HTTP/1.1 connection pool for high-throughput transfers.
+
+```json
+{
+  "extensions": {
+    "sync": {
+      "registries": [
+        {
+          "urls": ["https://registry.example.com"],
+          "onDemand": true,
+          "manifestCheckInterval": "5m",
+          "reqConcurrent": 20,
+          "reqPerSec": 100,
+          "disableHTTP2": true,
+          "maxIdleConnsPerHost": 20
+        }
+      ]
+    }
+  }
+}
+```
+
+These limits are applied independently for each upstream host. When concurrent clients request the same uncached image, zot coalesces those requests into one sync operation.
 
 ## Configuring mirroring modes
 

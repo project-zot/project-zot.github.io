@@ -7,6 +7,12 @@ To verify image signatures, zot supports the following tools:
 - [cosign](https://docs.sigstore.dev/cosign/overview/)
 - [notation](https://github.com/notaryproject/notation)
 
+### Cosign v3 Sigstore bundles
+
+zot recognizes the Sigstore bundle format emitted by cosign v3, with artifact media type `application/vnd.dev.sigstore.bundle.v0.3+json`. These signatures are discovered through the OCI referrers API and are included in zot's signature verification and search metadata alongside legacy cosign signatures.
+
+Cosign v3 bundles are verified against uploaded cosign public keys in the same way as other key-based cosign signatures. No additional zot configuration is required beyond enabling cosign verification and uploading the corresponding public key.
+
 ## Enabling image signature verification
 
 To enable image signature verification, add the `trust` attribute under `extensions` in the zot configuration file and enable one or more verification tools, as shown in the following example:

@@ -643,6 +643,8 @@ configuration file, as shown in the following example.
 
     The `path` attribute specifies the path and filename of the `htpasswd` file, which contains user names and hashed passwords. 
 
+    zot watches this file and reloads accounts when it changes. Kubernetes Secret volumes update files by atomically replacing symlink targets; zot detects these replacements, so a Secret-mounted `htpasswd` file can be updated without restarting the pod.
+
 ### Docker client compatibility
 
 With basic authentication enabled (htpasswd or LDAP), zot applies a Docker compatibility workaround on the `/v2/` “ping” endpoint:
