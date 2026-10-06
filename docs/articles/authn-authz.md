@@ -68,6 +68,42 @@ The following table lists the configurable attributes.
 | `awsSecretsManager` | (Required for *traditional* JWT bearer verification unless `cert` or `oidc` is used.) Load JWT verification keys from AWS Secrets Manager. Mutually exclusive with `cert`. See [Bearer authentication with AWS Secrets Manager](#bearer-authentication-with-aws-secrets-manager). Omit when using only OIDC workload identity. |
 | `oidc`    | (Optional) OIDC workload identity: validate Bearer tokens as OIDC ID tokens (e.g. Kubernetes ServiceAccount, GitHub Actions). No `cert` or `awsSecretsManager` needed when using only OIDC. See [OIDC Bearer (Workload Identity)](#oidc-bearer-workload-identity). |
 
+### Combined authentication
+
+zot can select an authentication path from the credential style used by each client. This allows browser users, OCI clients, CI jobs, and workloads to share one registry. Supported combinations include:
+
+- OpenID browser sessions with API keys for Docker, Podman, containerd, kubelet, and scripts
+- OpenID and API keys with bearer challenge settings, so OCI clients can exchange API keys for short-lived bearer tokens
+- Workload OIDC tokens with OpenID sessions, API keys, or traditional signed bearer tokens
+- htpasswd and LDAP, with either passphrase backend able to validate basic credentials
+- mTLS alongside the other authentication methods
+
+When zot is the advertised token endpoint, it exchanges zot-issued API keys and trusted workload OIDC tokens locally. An optional upstream token service handles credentials that zot does not own:
+
+```json
+{
+  "http": {
+    "auth": {
+      "bearer": {
+        "realm": "https://zot.example.com/zot/auth/token",
+        "service": "zot.example.com",
+        "upstreamTokenEndpoint": {
+          "realm": "https://auth.example.com/token",
+          "service": "legacy-token-service"
+        }
+      }
+    }
+  }
+}
+```
+
+| Attribute | Description |
+|-----------|-------------|
+| `upstreamTokenEndpoint.realm` | External token endpoint that receives token requests not owned by a local zot credential source. |
+| `upstreamTokenEndpoint.service` | Service value sent to the external token endpoint. |
+
+zot-issued API keys, wrapped API-key tokens, workload OIDC tokens, and configured OpenID provider tokens are never forwarded to `upstreamTokenEndpoint`. Invalid credentials are rejected rather than retried anonymously or proxied upstream.
+
 <a name="per-entry-expiration"></a>
 
 #### Per-entry expiration in the JWT `access` claim
@@ -686,6 +722,16 @@ With an `anonymousPolicy`, a repository can allow anonymous actions which do not
 A user's access to a particular repository is evaluated first by whether a user-specific policy exists, then by group-specific policies, and then (in order) by default and admin policies.
 
 A group-specific policy can be applied within any type of access policy, including default or admin policies. The group policy name can also be used with LDAP.
+
+#### Admin-only routes
+
+The profiling endpoints under `/v2/_zot/pprof/` and the cosign and notation trust-key upload endpoints require an identity matched by `accessControl.adminPolicy` when any authentication method is enabled. The policy's user, group, and CEL conditions are evaluated for each request.
+
+This is stricter than repository access. If authentication is configured without `accessControl`, authenticated users can access repositories, but nobody can use these admin-only routes. Configure an explicit `adminPolicy` for administrators. Unauthenticated requests receive `401 Unauthorized`, while an authenticated identity that does not match the policy receives `403 Forbidden`.
+
+Traditional bearer tokens authorize repository scopes rather than zot users and groups, so they cannot match `adminPolicy`. Use an identity-based method such as an API key, OpenID session, workload OIDC token, htpasswd, LDAP, or mTLS for administrators.
+
+When authentication is disabled, these routes are open like the rest of the registry.
 
 #### Configuring access control
 

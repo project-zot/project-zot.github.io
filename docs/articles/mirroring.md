@@ -4,9 +4,7 @@
 
 A key use case for zot is to act as a mirror for upstream registries. If an upstream registry is OCI distribution-spec conformant for pulling images, you can use zot's `sync` feature to implement a downstream mirror, synchronizing OCI images and corresponding artifacts. Because synchronized images are stored in zot's local storage, registry mirroring allows for a fully distributed disconnected container image build pipeline. Container image operations terminate in local zot storage, which may reduce network latency and costs.
 
-> :warning: By default, zot stores images in OCI format. When syncing Docker-format images (`application/vnd.docker.distribution.manifest.v2+json`), zot converts them to OCI unless you opt out. Conversion changes the manifest digest, so digest-pinned pulls (for example, `repo@sha256:<digest>`) and verifiable signatures will not work as expected.
-
-> :pencil2: To store Docker-format images unchanged, enable [`http.compat`](../admin-guide/admin-configuration.md#compatibility-with-other-image-schema-types) as `["docker2s2"]` (the array must contain the exact string `docker2s2`) and set `preserveDigest`: `true` on the sync registry. See [When to enable compat](#when-to-enable-compat) below.
+> :warning: Beginning with zot v2.1.22, sync preserves upstream media types and digests. To sync Docker-format images (`application/vnd.docker.distribution.manifest.v2+json`), enable [`http.compat`](../admin-guide/admin-configuration.md#compatibility-with-other-image-schema-types) as `["docker2s2"]`. Without this compatibility setting, zot rejects Docker schema 2 content instead of converting it to OCI.
 
 ## Mirroring modes
 
@@ -23,20 +21,18 @@ For a pull through cache mirrored registry, configure zot for on-demand synchron
 
 Enable `http.compat: ["docker2s2"]` when any of the following apply:
 
-- Clients pull by digest (`repo@sha256:<digest>`) and must match the upstream digest
 - Upstream images use [Docker Image Manifest v2, Schema 2](https://distribution.github.io/distribution/spec/manifest-v2-2/) and you need to store them unchanged (common on Docker Hub and operator/catalog images)
-- You need cosign or notation signatures and referrers to remain valid after mirroring
-- You set `preserveDigest`: `true` in sync (required — zot refuses to start without `http.compat` when `preserveDigest` is enabled)
+- Docker-format upstream images have cosign or notation signatures and referrers tied to their Docker manifest digests
 
-You can omit `compat` when all upstream content is already OCI-formatted and clients pull by tag only, accepting digest changes from OCI conversion (`preserveDigest`: `false`, the default).
+You can omit `compat` only when all synchronized content is OCI-formatted. Sync preserves the upstream digest in either case.
 
-| Workload | `http.compat` | `preserveDigest` |
-|----------|---------------|------------------|
-| Tag-only pulls, OCI upstream | omit | `false` |
-| Digest-pinned pulls, mixed Docker/OCI | `["docker2s2"]` | `true` |
-| On-demand pull-through cache for all image types | `["docker2s2"]` | `true` |
+| Workload | `http.compat` |
+|----------|---------------|
+| OCI-only upstream | omit |
+| Mixed Docker/OCI upstream | `["docker2s2"]` |
+| On-demand pull-through cache for all image types | `["docker2s2"]` |
 
-> :pencil2: `onDemand` and `preserveDigest` are **not** mutually exclusive. Use them together for on-demand pull-through caching with digest preservation.
+> :pencil2: `preserveDigest` is deprecated and ignored beginning with v2.1.22. Remove it from new configurations. Digest preservation is automatic, while `http.compat` controls whether Docker schema 2 content is accepted.
 
 ## Migrating or updating a registry using mirroring
 
@@ -71,7 +67,7 @@ To ensure a complete migration of the registry contents, set a polling interval 
 
 The `sync` feature of zot is an [extension](https://github.com/opencontainers/distribution-spec/tree/main/extensions) of the OCI-compliant registry implementation. You can configure the `sync` feature under the `extensions` section of the zot configuration file, as shown in this example.
 
-When `preserveDigest` is `true`, you must also configure `http.compat: ["docker2s2"]` in the same configuration file. See [When to enable compat](#when-to-enable-compat).
+Configure `http.compat: ["docker2s2"]` in the same configuration file when an upstream can return Docker schema 2 content. See [When to enable compat](#when-to-enable-compat).
 
 ```json
   "extensions": {
@@ -84,13 +80,13 @@ When `preserveDigest` is `true`, you must also configure `http.compat: ["docker2
           ],
           "onDemand": false,
           "pollInterval": "6h",
+          "platforms": ["linux/amd64", "linux/arm64"],
           "tlsVerify": true,
           "certDir": "/home/user/certs",
           "maxRetries": 3,
           "retryDelay": "5m",
           "maxRetryDelay": "30m",
           "onlySigned": true,
-          "preserveDigest": true,
           "content": [
             {
               "prefix": "/repo2/repo",
@@ -99,7 +95,8 @@ When `preserveDigest` is `true`, you must also configure `http.compat: ["docker2
                 "semver": true
               },
               "destination": "/repo2",
-              "stripPrefix": true
+              "stripPrefix": true,
+              "platforms": ["linux/amd64"]
             }
           ]
         }
@@ -141,9 +138,17 @@ The following table lists the configurable attributes for the `sync` feature:
 <td style="text-align: left;"><p><strong>manifestCheckInterval</strong></p></td>
 <td style="text-align: left;"><p>For on-demand sync, the minimum interval between upstream manifest checks for a tag that is already cached locally. During this interval, zot serves the cached manifest without contacting the upstream registry. The default is <code>0s</code>, which checks upstream on every request. Digest-based requests are not affected.</p></td>
 </tr>
+<tr class="even">
+<td style="text-align: left;"><p><strong>onDemandInBackground</strong></p></td>
+<td style="text-align: left;"><p>When <code>true</code>, a local manifest miss immediately returns <code>404</code> and queues an on-demand sync in the background. Requires <strong>onDemand</strong> and is incompatible with <strong>manifestCheckInterval</strong>. Use this only when clients can fall back to another registry while zot fills its local storage.</p></td>
+</tr>
 <tr class="odd">
 <td style="text-align: left;"><p><strong>pollInterval</strong></p></td>
 <td style="text-align: left;"><p>The period in seconds between polling of a remote registry. If no value is specified, no periodic polling will occur. If a value is set and the <strong>content</strong> attributes are configured, periodic synchronization is enabled and will run at the specified value.<br/><br/><strong>Note:</strong> Because Docker Hub rate-limits pulls and does not support catalog listing, do not use polled mirroring with Docker Hub. Use only onDemand mirroring with Docker Hub.</p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><strong>platforms</strong></p></td>
+<td style="text-align: left;"><p>Optional periodic-sync allowlist of platform strings in <code>os/arch[/variant]</code> form or as a bare architecture such as <code>amd64</code>. Include <code>&quot;&quot;</code> to copy descriptors that have no platform. zot copies only matching children of a multi-architecture index. Omit the attribute or use an empty list to copy all platforms. On-demand sync ignores this setting.</p></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"><p><strong>tlsVerify</strong></p></td>
@@ -183,13 +188,7 @@ error occurs during either an on-demand or periodic synchronization. If no value
 </tr>
 <tr class="even">
 <td style="text-align: left;"><p><strong>preserveDigest</strong></p></td>
-<td style="text-align: left;"><ul>
-<li><p><code>false</code> (default): Convert remote compatible media types to OCI media types locally. Upstream digests change after sync.</p></li>
-<li><p><code>true</code>: Keep remote media types and digests as they are. Requires <code>http.compat: [&quot;docker2s2&quot;]</code> for Docker-format images.</p></li>
-</ul>
-<div class="note">
-<p><strong>Note:</strong> To preserve upstream digests, signatures, and referrers, set <code>preserveDigest</code> to <code>true</code> and enable <code>http.compat</code> with <code>docker2s2</code>. Setting <code>preserveDigest</code> to <code>false</code> converts Docker images to OCI and breaks digest-pinned pulls and signature verification against the original digest.</p>
-</div></td>
+<td style="text-align: left;"><p>Deprecated and ignored beginning with v2.1.22. Sync always preserves upstream digests. Enable <code>http.compat: [&quot;docker2s2&quot;]</code> to accept Docker schema 2 content.</p></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><p><strong>syncLegacyCosignTags</strong></p></td>
@@ -218,6 +217,10 @@ error occurs during either an on-demand or periodic synchronization. If no value
 <tr class="odd">
 <td style="text-align: left;"><p>&emsp;&emsp;<strong>prefix</strong></p></td>
 <td style="text-align: left;"><p>On the remote registry, the path from which images will be pulled. This path can be a string that exactly matches the remote path, or it can be a <a href="https://en.wikipedia.org/wiki/Glob_(programming)">glob</a> pattern. For example, the path can include a wildcard (<strong>*</strong>) or a recursive wildcard (<strong>**</strong>).</p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p>&emsp;&emsp;<strong>platforms</strong></p></td>
+<td style="text-align: left;"><p>Optional periodic-sync platform allowlist for this content rule, using the same entry forms as the registry-level <strong>platforms</strong> value. When present, it overrides that value. An empty list selects all platforms; omission inherits the registry-level value. On-demand sync ignores this setting.</p></td>
 </tr>
 
 <tr class="even">
@@ -253,6 +256,40 @@ error occurs during either an on-demand or periodic synchronization. If no value
 </tr>
 </tbody>
 </table>
+
+### Selecting platforms for periodic sync
+
+Use `platforms` to create a sparse local copy of a multi-architecture image. The registry-level list supplies the default for periodic sync, and a content rule can override it:
+
+```json
+{
+  "urls": ["https://registry.example.com"],
+  "pollInterval": "6h",
+  "platforms": ["linux/amd64", "linux/arm64"],
+  "content": [{
+    "prefix": "edge/**",
+    "platforms": ["linux/arm64/v8"]
+  }]
+}
+```
+
+The index retains its upstream digest even when only selected child manifests are stored. Storage validation, garbage collection, scanning, and scrub tolerate children that were intentionally omitted. On-demand sync remains demand-driven and ignores both platform lists.
+
+Platform entries can use `os/arch`, `os/arch/variant`, or a bare architecture such as `amd64`. Include an empty string (`""`) in a nonempty allowlist to retain descriptors that do not declare a platform, including attestation-style entries.
+
+### On-demand sync in the background
+
+Set both `onDemand` and `onDemandInBackground` to return immediately when a manifest is absent locally and populate it asynchronously:
+
+```json
+{
+  "urls": ["https://registry-1.docker.io"],
+  "onDemand": true,
+  "onDemandInBackground": true
+}
+```
+
+The initial manifest request receives a real `404`; later requests succeed after the background sync completes. Blob misses alone do not start background sync. Do not enable this mode when zot is the client's only registry, and do not combine it with `manifestCheckInterval`.
 
 ### Controlling on-demand upstream requests
 
@@ -303,7 +340,7 @@ These two modes can be configured, separately or together, using specific settin
 
 ### Example: Multiple repositories with polled mirroring
 
-The following is an example of sync configuration for mirroring multiple repositories with polled mirroring. Because this example uses `preserveDigest`: `true`, the configuration file must also include `http.compat: ["docker2s2"]` (see [When to enable compat](#when-to-enable-compat)).
+The following is an example of sync configuration for mirroring multiple repositories with polled mirroring. If the upstream can return Docker schema 2 content, the complete configuration file must also include `http.compat: ["docker2s2"]` (see [When to enable compat](#when-to-enable-compat)).
 
 ```json
 "sync": {
@@ -321,7 +358,6 @@ The following is an example of sync configuration for mirroring multiple reposit
       "maxRetries": 3,
       "retryDelay": "5m",
       "onlySigned": true,
-      "preserveDigest": true,
       "content": [
         {
           "prefix": "/repo1/repo",

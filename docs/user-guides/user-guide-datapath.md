@@ -135,6 +135,8 @@ within the registry.
     --format oci --content-type application/vnd.oci.image.manifest.v1+json \
     --format oci
 
+Manifest tags must follow the OCI Distribution Specification tag grammar: the first character must be alphanumeric or underscore, remaining characters can also include period and dash, and the maximum length is 128 characters. A colon separates the repository from its tag and cannot appear inside the tag. Invalid manifest tags return `400 MANIFEST_INVALID`.
+
 ### Authentication
 
 In the preceding examples, TLS authentication with the zot registry was

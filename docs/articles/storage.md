@@ -39,6 +39,18 @@ After an image is deleted by deleting an image manifest, the corresponding blobs
 
 The `scrub` function, available as an *extension*, makes it possible to ascertain data validity by computing hashes on blobs periodically and continuously so that any bit rot is caught and reported early.
 
+### Storage failure handling
+
+Beginning with zot v2.1.22, local, S3, GCS, and Azure storage drivers distinguish these outcomes:
+
+- Missing content, which registry APIs report with the appropriate `404` response
+- A transient backend failure, which registry APIs report as `503 Service Unavailable`
+- A permanent backend failure, which registry APIs report as `500 Internal Server Error`
+
+Clients should retry a `503` response rather than treating it as confirmation that an image was deleted. Check the zot and storage-backend logs before retrying a `500` response, because it can indicate a persistent configuration, permission, or data error.
+
+Background storage operations also fail closed. If garbage collection, deduplication, scrub, or a storage walk cannot obtain a complete listing or confirm whether content exists, the affected operation stops instead of treating the unknown result as missing content. Scheduled operations can retry on their next cycle after the backend recovers. This prevents manifest pruning and dedupe-origin repair from acting on a partial view of storage.
+
 ## Storage backends
 
 The following types of storage backends are supported.
@@ -267,6 +279,8 @@ Changes to `gcTimeWindow` require a zot restart because already-running periodic
 
 By default, if `retention` is not configured, garbage collection deletes all untagged manifests which are not referenced by indexes or artifacts after the `gcDelay` passes.
 This delay can be overwritten using a separate setting if `retention` is configured, for more details see the retention configuration article.
+
+If repository metadata is absent, garbage collection skips retention decisions that require that metadata but still rewrites the repository index and removes eligible blobs. A storage listing or existence-check failure aborts the affected collection pass; it is not treated as an empty repository.
 
 <a name="config-s3"></a>
 

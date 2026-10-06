@@ -168,6 +168,7 @@ The following table lists the configurable attributes.
 | `cert`    | The path and filename of the server’s SSL/TLS certificate.                                                  |
 | `key`     | The path and filename of the server’s registry key.                                                         |
 
+When TLS is configured, zot sends `Strict-Transport-Security: max-age=63072000; includeSubDomains` on every HTTPS response. Ensure that all subdomains are HTTPS-ready before serving zot from a parent domain whose clients should not apply this policy to every subdomain.
 
 <a name="storage_config"></a>
 
@@ -390,7 +391,7 @@ If the mandatory annotations option is configured when you push an image, linter
 
 ## Compatibility with other image schema types
 
-By default, zot stores images in OCI format. On push, Docker-format manifests (`application/vnd.docker.distribution.manifest.v2+json`) are rejected unless compatibility mode is enabled. During sync, Docker-format images are converted to OCI unless `preserveDigest` is `true` and `http.compat` is configured.
+By default, zot stores images in OCI format. On push, Docker-format manifests (`application/vnd.docker.distribution.manifest.v2+json`) are rejected unless compatibility mode is enabled. Beginning with zot v2.1.22, sync preserves upstream media types and digests and rejects Docker schema 2 content unless `http.compat` is configured.
 
 As an option, zot can be configured to store images using the schema [Docker Image Manifest v2, Schema 2](https://distribution.github.io/distribution/spec/manifest-v2-2/). In this case, a Docker image can be copied to zot without modifications to the image's manifest or digest. Such modifications would otherwise break the image's signature and attestations.
 
@@ -398,12 +399,11 @@ As an option, zot can be configured to store images using the schema [Docker Ima
 
 Enable `http.compat` when any of the following apply:
 
-- Clients pull by digest and must receive the same digest as upstream
-- You mirror Docker-format images from upstream registries and need to keep manifests and digests unchanged (for example, with `preserveDigest`: `true`)
-- You use `preserveDigest`: `true` in the sync extension (required — zot refuses to start if `preserveDigest` is set without `http.compat`)
-- You need cosign or notation signatures and referrers to remain valid after mirroring
+- Clients push Docker schema 2 manifests directly to zot
+- You mirror Docker-format images from upstream registries
+- Mirrored Docker-format images have cosign or notation signatures and referrers tied to their Docker manifest digests
 
-You can omit `compat` when all content is OCI-formatted and clients pull by tag only, with `preserveDigest` left at its default (`false`).
+You can omit `compat` when all pushed and synchronized content is OCI-formatted. The deprecated sync `preserveDigest` setting is ignored beginning with v2.1.22 because sync always preserves upstream digests.
 
 For mirroring use cases and a decision table, see [OCI Registry Mirroring With zot](../articles/mirroring.md#when-to-enable-compat).
 
@@ -419,7 +419,7 @@ Configure the `compat` attribute under `http` in the zot configuration file as a
 }
 ```
 
-When using sync with `preserveDigest`: `true`, combine this `http.compat` setting with `onDemand`: `true` for pull-through caching. See the [config-docker-compat-sync.json](https://github.com/project-zot/zot/blob/main/examples/config-docker-compat-sync.json) example in the zot repository.
+For Docker-compatible pull-through caching, combine this `http.compat` setting with sync `onDemand`: `true`. See the [config-docker-compat-sync.json](https://github.com/project-zot/zot/blob/main/examples/config-docker-compat-sync.json) example in the zot repository.
 
 
 <a name="trust_config"></a>
