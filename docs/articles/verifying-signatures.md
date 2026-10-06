@@ -17,7 +17,34 @@ Cosign v3 bundles are verified against uploaded cosign public keys in the same w
 
 Cosign attestations are OCI referrers, not image signatures. An attestation by itself does not cause zot to report an image as signed.
 
-Beginning with zot v2.1.22, zot reads signature payloads from blob storage when verifying signatures instead of duplicating the layer content in MetaDB. Attestations are stored as OCI referrers and are not verified as image signatures. Existing BoltDB metadata files do not shrink automatically after upgrading. To reclaim that disk space, stop zot and compact the database with the BoltDB tooling or rebuild the metadata database.
+Beginning with zot v2.1.22, signature verification reads signature payloads from blob storage. zot no longer copies those layer bytes into MetaDB.
+
+Older MetaDB records may still contain that duplicated content until the repository record is updated again (for example after a pull or a signature change). Verification keeps working either way. You do not need to reclaim disk space for correctness.
+
+If you use a local BoltDB MetaDB (`meta.db` under `storage.rootDirectory`) and the file is large, reclaiming space is optional. Redis and DynamoDB MetaDB backends are not affected by this BoltDB file-size behavior.
+
+**Option A — compact `meta.db` (keeps existing search metadata and user data):**
+
+`bbolt compact` copies every live key and value. It only reclaims space from freelist pages left behind after repository records were rewritten without the old signature payloads. Untouched legacy records still contain those payloads and survive compaction. Prefer this option after normal registry traffic has rewritten the large repos, or use Option B when you need to drop every leftover payload in one step.
+
+1. Install the `bbolt` CLI if needed: `go install go.etcd.io/bbolt/cmd/bbolt@latest` (see [`go.etcd.io/bbolt`](https://pkg.go.dev/go.etcd.io/bbolt)).
+2. Stop zot so nothing is writing the database.
+3. Change to the storage root directory that contains `meta.db`.
+4. Create a compacted copy: `bbolt compact -o meta.db.new meta.db`.
+5. Keep a backup, then replace the original: `mv meta.db meta.db.bak && mv meta.db.new meta.db`.
+6. Ensure the new file is owned by the zot process user (for example `chown zot:zot meta.db`).
+7. Start zot and confirm the registry is healthy.
+8. After you are satisfied, remove `meta.db.bak`.
+
+**Option B — recreate `meta.db` (forces a full metadata rebuild):**
+
+> :warning:
+> Removing `meta.db` also deletes data that storage cannot rebuild, including API keys, user stars and bookmarks, and download statistics. Keep the backup until you confirm you do not need that state. On start, zot walks storage and rebuilds repository metadata before it becomes ready, so the registry is unavailable for that time. On a large registry the walk can take long enough that a `Type=notify` systemd unit hits its startup timeout; raise `TimeoutStartSec` or use `Type=simple` for that restart if needed.
+
+1. Stop zot.
+2. Rename or move `meta.db` aside as a backup (for example `mv meta.db meta.db.bak`).
+3. Start zot. It creates a new `meta.db` and rebuilds repository metadata from storage before serving traffic.
+4. After you are satisfied, remove the backup.
 
 > :warning:
 > Avoid downgrading after the metadata has been rewritten by v2.1.22. Earlier releases can expect signature content to be embedded in MetaDB.

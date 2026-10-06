@@ -48,7 +48,7 @@ See [Authentication and authorization](../articles/authn-authz.md#combined-authe
 See [Installing zot on bare metal Linux](../install-guides/install-guide-linux.md#step-4-define-the-zot-service) and [Push and pull image content](../user-guides/user-guide-datapath.md#pull-and-push-manifest).
 
 > :pencil2:
-> Signature and attestation layer payloads are no longer stored in MetaDB. This prevents large metadata records, but existing BoltDB files do not shrink automatically. Stop zot and compact or rebuild the metadata database to reclaim space. Avoid downgrading to a release that expects signature content to be present in MetaDB.
+> Signature and attestation layer payloads are no longer stored in MetaDB. This prevents large metadata records, but existing BoltDB files do not shrink automatically. Compact reclaims space only after rewritten records leave freelist pages; a full `meta.db` rebuild is a separate, more disruptive option. See [Verifying image signatures](../articles/verifying-signatures.md#signatures-attestations-and-metadata-storage). Avoid downgrading to a release that expects signature content to be present in MetaDB.
 
 ## [v2.1.21](https://github.com/project-zot/zot/releases/tag/v2.1.21)
 

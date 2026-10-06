@@ -388,7 +388,7 @@ The configuration in this example will result in the following behavior:
 - Only signed images (notation and cosign) are synchronized.
 - The sync communication is secured using certificates in `certDir`.
 - This registry synchronizes with upstream registry every 6 hours.
-- This registry preserves upstream digests instead of converting them to OCI images (requires `http.compat: ["docker2s2"]` in the full configuration file).
+- Upstream digests are preserved. Enable `http.compat: ["docker2s2"]` in the full configuration file when the upstream can return Docker schema 2 content.
 - On-demand mirroring is disabled.
 - Based on the content filtering options, this registry synchronizes these images:
     - From /repo1/repo, images with tags that begin with "4." and are semver compliant but excluding some tag patterns <br/>Files are stored locally in /repo1/repo on localhost.

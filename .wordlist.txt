@@ -33,6 +33,7 @@ benchmarking
 blackbox
 Blowfish
 BoltDB
+bbolt
 boolean
 Bugfixes
 buildx
@@ -128,6 +129,7 @@ fips
 FQDN
 FreeBSD
 freebsd
+freelist
 fullname
 Fullstack
 gc
