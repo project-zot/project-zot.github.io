@@ -62,7 +62,9 @@ The following is an example service file for zot:
     After=network.target auditd.service local-fs.target
 
     [Service]
-    Type=simple
+    Type=notify
+    NotifyAccess=main
+    TimeoutStartSec=5min
     ExecStart=/usr/bin/zot serve /etc/zot/config.json
     Restart=on-failure
     User=zot
@@ -78,6 +80,18 @@ The following is an example service file for zot:
 > Be sure to configure a dedicated non-root user ID as the User and Group in
 > the zot service definition. The 'zot' user ID in this example is created in
 > the next step.
+
+zot sends systemd `READY=1` after startup is complete and `STOPPING=1` when shutdown begins. With `Type=notify`, dependent units start only after the registry is ready.
+
+For container probes or command-line checks, use `zot healthcheck` (alias `zot ready`). It reads the listener from the same configuration file as `zot serve` and probes `/readyz` by default:
+
+```shell
+zot healthcheck /etc/zot/config.json
+zot healthcheck --endpoint livez /etc/zot/config.json
+zot healthcheck --url https://registry.example.com/startupz --timeout 5s
+```
+
+The supported endpoints are `livez`, `readyz`, and `startupz`. The command exits with status `0` for a `2xx` response and nonzero otherwise. Use either a configuration-file argument or `--url`, not both.
 
 #### Systemd socket activation
 

@@ -1,5 +1,55 @@
 # What's New
 
+## [v2.1.22](https://github.com/project-zot/zot/releases/tag/v2.1.22)
+
+### Storage Outage and Data-Integrity Handling
+
+- Storage drivers now distinguish missing content from transient failures and permanent errors across local, S3, GCS, and Azure storage.
+- Registry API requests return `503 Service Unavailable` for transient storage failures and `500 Internal Server Error` for permanent failures instead of reporting misleading `404`, `400`, or `403` responses.
+- Garbage collection, deduplication, scrub, and storage enumeration fail closed when a backend cannot provide a complete view. The affected operation aborts and can retry on its next cycle instead of pruning content based on an assumed-empty result.
+- Re-uploading a manifest repairs equal-size corruption, including remote dedupe origins. Additional fixes prevent remote dedupe self-link and concurrent-upload races from emptying shared content or returning spurious `500` responses.
+- Garbage collection now completes for repositories that do not have a MetaDB record, and an overwritten tag's previous digest remains pullable as an untagged manifest until retention and garbage collection remove it.
+- Corrupt S3 dedupe stubs no longer return a successful empty blob response.
+
+See [Storage](../articles/storage.md#storage-failure-handling).
+
+### Sync and Multi-Architecture Images
+
+- Periodic sync can use `platforms` at the registry or content-rule level to copy only selected `os/arch[/variant]` children of a multi-architecture index.
+- Sync now preserves upstream digests. The `preserveDigest` setting is deprecated and ignored; syncing Docker schema 2 content requires `http.compat: ["docker2s2"]`.
+- `onDemandInBackground` can return a local `404` immediately while filling the image asynchronously, allowing clients configured with another registry to fail over without waiting.
+- Hard on-demand upstream failures now return `503` rather than falling through to `404`, while genuine upstream misses remain `404`.
+- On-demand sync reuses locally stored layers before fetching remotely, and search metadata updates correctly as sparse multi-architecture images are populated.
+- AWS ECR sync credential helpers can again run `credential_process` commands correctly.
+
+See [OCI registry mirroring](../articles/mirroring.md#selecting-platforms-for-periodic-sync) and [OCI registry mirroring](../articles/mirroring.md#on-demand-sync-in-the-background).
+
+### Authentication and Security
+
+- **Upgrade impact:** when authentication is enabled, profiling and trust-key upload endpoints now require an explicit matching `accessControl.adminPolicy`. Without an admin policy, authenticated users can still receive repository access but cannot use these admin-only routes.
+- API keys, OpenID sessions, workload OIDC tokens, and traditional bearer authentication can coexist. zot's token endpoint exchanges locally issued API keys and can forward only unknown credentials to a configured upstream token service.
+- zot-issued API keys are never forwarded to an upstream token endpoint.
+- HTTPS responses include `Strict-Transport-Security: max-age=63072000; includeSubDomains`.
+- Anonymous-only UI deployments no longer return `500` when checking for a session.
+- Legacy cosign signature and SBOM tag recognition now requires the complete canonical tag form.
+
+See [Authentication and authorization](../articles/authn-authz.md#combined-authentication) and [Configuring zot](../admin-guide/admin-configuration.md#network_config).
+
+### Runtime, API, and Compatibility Improvements
+
+- `zot healthcheck` (alias `zot ready`) probes `/livez`, `/readyz`, or `/startupz` without requiring a shell or `curl`, including in distroless containers.
+- zot notifies systemd when startup has completed and when shutdown begins; service units can use `Type=notify`.
+- Manifest pushes now reject invalid Distribution Specification tags with `400 MANIFEST_INVALID`. Existing non-conformant tags remain readable and deletable.
+- A manifest that references a missing blob returns `MANIFEST_BLOB_UNKNOWN` with the missing digest.
+- Catalog and tag pagination continue correctly if the `last` cursor was deleted, and large tag-list page sizes no longer overflow.
+- Missing-repository manifest deletes now return `404`, missing nested-repository referrers return an empty index, and streamed upload `Range` responses cover the complete upload.
+- Cosign attestations are classified as referrers rather than signatures and no longer make an image appear signed.
+
+See [Installing zot on bare metal Linux](../install-guides/install-guide-linux.md#step-4-define-the-zot-service) and [Push and pull image content](../user-guides/user-guide-datapath.md#pull-and-push-manifest).
+
+> :pencil2:
+> Signature and attestation layer payloads are no longer stored in MetaDB. This prevents large metadata records, but existing BoltDB files do not shrink automatically. Stop zot and compact or rebuild the metadata database to reclaim space. Avoid downgrading to a release that expects signature content to be present in MetaDB.
+
 ## [v2.1.21](https://github.com/project-zot/zot/releases/tag/v2.1.21)
 
 ### Sync Throughput and Upstream Check Controls
@@ -651,4 +701,3 @@ Under some configurations, zot consumes significant CPU and memory resources. Th
 ### Digest Collision Detection During Image Deletion
 
 - When two or more image tags point to the same image digest and the image is deleted by digest causes data loss and dangling references. A new behavior-based [policy](https://github.com/project-zot/zot/blob/v1.4.3/examples/config-policy.json) called _detectManifestCollision_ was added to prevent this.
-

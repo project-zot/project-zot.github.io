@@ -13,6 +13,15 @@ zot recognizes the Sigstore bundle format emitted by cosign v3, with artifact me
 
 Cosign v3 bundles are verified against uploaded cosign public keys in the same way as other key-based cosign signatures. No additional zot configuration is required beyond enabling cosign verification and uploading the corresponding public key.
 
+### Signatures, attestations, and metadata storage
+
+Cosign attestations are OCI referrers, not image signatures. An attestation by itself does not cause zot to report an image as signed.
+
+Beginning with zot v2.1.22, zot reads signature payloads from blob storage when verifying signatures instead of duplicating the layer content in MetaDB. Attestations are stored as OCI referrers and are not verified as image signatures. Existing BoltDB metadata files do not shrink automatically after upgrading. To reclaim that disk space, stop zot and compact the database with the BoltDB tooling or rebuild the metadata database.
+
+> :warning:
+> Avoid downgrading after the metadata has been rewritten by v2.1.22. Earlier releases can expect signature content to be embedded in MetaDB.
+
 ## Enabling image signature verification
 
 To enable image signature verification, add the `trust` attribute under `extensions` in the zot configuration file and enable one or more verification tools, as shown in the following example:

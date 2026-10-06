@@ -88,12 +88,14 @@ deduplicates
 deduplication
 deleteReferrers
 deleteUntagged
+deletable
 DerivedImageList
 detectManifestCollision
 dev
 dex
 discoverable
 disableHTTP
+distroless
 DistContentDigestKey
 distributions
 distSpecVersion
@@ -222,6 +224,7 @@ maxRetryDelay
 maxRetries
 md
 MERCHANTABILITY
+MetaDB
 mgmt
 MiB
 middleware
@@ -258,6 +261,7 @@ ok
 Onboarding
 onboarding
 onDemand
+onDemandInBackground
 onlySigned
 OpenAPI
 Observability
@@ -283,8 +287,10 @@ preimage
 prepended
 preserveDigest
 prometheus
+proxied
 proxying
 PRs
+pullable
 pulledWithin
 pullPolicy
 pushedWithin

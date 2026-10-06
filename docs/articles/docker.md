@@ -128,11 +128,10 @@ By default, zot stores images in [OCI Image Format](https://github.com/openconta
 Enable `http.compat: ["docker2s2"]` when any of the following apply:
 
 - You push Docker-format images directly to zot (for example, `docker push` without buildx OCI mode).
-- You mirror Docker Hub or other Docker-format registries and need to preserve the original manifests and digests (required when using `preserveDigest: true` in the `sync` extension).
-- Clients pull by digest (`image@sha256:<digest>`) and the digest must match the upstream registry.
-- You need cosign or notation signatures tied to the original digest to remain valid after mirroring.
+- You mirror Docker Hub or other Docker-format registries.
+- Mirrored Docker-format images have cosign or notation signatures tied to their Docker manifest digests.
 
-You can omit `compat` when all images are OCI-formatted and clients pull by tag only, accepting that converted images may have different digests than the upstream source.
+You can omit `compat` when all pushed and synchronized images are OCI-formatted. Beginning with zot v2.1.22, sync preserves upstream digests and rejects Docker schema 2 content when compatibility mode is disabled.
 
 ### Configuring compat mode
 
@@ -146,8 +145,8 @@ Add the `compat` attribute under `http` in the zot configuration file. The array
 }
 ```
 
-> :warning:
-> If you use `preserveDigest: true` in the `sync` extension, you **must** also set `http.compat: ["docker2s2"]`. zot refuses to start if `preserveDigest` is configured without `http.compat`.
+> :pencil2:
+> The sync `preserveDigest` setting is deprecated and ignored beginning with zot v2.1.22. Digest preservation is automatic; `http.compat: ["docker2s2"]` controls whether Docker schema 2 content is accepted.
 
 See [Configuring zot](../admin-guide/admin-configuration.md#compat_config) and [OCI Registry Mirroring With zot](mirroring.md) for more detail.
 
@@ -258,7 +257,7 @@ sudo systemctl restart docker
 
 After this, `docker pull ubuntu:22.04` first checks zot for a cached copy; if not present, zot fetches it from Docker Hub and caches it for subsequent pulls.
 
-> :pencil2: For zot to serve as a pull-through cache for Docker Hub images, configure the `sync` extension with `onDemand: true`. Enable `http.compat: ["docker2s2"]` and `preserveDigest: true` if you need to preserve Docker image digests.
+> :pencil2: For zot to serve as a pull-through cache for Docker Hub images, configure the `sync` extension with `onDemand: true` and enable `http.compat: ["docker2s2"]`. zot preserves Docker image digests automatically.
 
 For a full zot mirror configuration, see [OCI Registry Mirroring With zot](mirroring.md).
 
@@ -340,7 +339,7 @@ For more information about `hosts.toml` configuration options, see the [containe
 | Authenticate with username/password | `auth.htpasswd` or `auth.ldap` + `docker login` |
 | Authenticate with OpenID/OIDC | `auth.openid` + `auth.apikey: true` + `docker login` with API key |
 | Pull anonymous repos when mixed auth is enabled | `docker login` first, or use Podman/skopeo |
-| Mirror Docker Hub with digest preservation | `http.compat: ["docker2s2"]` + `sync.preserveDigest: true` |
+| Mirror Docker Hub with digest preservation | `http.compat: ["docker2s2"]`; sync preserves digests automatically |
 | Docker daemon pull-through cache | `registry-mirrors` in `/etc/docker/daemon.json` |
 | Docker+containerd image store mirrors | `hosts.toml` in `/etc/docker/certs.d/<registry>/` |
 
