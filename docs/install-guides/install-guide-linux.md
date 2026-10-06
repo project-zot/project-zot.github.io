@@ -81,7 +81,24 @@ The following is an example service file for zot:
 > the zot service definition. The 'zot' user ID in this example is created in
 > the next step.
 
-zot sends systemd `READY=1` after startup is complete and `STOPPING=1` when shutdown begins. With `Type=notify`, dependent units start only after the registry is ready.
+With `Type=notify`, zot sends systemd `READY=1` when startup finishes and `STOPPING=1` when shutdown begins. Dependent units then start only after the registry is ready.
+
+- Raise `TimeoutStartSec` if startup can take longer than five minutes, for example during a first-time CVE database download.
+- `Type=notify` needs a zot build that sends readiness notifications. Older binaries never send `READY=1` and fail when the startup timeout expires.
+
+If you run an older binary, or you do not need systemd to wait for readiness, use `Type=simple` instead and omit `NotifyAccess` and `TimeoutStartSec`:
+
+```ini
+[Service]
+Type=simple
+ExecStart=/usr/bin/zot serve /etc/zot/config.json
+Restart=on-failure
+User=zot
+Group=zot
+LimitNOFILE=500000
+MemoryHigh=30G
+MemoryMax=32G
+```
 
 For container probes or command-line checks, use `zot healthcheck` (alias `zot ready`). It reads the listener from the same configuration file as `zot serve` and probes `/readyz` by default:
 
