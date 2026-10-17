@@ -42,6 +42,7 @@ busybox
 caching
 CD
 CEL
+certbot
 certDir
 checksum
 checksums
@@ -319,12 +320,15 @@ rescan
 revalidates
 retryDelay
 roadmap
+rollback
+rollbacks
 rootdirectory
 rootDirectory
 RSA
 runc
 runtime
 runtimes
+sandboxing
 Satisfiable
 satisfiable
 SBOM
@@ -415,6 +419,7 @@ zb
 zli
 zot
 zot's
+zotctl
 zothub
 zotregistry
 zui
