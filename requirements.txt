@@ -16,3 +16,4 @@ pillow>=10.3.0 # not directly required, pinned by Snyk to avoid a vulnerability
 requests>=2.32.2 # not directly required, pinned by Snyk to avoid a vulnerability
 urllib3>=2.2.2 # not directly required, pinned by Snyk to avoid a vulnerability
 weasyprint>=68.0 # not directly required, pinned by Snyk to avoid a vulnerability
+gitpython>=3.2.0 # not directly required, pinned by Snyk to avoid a vulnerability
