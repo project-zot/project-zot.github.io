@@ -8,6 +8,7 @@ allowlisted
 alongside
 amd
 apache
+Ansible
 apk
 API
 api
@@ -22,6 +23,7 @@ auth
 authn
 authz
 autocompletion
+Authelia
 aws
 backend
 backends

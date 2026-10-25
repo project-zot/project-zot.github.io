@@ -336,8 +336,9 @@ For more information about `hosts.toml` configuration options, see the [containe
 |------|---------------|
 | Push/pull Docker-format images | `"http": { "compat": ["docker2s2"] }` |
 | Use HTTPS (required for non-localhost) | `http.tls.cert` and `http.tls.key` |
-| Authenticate with username/password | `auth.htpasswd` or `auth.ldap` + `docker login` |
-| Authenticate with OpenID/OIDC | `auth.openid` + `auth.apikey: true` + `docker login` with API key |
+| Authenticate with htpasswd or LDAP | `auth.htpasswd` or `auth.ldap` on a registry request with `Authorization: Basic`. When zot advertises a Bearer challenge whose `realm` is `/zot/auth/token`, `docker login` sends the password there and the login fails, because that endpoint does not check those passwords |
+| Authenticate with a workload OIDC JWT | `auth.bearer.oidc` with `realm` set to `https://<host>/zot/auth/token`. `docker login` password is the JWT. The username must not contain `:` |
+| Authenticate with OpenID browser login | `auth.openid` + `auth.apikey: true` + `docker login` with an API key |
 | Pull anonymous repos when mixed auth is enabled | `docker login` first, or use Podman/skopeo |
 | Mirror Docker Hub with digest preservation | `http.compat: ["docker2s2"]`; sync preserves digests automatically |
 | Docker daemon pull-through cache | `registry-mirrors` in `/etc/docker/daemon.json` |
