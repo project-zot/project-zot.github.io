@@ -37,7 +37,7 @@ See [Mutual TLS authentication](#mtls-authentication) for additional information
 
 ### HTTP basic authentication
 
-When [basic HTTP authentication](https://www.rfc-editor.org/rfc/rfc7617.html) is used, the username and password credentials are joined by a colon (`:`), base64 encoded, and passed in the HTTP Authorization header.
+When [basic HTTP authentication](https://www.rfc-editor.org/rfc/rfc7617.html) is used, the username and password credentials are joined by a colon (`:`), base64 encoded, and passed in the HTTP Authorization header. The username must not contain a colon. The first colon in the decoded value separates the username from the password, so a colon in the username makes the remainder of the username part of the password.
 
 ### HTTP bearer authentication
 
@@ -76,9 +76,10 @@ zot can select an authentication path from the credential style used by each cli
 - OpenID and API keys with bearer challenge settings, so OCI clients can exchange API keys for short-lived bearer tokens
 - Workload OIDC tokens with OpenID sessions, API keys, or traditional signed bearer tokens
 - htpasswd and LDAP, with either passphrase backend able to validate basic credentials
+- htpasswd or LDAP alongside bearer authentication. A registry request with `Authorization: Basic` is checked against htpasswd, LDAP, or an API key even when bearer is enabled. `/zot/auth/token` does not check those passwords. It exchanges an API key, or a JWT whose issuer and audience match `bearer.oidc`. A credential zot does not recognize is rejected, unless `upstreamTokenEndpoint` is set, in which case zot forwards the token request. A client that sends Basic directly, such as Ansible with `force_basic_auth`, reaches the htpasswd and LDAP checks while bearer stays enabled
 - mTLS alongside the other authentication methods
 
-When zot is the advertised token endpoint, it exchanges zot-issued API keys and trusted workload OIDC tokens locally. An optional upstream token service handles credentials that zot does not own:
+When zot is the advertised token endpoint, it exchanges zot-issued API keys and JWTs whose issuer and audience match `bearer.oidc`. A credential zot does not recognize, including an opaque access token, is rejected unless `upstreamTokenEndpoint` is set, in which case zot forwards the token request. An optional upstream token service handles credentials that zot does not own:
 
 ```json
 {
@@ -102,7 +103,7 @@ When zot is the advertised token endpoint, it exchanges zot-issued API keys and 
 | `upstreamTokenEndpoint.realm` | External token endpoint that receives token requests not owned by a local zot credential source. |
 | `upstreamTokenEndpoint.service` | Service value sent to the external token endpoint. |
 
-zot-issued API keys, wrapped API-key tokens, workload OIDC tokens, and configured OpenID provider tokens are never forwarded to `upstreamTokenEndpoint`. Invalid credentials are rejected rather than retried anonymously or proxied upstream.
+zot-issued API keys, wrapped API-key tokens, workload OIDC tokens, and configured OpenID provider tokens are never forwarded to `upstreamTokenEndpoint`. When one of those credentials fails, zot rejects it and does not retry anonymously or proxy it upstream. A credential zot does not recognize is forwarded when `upstreamTokenEndpoint` is set.
 
 <a name="per-entry-expiration"></a>
 
@@ -267,7 +268,7 @@ The IAM principal used by zot must be allowed to read the secret, for example:
 
 #### OIDC Bearer (Workload Identity)
 
-Workloads (e.g. Kubernetes pods, CI/CD pipelines) can authenticate to zot using **OIDC ID tokens** in the `Authorization: Bearer` header, with no static credentials. zot validates the token with the configured OIDC issuer and maps claims to identities used for [access control](#authorization). This is often called *workload identity federation*.
+Workloads (e.g. Kubernetes pods, CI/CD pipelines) can authenticate to zot using **OIDC ID tokens** in the `Authorization: Bearer` header, with no static credentials. The token must be a JWT signed by `issuer` whose audience matches `audiences`. OIDC verification rejects an opaque access token. zot validates the JWT with the configured OIDC issuer and maps claims to identities used for [access control](#authorization). This is often called *workload identity federation*.
 
 Unlike traditional bearer tokens (which carry repository permissions in the JWT `access` claim and bypass `accessControl`), OIDC tokens carry **identity only** — authorization is enforced entirely through [`accessControl`](#authorization) policies. If an OIDC-authenticated user is not listed in any policy, the request is rejected with 403.
 
@@ -282,8 +283,8 @@ zot lazily initializes OIDC providers on first authentication, so startup is not
       ...
       "auth": {
         "bearer": {
-          "realm": "zot",
-          "service": "zot-service",
+          "realm": "https://zot.example.com/zot/auth/token",
+          "service": "zot.example.com",
           "oidc": [
             {
               "issuer": "https://kubernetes.default.svc.cluster.local",
@@ -308,7 +309,7 @@ zot lazily initializes OIDC providers on first authentication, so startup is not
 
 Clients that cannot send an OIDC token directly as a Bearer credential can use the registry token-service flow. This includes kubelet authentication through a Kubernetes `imagePullSecret`.
 
-When `auth.bearer.oidc` is configured, an unauthenticated registry request returns a Bearer challenge that points to `/zot/auth/token`. The client sends the OIDC token as the HTTP Basic password; the username is ignored and can be any non-empty value. zot validates the token and returns it as both `token` and `access_token`, after which the client retries the registry request with the token as a Bearer credential.
+When `auth.bearer.oidc` is configured, an unauthenticated registry request returns a Bearer challenge. `realm` must be the absolute URL of zot's token endpoint, for example `https://zot.example.com/zot/auth/token`. The client sends the OIDC JWT as the HTTP Basic password. zot does not use that username as the registry identity; identity comes from [`claimMapping`](#oidc-claim-mapping). The username must still be a legal [Basic](https://www.rfc-editor.org/rfc/rfc7617#section-2) user-id and must not contain a colon (`:`). A colon splits the decoded credential, so `token:test` makes the password `test:<jwt>` and verification fails. The password zot verifies must be that JWT. An opaque access token, such as an Authelia `authelia_at_…` value, is not verified. zot rejects that token request unless `upstreamTokenEndpoint` is set, in which case it forwards the request. zot validates a matching JWT and returns it as both `token` and `access_token`. The client then retries the registry request with `Authorization: Bearer`. LDAP `memberOf` values are not copied onto this identity. The identity is also a member of every `accessControl.groups` entry whose `users` list contains the mapped username, in addition to groups from `claimMapping.groups`. An `adminPolicy` group matches when either source produces that group name.
 
 ```yaml
 apiVersion: v1
@@ -337,8 +338,8 @@ Use `accessControl.repositories` to grant access to the identities produced by t
       ...
       "auth": {
         "bearer": {
-          "realm": "zot",
-          "service": "zot-service",
+          "realm": "https://zot.example.com/zot/auth/token",
+          "service": "zot.example.com",
           "oidc": [
             {
               "issuer": "https://kubernetes.default.svc.cluster.local",
@@ -594,8 +595,8 @@ The `failDelay` attribute specifies a waiting time, in seconds, before zot sends
 
 You can implement server-side authentication for zot using `htpasswd` or LDAP or both.
 
-> :pencil2: 
-> When both `htpasswd` and LDAP configuration are specified, LDAP authentication is given preference. Because `htpasswd` authentication is strictly local and requires no remote service, `htpasswd` serves as a fail-safe authentication mechanism should LDAP become unavailable.
+> :pencil2:
+> When both `htpasswd` and LDAP are configured, zot tries `htpasswd` first. A matching `htpasswd` password succeeds without contacting LDAP. Otherwise zot tries LDAP. A local `htpasswd` account can still authenticate when the LDAP server is unreachable.
 
 ### LDAP
 
