@@ -42,9 +42,11 @@ buildx
 Buildx
 busybox
 caching
+CAs
 CD
 CEL
 certDir
+changelog
 checksum
 checksums
 chunksize
@@ -98,6 +100,7 @@ dev
 dex
 discoverable
 disableHTTP
+distributable
 distroless
 DistContentDigestKey
 distributions
@@ -111,11 +114,14 @@ dropdown
 dryRun
 DynamoDB
 ecr
+ECC
 ECDSA
 ECS
 ECR
 EdDSA
 EKS
+eMudhra
+emSign
 EOF
 ExpandedRepoInfo
 ExpandedRepoInfo
@@ -141,6 +147,7 @@ gcInterval
 GCS
 gcr
 ghcr
+GiB
 GKE
 GitHub
 github
@@ -254,6 +261,7 @@ ng
 nginx
 notation
 npm
+NSS
 NodePort
 OAuth
 objectacl
@@ -326,6 +334,7 @@ rootDirectory
 RSA
 runc
 runtime
+runtime's
 runtimes
 Satisfiable
 satisfiable
@@ -335,6 +344,7 @@ scalable
 scannable
 SDK
 secretkey
+Sectigo
 semver
 serviceAccount
 SHA
@@ -375,6 +385,7 @@ toggleStar
 toolchain
 tooltips
 transactional
+trixie
 Trivy
 Trivy's
 trivy
@@ -391,6 +402,7 @@ ui
 UX
 unrecovered
 unreviewed
+unscannable
 unscanned
 untagged
 untrusted
@@ -405,6 +417,7 @@ useragent
 userprefs
 usr
 UUID
+verifier
 vite
 VM
 VMs

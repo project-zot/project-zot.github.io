@@ -105,6 +105,8 @@ When zot is the advertised token endpoint, it exchanges zot-issued API keys and 
 
 zot-issued API keys, wrapped API-key tokens, workload OIDC tokens, and configured OpenID provider tokens are never forwarded to `upstreamTokenEndpoint`. When one of those credentials fails, zot rejects it and does not retry anonymously or proxy it upstream. A credential zot does not recognize is forwarded when `upstreamTokenEndpoint` is set.
 
+Beginning with v2.1.23, traditional bearer tokens with empty or catalog-only `access` claims do not grant repository access through search or other non-catalog routes. Obtain a token with explicit repository grants for those operations; catalog permission alone is not repository read permission.
+
 <a name="per-entry-expiration"></a>
 
 #### Per-entry expiration in the JWT `access` claim
@@ -272,9 +274,11 @@ Workloads (e.g. Kubernetes pods, CI/CD pipelines) can authenticate to zot using 
 
 Unlike traditional bearer tokens (which carry repository permissions in the JWT `access` claim and bypass `accessControl`), OIDC tokens carry **identity only** — authorization is enforced entirely through [`accessControl`](#authorization) policies. If an OIDC-authenticated user is not listed in any policy, the request is rejected with 403.
 
-You can configure one or more OIDC issuers under `auth.bearer.oidc`. When multiple issuers are configured, zot tries each in order until one validates the token. Neither `cert` nor `awsSecretsManager` is required when using only OIDC workload identity. OIDC can also coexist with traditional bearer authentication (`cert` or `awsSecretsManager`); in that case, zot tries OIDC first, then falls back to traditional bearer verification.
+You can configure one or more OIDC issuers under `auth.bearer.oidc`. Beginning with v2.1.23, zot routes tokens to their configured issuer before verification instead of contacting unrelated issuers. Unknown issuers are rejected without network requests unless `skipIssuerVerification` is enabled. Neither `cert` nor `awsSecretsManager` is required when using only OIDC workload identity. OIDC can also coexist with traditional bearer authentication (`cert` or `awsSecretsManager`); in that case, zot tries OIDC first, then falls back to traditional bearer verification.
 
 zot lazily initializes OIDC providers on first authentication, so startup is not blocked if an issuer is temporarily unreachable.
+
+Discovery and signing-key requests have a 10-second timeout. Once a verifier is one minute old, the next authentication starts a background refresh while retaining the last working verifier. Refresh failures preserve cached keys, allowing tokens signed by already-known keys to validate during an issuer outage; new keys still require a successful fetch. A successful signing-key fetch replaces the cache, so keys removed by the issuer stop validating tokens.
 
 **Basic configuration**
 
@@ -745,6 +749,49 @@ Note that `**` effectively defines the default policy, as it matches any path no
 > :pencil2:
 > Always include the read action in any policy that you define. The create, update, and delete actions cannot be used without the read action.
 
+#### Per-user repository namespaces
+
+Beginning with v2.1.23, repository patterns support `${username}`, expanded to the authenticated username before glob matching:
+
+```json
+{
+  "http": {
+    "accessControl": {
+      "repositories": {
+        "${username}/**": {
+          "defaultPolicy": ["read", "create", "update"]
+        }
+      }
+    }
+  }
+}
+```
+
+With authentication configured, this grants `alice` access to `alice/app` and nested repositories such as `alice/team/app`, but not to `bob/app`. Deletion is not granted; add `delete` if needed. The same template works with identity-based authentication methods that use configured authorization; traditional bearer tokens continue to use their token access claims.
+
+Expansion is case-sensitive and requires a username that is a single valid repository-name component. Anonymous identities, uppercase usernames, and usernames containing slashes or glob syntax do not match; zot does not normalize them. Configure your identity provider to return the intended namespace name.
+
+The longest resolved pattern wins. A static rule wins over a template resolving to exactly the same pattern, allowing explicit reservations such as `reserved/**`. Other repository and administrator grants still apply, so avoid broader grants if namespaces must stay private. Catalog filtering uses the same resolved patterns.
+
+#### Disabling anonymous catalog listing
+
+Set `http.accessControl.disableAnonymousCatalog` to `true` to require authentication for `GET /v2/_catalog`, even when repository `anonymousPolicy` rules permit reads:
+
+```json
+{
+  "http": {
+    "accessControl": {
+      "disableAnonymousCatalog": true,
+      "repositories": {
+        "**": {"anonymousPolicy": ["read"]}
+      }
+    }
+  }
+}
+```
+
+Configure an authentication method alongside this policy. Anonymous catalog requests receive `401 Unauthorized`; anonymous pulls allowed by repository policies remain available. Authenticated catalog results are still filtered by permissions. The setting defaults to `false` and can be hot-reloaded. It controls only the catalog endpoint, not all other ways of discovering public images.
+
 #### Network conditions and trusted proxies
 
 CEL access control policy conditions, configured under `accessControl.repositories.<pattern>.policies[].conditions[].expression`, can inspect the client network information in the request context:
@@ -910,6 +957,25 @@ The following example shows the zot configuration for these providers:
   }
 }
 ```
+
+Beginning with v2.1.23, OpenID Connect providers are initialized on the first login attempt, not at registry startup. If discovery is unreachable, that provider's login and callback endpoints return `503 Service Unavailable` and retry initialization on the next attempt; other authentication methods and registry operations remain available. ID-token verification uses the signing algorithms advertised in the provider's discovery document.
+
+OpenID sessions and their API keys also receive membership in every `accessControl.groups.<name>.users` list containing their username, in addition to provider-supplied groups. This allows local group policies, including administrator policies, to apply consistently.
+
+#### Custom OpenID discovery URL
+
+Set `http.auth.openid.providers.<provider>.discoveryurl` to the full discovery-document URL when zot cannot reach the issuer's public discovery address, for example when an identity provider is behind a gateway:
+
+```json
+{
+  "issuer": "https://login.example.com/realms/zot",
+  "discoveryurl": "https://keycloak.internal.example.com/realms/zot/.well-known/openid-configuration",
+  "credentialsFile": "/etc/zot/oidc-credentials.json",
+  "scopes": ["openid", "profile", "email", "groups"]
+}
+```
+
+Use this object as a provider entry. The discovery document's `issuer` must still match the configured `issuer`; changing the discovery location does not disable issuer verification. Omit `discoveryurl` to use the normal issuer-based location. This option is for OpenID browser login, not `http.auth.bearer.oidc`.
 
 #### Using GitHub teams in authorization policies
 

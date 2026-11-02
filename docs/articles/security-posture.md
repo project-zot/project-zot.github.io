@@ -65,6 +65,18 @@ All interactions with zot are over HTTP APIs, and `htpasswd`-based local authent
 
 Following authentication, it is further possible to allow or deny actions by a user on a particular repository stored on the zot registry. See the provided [access control examples](https://github.com/project-zot/zot/tree/main/examples).
 
+### Outbound TLS trust
+
+Keep TLS verification enabled for upstream registry sync and HTTPS event sinks. Certificate trust depends on the runtime's CA trust store and any explicitly configured certificates; maintain those trust stores and remove distrusted roots rather than bypassing verification.
+
+The October 2026 eMudhra incident compromised intermediate CA keys, not root keys. For static PEM bundles, the fix removes both **emSign ECC Root CA - G3** and **AAA Certificate Services** (Debian name: `Comodo AAA Services root`), blocking the eMudhra and Sectigo-cross-signed paths. Debian shipped this fix in `ca-certificates` versions `20250419+deb13u1` for trixie and `20260816+nmu1` for unstable; Distroless adopted the Debian update.
+
+Update older deployment trust stores or rebuild custom images with a corrected bundle. Zot's released container build definitions copy the CA bundle from the builder image, so updating only the Distroless base does not guarantee that the final bundle is corrected. Do not reintroduce the affected roots through custom certificates.
+
+`emSign Root CA - G1` is not part of this incident's removal. The NSS retirement of `emSign Root CA - C1` and `emSign ECC Root CA - C3` is separate; their presence alone does not leave a path to the compromised intermediates.
+
+Sources: [Debian's incident fix](https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1151413;msg=39), [Apple's chain analysis](https://support.apple.com/en-us/149555), [Distroless adopting Debian's fix](https://github.com/GoogleContainerTools/distroless/pull/2218), [NSS root removals](https://firefox-source-docs.mozilla.org/security/nss/releases/nss_3_131_1.html), and [zot's container build](https://github.com/project-zot/zot/blob/v2.1.23/build/Dockerfile).
+
 ### HTTP read/write timeout configuration
 
 zot supports configurable HTTP read and write timeouts for the API server and metrics exporter. These timeouts help prevent slow-client and stalled-connection scenarios from consuming server resources indefinitely.

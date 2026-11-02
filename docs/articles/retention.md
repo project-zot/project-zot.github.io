@@ -95,6 +95,8 @@ The following table lists the attributes available in the retention policy confi
 - `deleteUntagged` is the master switch for untagged cleanup. When it is `true`, `keepUntagged` protects untagged manifests that satisfy at least one configured activity rule.
 - Tagged and untagged manifests are evaluated independently. `keepUntagged` is useful for digest-only pull-through cache entries, which have no tag but can still be actively pulled.
 - Untagged activity rules require metadata statistics. If those statistics are unavailable, garbage collection falls back to the existing delay-based cleanup behavior.
+- Beginning with v2.1.23, removing the last tag preserves the manifest's activity statistics until the manifest is actually pruned, so `keepUntagged` can still evaluate its push and pull history.
+- Count-based rules break equal-timestamp ties by tag name, then digest, in ascending lexical order. This makes the retained set deterministic rather than dependent on map iteration order.
 - When multiple entries are configured under the same `keepTags` list, there is a logical OR applied between them.
 - When a regex pattern is combined with one or more other rules inside a single `keepTags` entry, the rules apply only to those tags matching the regex. Given a `keepTags` entry, the retained tags are: `patterns` AND (`pulledWithin` OR `pushedWithin` OR `mostRecentlyPushedCount` OR `mostRecentlyPulledCount`).
 - When you specify a regex pattern with no rules other than the default, all tags matching the pattern are retained.
