@@ -1,5 +1,29 @@
 # What's New
 
+## [v2.1.23](https://github.com/project-zot/zot/releases/tag/v2.1.23)
+
+### Highlights
+
+- **Streaming sync:** opt-in `stream` serves blobs while downloading from a verified HTTPS upstream. See [Mirroring](../articles/mirroring.md#streaming-on-demand-sync).
+- **Repository quotas:** `storage.maxRepoBytes` limits logical bytes per repository; pushes exceeding the limit return `413`. See [Storage](../articles/storage.md#repository-quotas).
+- **Access control:** `${username}` repository patterns provide per-user namespaces, and `disableAnonymousCatalog` can require authentication for catalog listing without disabling anonymous pulls. See [Authorization](../articles/authn-authz.md#per-user-repository-namespaces).
+- **OpenID/OIDC:** provider outages no longer block startup, cached workload signing keys survive refresh failures, and OpenID users receive locally configured groups. Browser login supports a custom `discoveryurl`.
+- **zli TLS:** profiles support private CAs and mTLS through `ca-cert`, `client-cert`, and `client-key`. See [zli](../user-guides/zli.md#configuring-tls-certificates).
+- **Runtime/API:** graceful shutdown defaults to a 30-second drain timeout, startup failures return a nonzero exit status, and blob uploads accept `digest-algorithm`.
+
+### Reliability and Upgrade Notes
+
+- Storage fixes protect concurrent uploads and manifest updates, improve dedupe repair and crash durability, and prevent premature garbage collection.
+- Retention preserves untagged activity statistics; storage walks are faster. CVE searches include multi-architecture images without reporting unscannable attestations as errors.
+- Sync handles upstream catalog pagination correctly and loads all CA certificates in `certDir`.
+- **Upgrade impact:** empty or catalog-only bearer grants no longer expose repository data through search; clients need explicit repository grants.
+
+### eMudhra CA Distrust
+
+The incident is addressed by updated Debian/Distroless CA bundles that remove **emSign ECC Root CA - G3** and **AAA Certificate Services**, blocking both compromised TLS chains. Ensure your deployment uses the updated bundle and keeps TLS verification enabled. See [Outbound TLS trust](../articles/security-posture.md#outbound-tls-trust).
+
+See the [full changelog](https://github.com/project-zot/zot/compare/v2.1.22...v2.1.23) for all changes.
+
 ## [v2.1.22](https://github.com/project-zot/zot/releases/tag/v2.1.22)
 
 ### Storage Outage and Data-Integrity Handling

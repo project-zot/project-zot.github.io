@@ -160,7 +160,7 @@ The following table lists the configurable attributes for the `sync` feature:
 <tr class="odd">
 <td style="text-align: left;"><p><strong>certDir</strong></p></td>
 <td style="text-align: left;"><p>If a path is specified, use
-certificates (*.crt, *.cert, *.key files) at this path when connecting to the destination registry or daemon. If no path is specified, use the default certificates directory.</p></td>
+certificates (*.crt, *.cert, *.key files) at this path when connecting to the destination registry or daemon. If no path is specified, use the default certificates directory. Beginning with v2.1.23, all <code>.crt</code> files contribute to the trusted CA bundle, so a later filename such as <code>tls.crt</code> no longer replaces <code>ca.crt</code>.</p></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"><p><strong>maxRetries</strong></p></td>
@@ -290,6 +290,42 @@ Set both `onDemand` and `onDemandInBackground` to return immediately when a mani
 ```
 
 The initial manifest request receives a real `404`; later requests succeed after the background sync completes. Blob misses alone do not start background sync. Do not enable this mode when zot is the client's only registry, and do not combine it with `manifestCheckInterval`.
+
+### Streaming on-demand sync
+
+Beginning with v2.1.23, set `stream: true` on an on-demand registry entry to let clients pull blobs as zot downloads them, instead of waiting for the entire image to be committed:
+
+```json
+{
+  "extensions": {
+    "sync": {
+      "registries": [{
+        "urls": ["https://registry.example.com"],
+        "onDemand": true,
+        "stream": true,
+        "maxConcurrentStreams": 32,
+        "content": [{"prefix": "**"}]
+      }]
+    }
+  }
+}
+```
+
+Streaming is disabled by default. It requires `onDemand: true`, explicit HTTPS upstream URLs, and TLS verification. Do not combine it with `tlsVerify: false`, `onDemandInBackground`, `maxRetries`, or `retryDelay`; zot rejects these combinations. If a separate matching rule enables `onDemandInBackground`, that mode takes precedence for new syncs.
+
+zot returns the upstream manifest before completing the cache fill. The background download is pinned to that manifest's digest and source registry, so a moving tag cannot mix content from different images. Concurrent clients share in-flight downloads; a client disconnect ends only its subscription, not the background sync. Bytes reach clients before zot finishes digest verification, so use a trusted upstream and keep TLS verification enabled.
+
+`maxConcurrentStreams` is a positive limit on distinct blobs, not clients or images. The default is 32, shared across all streaming registries; every streaming entry must specify the same effective value. Existing local blobs do not use stream slots. If streaming cannot be set up or the cap is reached, the request uses ordinary on-demand sync.
+
+For multi-architecture images, the index is synced normally; each requested platform manifest can then stream its own blobs. A failure during an active stream can interrupt the client transfer; fallback does not make an already-started response error-free.
+
+#### Staging space
+
+Streaming stages blobs on local disk, not entirely in memory. Local storage uses its root directory; S3, GCS, and Azure deployments must set `extensions.sync.downloadDir` to a writable local staging directory.
+
+Allow roughly the total size of images syncing concurrently, plus room for committed local content. A single 20 GiB layer needs about 20 GiB of staging space. Sharing a stream across staging roots on different filesystems can require an extra copy. `maxConcurrentStreams` bounds the number of staged blobs, not their aggregate bytes.
+
+Temporary `_stream/` files are removed after the sync and its clients finish. After a crash, zot removes orphaned stream files at the next startup. Do not remove active staging files while zot is running.
 
 ### Controlling on-demand upstream requests
 

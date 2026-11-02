@@ -25,6 +25,8 @@ Exposing flexibility in storage capabilities is a key tenet for catering to the 
 
 Most modern filesystems buffer and flush RAM data to disk after a delay. The purpose of this function is to improve performance at the cost of higher disk memory usage. In embedded devices such as Raspberry Pi, for example, where RAM may be very limited and at a premium, it is desirable to flush data to disk more frequently. The zot storage configuration exposes an option called `commit` which, when enabled, causes data writes to be committed to disk immediately. This option is disabled by default.
 
+Beginning with v2.1.23, committed local-file renames also sync the containing directory so the renamed entry, not just its contents, is durable across a crash.
+
 #### Deduplication
 
 Deduplication is a storage space saving feature wherein only a single copy of specific content is maintained on disk while many different image manifests may hold references to that same content. The deduplication option (`dedupe`) is also available for supported cloud storage backends.
@@ -50,6 +52,32 @@ Beginning with zot v2.1.22, local, S3, GCS, and Azure storage drivers distinguis
 Clients should retry a `503` response rather than treating it as confirmation that an image was deleted. Check the zot and storage-backend logs before retrying a `500` response, because it can indicate a persistent configuration, permission, or data error.
 
 Background storage operations also fail closed. If garbage collection, deduplication, scrub, or a storage walk cannot obtain a complete listing or confirm whether content exists, the affected operation stops instead of treating the unknown result as missing content. Scheduled operations can retry on their next cycle after the backend recovers. This prevents manifest pruning and dedupe-origin repair from acting on a partial view of storage.
+
+## Repository quotas
+
+Beginning with v2.1.23, `storage.maxRepoBytes` limits the logical size of each repository:
+
+```json
+{
+  "storage": {
+    "rootDirectory": "/var/lib/zot",
+    "maxRepoBytes": 10737418240
+  }
+}
+```
+
+This example sets a 10 GiB limit per repository, not a 10 GiB limit for the entire registry.
+
+- Accounting counts unique manifest, index, config, and layer digests reachable from tagged references. Repeated references to the same digest count once within that repository; sharing physical content across repositories does not merge their quota usage.
+- This is logical accounting, not measured disk usage. Config and layer sizes come from manifest descriptors, including foreign or non-distributable layers that are not stored locally. Untagged content and separately attached signatures or referrers do not contribute to the tag-rooted size.
+- The check runs on manifest push, not blob upload. A push that would increase usage beyond the limit returns `413` with a `DENIED` error whose detail contains `current`, `projected`, and `limit` as byte-count strings. Already-uploaded blobs can still occupy disk until garbage collection removes them.
+- If an existing repository exceeds a newly lowered limit, pushes that do not increase its logical size remain allowed. Reducing logical usage does not immediately reclaim physical storage.
+- Zero or omission disables the quota. A matching `storage.subPaths` entry uses its own `maxRepoBytes` value, including zero; it does not inherit the top-level limit. Changes take effect after restart.
+- If byte-quota accounting is unavailable, the manifest push returns `503`; invalid stored size metadata returns `500`. Check the logs and resolve the metadata or backend problem before retrying.
+
+Quota enforcement uses MetaDB, which zot initializes when quotas are enabled; the search extension need not be enabled. For multiple zot instances sharing metadata, use single-writer cluster routing for repository writes. Independent writers are not atomically coordinated by this quota implementation.
+
+The separate `storage.maxRepos` setting limits the number of repositories. Reaching that limit also rejects a manifest push that would create a new repository with `413`; it does not prevent updates to an existing repository.
 
 ## Storage backends
 
@@ -139,6 +167,10 @@ The following table lists the attributes of the `storage` configuration.
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align: left;"><p><code>maxRepoBytes</code></p></td>
+<td style="text-align: left;"><p>(Optional, v2.1.23+) Maximum logical bytes per repository. Zero or omission disables the quota. Available at the top level and in individual <code>subPaths</code> entries; changes require a restart. See <a href="#repository-quotas">Repository quotas</a>.</p></td>
+</tr>
 <tr class="odd">
 <td style="text-align: left;"><p><code>rootDirectory</code></p></td>
 <td style="text-align: left;"><p>Location of the images stored in the

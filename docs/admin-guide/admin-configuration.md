@@ -167,8 +167,11 @@ The following table lists the configurable attributes.
 | `tls`     | The included attributes in this section specify the Transport Layer Security (TLS) settings for the server. |
 | `cert`    | The path and filename of the server’s SSL/TLS certificate.                                                  |
 | `key`     | The path and filename of the server’s registry key.                                                         |
+| `shutdownTimeout` | Maximum time to drain in-flight HTTP requests when `zot serve` shuts down. Defaults to `30s`; zero or a negative duration waits without a timeout. Available beginning with v2.1.23. |
 
 When TLS is configured, zot sends `Strict-Transport-Security: max-age=63072000; includeSubDomains` on every HTTPS response. Ensure that all subdomains are HTTPS-ready before serving zot from a parent domain whose clients should not apply this policy to every subdomain.
+
+On shutdown, zot stops accepting new requests and waits for active requests before closing storage and metadata resources. Connections still active when `shutdownTimeout` expires are closed. Choose a value appropriate for large transfers and allow a longer termination grace period in your service manager or Kubernetes pod. Changes to this setting require a restart. Server startup failures, such as a port already in use, return a nonzero process exit status.
 
 <a name="storage_config"></a>
 

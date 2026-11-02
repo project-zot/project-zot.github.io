@@ -88,6 +88,22 @@ Resolution behavior:
 - If both `--config` and `--url` are omitted, zli uses the default config (when set).
 - If either `--config` or `--url` is provided, that explicit input takes precedence.
 
+### Configuring TLS certificates
+
+Beginning with v2.1.23, each named zli configuration can specify a private CA bundle and a client certificate/key pair:
+
+```console
+bin/zli config add secure https://registry.example.com
+bin/zli config secure ca-cert /etc/zot/certs/ca.pem
+bin/zli config secure client-cert /etc/zot/certs/client.pem
+bin/zli config secure client-key /etc/zot/certs/client-key.pem
+bin/zli image list --config secure
+```
+
+`ca-cert` is a PEM file containing the root CAs used to verify the server. Keep `verify-tls` enabled; an empty file or one containing no PEM certificate produces an error. For mTLS, `client-cert` and `client-key` must be set together. The explicit client pair takes precedence over a pair discovered in a containers `certs.d` directory.
+
+These settings are stored in the selected profile in `~/.zot` and also apply when that profile is the default. An explicit `--url` without `--config` does not use a profile's certificate settings. Protect the private key with appropriate filesystem permissions.
+
 ### Listing images
 
 You can list all images hosted on a zot server using the [`zli image list`](#_zli-image) command with the server’s alias:
@@ -358,6 +374,9 @@ This command configures zot registry parameters for CLI.
       url		zot server URL
       showspinner	show spinner while loading data [true/false]
       verify-tls	enable TLS certificate verification of the server [default: true]
+      ca-cert		path to a PEM file with the root CA(s) used to verify the server
+      client-cert	path to the client certificate used for mTLS authentication
+      client-key	path to the client private key used for mTLS authentication
 
 <a name="_zli-cve"></a>
 

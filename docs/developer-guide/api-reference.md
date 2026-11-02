@@ -597,11 +597,14 @@ This operation does not require authentication
 
 Create a new image blob/layer upload
 
+Beginning with v2.1.23, the optional `digest-algorithm` query parameter provides an algorithm hint for a multi-request upload, for example `POST /v2/example/blobs/uploads/?digest-algorithm=sha512`. It must name an available digest algorithm. Empty, repeated, or unsupported values return `400 DIGEST_INVALID`. For a monolithic upload supplying `digest`, the algorithm hint must match that digest's algorithm. The final upload `PUT` still supplies the complete `digest`.
+
 *Parameters*
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |name|path|string|true|repository name|
+|digest-algorithm|query|string|false|digest algorithm hint for a multi-request upload|
 
 *Example responses*
 
@@ -945,6 +948,8 @@ This operation does not require authentication
 
 Update an image's manifest given a reference or a digest
 
+When a repository quota is exceeded, a push returns `413` with a `DENIED` error. For `maxRepoBytes`, the error detail contains the current size, projected size, and configured limit as byte-count strings. Byte-quota accounting failures return `503` when accounting is unavailable or `500` when stored size metadata is invalid. See [Repository quotas](../articles/storage.md#repository-quotas).
+
 *Parameters*
 
 |Name|In|Type|Required|Description|
@@ -967,7 +972,9 @@ Update an image's manifest given a reference or a digest
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|created|string|
 |400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|bad request|string|
 |404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|not found|string|
+|413|[Content Too Large](https://www.rfc-editor.org/rfc/rfc9110#section-15.5.14)|repository quota exceeded|DENIED error|
 |500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|internal server error|string|
+|503|[Service Unavailable](https://www.rfc-editor.org/rfc/rfc9110#section-15.6.4)|byte-quota accounting unavailable|DENIED error|
 
 This operation does not require authentication
 
