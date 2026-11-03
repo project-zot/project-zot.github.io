@@ -48,7 +48,9 @@ Several options exist for deploying zot:
     a container management tool such as Podman, Docker, or Helm.
 
 -   You can launch zot as a host-level service by downloading
-    a binary image and running it as a systemd service.
+    a binary image and running it as a systemd service. The
+    [zotctl](../install-guides/install-guide-zotctl.md) tool automates
+    installing, upgrading, and rolling back such a service.
 
 -   You can copy or clone the full zot source code and build
     an image with custom build flags.

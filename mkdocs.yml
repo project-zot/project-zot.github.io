@@ -105,6 +105,7 @@ nav:
     - Command Line (zli): user-guides/zli.md
   - Installation Guides:
     - Installing zot on Bare Metal Linux: install-guides/install-guide-linux.md
+    - Installing and Upgrading zot with zotctl: install-guides/install-guide-zotctl.md
     - Installing zot with Kubernetes and Helm: install-guides/install-guide-k8s.md
   - Administrator Guides:
     - Getting Started: admin-guide/admin-getting-started.md

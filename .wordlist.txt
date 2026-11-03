@@ -45,6 +45,7 @@ caching
 CAs
 CD
 CEL
+certbot
 certDir
 changelog
 checksum
@@ -329,6 +330,8 @@ rescan
 revalidates
 retryDelay
 roadmap
+rollback
+rollbacks
 rootdirectory
 rootDirectory
 RSA
@@ -336,6 +339,7 @@ runc
 runtime
 runtime's
 runtimes
+sandboxing
 Satisfiable
 satisfiable
 SBOM
@@ -430,6 +434,7 @@ zb
 zli
 zot
 zot's
+zotctl
 zothub
 zotregistry
 zui
