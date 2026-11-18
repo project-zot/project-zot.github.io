@@ -326,6 +326,7 @@ requestor
 reqConcurrent
 reqPerSec
 rescan
+retarget
 revalidates
 retryDelay
 roadmap
